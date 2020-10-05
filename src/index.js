@@ -13,6 +13,14 @@ function isDog(card) {
     return card instanceof Dog;
 }
 
+function isTrasher(card) {
+    return card instanceof Trasher;
+}
+
+function isGatling(card) {
+    return card instanceof Gatling;
+}
+
 // Дает описание существа по схожести с утками и собаками
 function getCreatureDescription(card) {
     if (isDuck(card) && isDog(card)) {
@@ -24,33 +32,93 @@ function getCreatureDescription(card) {
     if (isDog(card)) {
         return 'Собака';
     }
+    if (isTrasher(card)) {
+        return 'Громила';
+    }
+    if (isGatling(card)) {
+        return 'Гатлинг';
+    }
     return 'Существо';
 }
 
 
+class Creature extends Card {
+    getDescriptions() {
+        return [getCreatureDescription(this), ...super.getDescriptions()];
+    }
+}
 
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
+class Duck extends Creature {
+    constructor(){
+        super('Мирная утка', 2, 'duck.jpg');
+    }
+    quacks () { console.log('quack'); };
+    swims () { console.log('float: both;'); };
 }
 
 
 // Основа для собаки.
-function Dog() {
+class Dog extends Creature {
+    constructor(name = 'Пес-бандит', volume = 3, pic = 'dog.jpg') {
+        super(name, volume, pic);
+    }
+}
+
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5, 'dog.jpg');
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() =>  continuation(value - 1));
+    }
+    
+    getDescriptions() {
+        return ['Получаю на 1 урон меньше',...super.getDescriptions()];
+    }
+}
+
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6, 'gatling_gun.jpg'); // Image taken from https://commons.wikimedia.org/wiki/File:Gatling_gun.jpg. Uploaded by WojciechSwiderski.
+    }
+    attack(gameContext, continuation) {
+        let oppositeTable = gameContext.oppositePlayer.table;
+        
+        const taskQueue = new TaskQueue();
+
+        taskQueue.push(onDone => {this.view.showAttack(onDone)});
+        for(let position = 0; position < oppositeTable.length; position++) {
+            taskQueue.push(onDone => {
+                const card = oppositeTable[position];
+                if (card) {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                } else {
+                    onDone();
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
 }
 
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck(),
+    new Gatling(),
+    new Duck(),
+    new Duck(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Dog(),
+    new Dog(),
+    new Trasher(),
 ];
 
 
