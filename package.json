@@ -1,10 +1,10 @@
 {
-  "name": "west",
-  "version": "0.0.1",
-  "dependencies": {
-    "http-server": "^0.12.3"
-  },
-  "scripts": {
-    "start": "http-server -p 8080 -c-1 ./src"
-  }
+    "name": "west",
+    "version": "0.0.1",
+    "dependencies": {
+        "serve": "latest"
+    },
+    "scripts": {
+        "start": "serve -p 8080 -s ./src"
+    }
 }

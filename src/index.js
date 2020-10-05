@@ -5,7 +5,7 @@ import SpeedRate from './SpeedRate.js';
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
-    return card && card.quacks && card.swims;
+    return card instanceof Duck;
 }
 
 // Отвечает является ли карта собакой.
@@ -27,30 +27,73 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card {
+    constructor(name, maxPower) {
+        super(name, maxPower);
+    }
+
+    getDescriptions() {
+        let arr = super.getDescriptions();
+        arr.unshift(getCreatureDescription(this));
+        return arr;
+    }
+}
+
+class Dog extends Creature {
+    constructor(name = 'Пес-бандит', power = 3) {
+        super(name, power);
+    }
+}
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+
+    getDescriptions() {
+        let arr = super.getDescriptions();
+        arr.unshift("Если Громилу атакуют, то он получает на 1 меньше урона");
+        return arr;
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value - 1);
+    }
+}
+
 
 
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
+class Duck extends Creature {
+    constructor(name = 'Мирная утка', power = 2) {
+        super(name, power);
+    }
+
+    static quacks() {
+        console.log('quack')
+    }
+
+    static swims() {
+        console.log('float: both;')
+    }
 }
 
 
 // Основа для собаки.
-function Dog() {
-}
+
 
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck(),
+    new Duck(),
+    new Duck(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Trasher(),
+    //new Trasher(),
 ];
 
 
