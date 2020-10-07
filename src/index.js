@@ -27,30 +27,84 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-
+class Creature extends Card{
+    constructor(name,maxPower,image) {
+        super(name,maxPower,image);
+    }
+    getDescriptions(){
+        return [getCreatureDescription(this),super.getDescriptions()];
+    }
+}
 
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
+class Duck extends Creature{
+    constructor(name,maxPower,image) {
+        super(name || 'Мирная утка', maxPower || 2, image);
+    }
+    quacks() { console.log('quack') };
+    swims() { console.log('float: both;') };
 }
 
 
 // Основа для собаки.
-function Dog() {
+class Dog extends Creature{
+    constructor(name,maxPower,image) {
+        super(name || 'Пес-бандит', maxPower || 2, image);
+    }
 }
 
+class Trasher extends Dog {
+    constructor() {
+        super('Громила',5);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value - 1);
+        this.view.signalAbility(() => {value - 1})
+    }
+}
 
+class Gatling extends Creature{
+    constructor() {
+        super('Гатлинг',6);
+    }
+    attack(gameContext, continuation){
+        const taskQueue = new TaskQueue();
+        for(let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const oppositeCard = gameContext.oppositePlayer.table[position];
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+
+    }
+}
+
+class Lad extends Dog{
+    constructor() {
+        super('Браток',2);
+    }
+    static getInGameCount(){return this.inGameCount || 0;}
+    static setInGameCount(value) { this.inGameCount = value; }
+
+
+}
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Gatling(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 
