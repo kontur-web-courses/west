@@ -282,7 +282,7 @@ const banditStartDeck = [
 Подсказки:
 - Изгой похищает эти способности: `modifyDealedDamageToCreature`, `modifyDealedDamageToPlayer`, `modifyTakenDamage`
 - Чтобы похитить способности у всех карт некоторого типа, надо взять их из прототипа
-- Получить доступ к прототипу некоторой карты можно так: `Object.getPrototypeOf(card)`
+- Получить доступ к прототипу некоторой карты можно так: `bject.getPrototypOeOf(card)`
 - Чтобы не похищать способности у других типов, нельзя задевать прототип прототипа
 - `Object.getOwnPropertyNames` и `obj.hasOwnProperty` позволяют получать только собственные свойства объекта
 - Удалить свойство из объекта можно с помощью оператора `delete` так: `delete obj[propName]`

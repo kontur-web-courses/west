@@ -19,7 +19,7 @@ const CardView = function() {
         this.card.style['left'] = `${3*position}px`;
     };
 
-    CardView.prototype.updateData = function ({name, descriptions, image, currentPower, maxPower}) {
+    CardView.prototype.updateData = function({ name, descriptions, image, currentPower, maxPower }) {
         this.name.innerText = name;
         if (image) {
             this.image.setAttribute('src', `images/${image}`);
@@ -34,7 +34,7 @@ const CardView = function() {
     CardView.prototype.flipFront = function(continuation) {
         const taskQueue = new TaskQueue();
 
-        const timeInSec = 0.5/SpeedRate.get();
+        const timeInSec = 0.5 / SpeedRate.get();
         taskQueue.push(
             () => {
                 this.card.classList.remove('flipped');
@@ -43,7 +43,7 @@ const CardView = function() {
             () => {
                 this.card.style.transitionDuration = null;
             },
-            timeInSec*1000
+            timeInSec * 1000
         );
 
         taskQueue.continueWith(continuation);
@@ -52,7 +52,7 @@ const CardView = function() {
     CardView.prototype.flipBack = function(continuation) {
         const taskQueue = new TaskQueue();
 
-        const timeInSec = 0.5/SpeedRate.get();
+        const timeInSec = 0.5 / SpeedRate.get();
         taskQueue.push(
             () => {
                 this.card.classList.add('flipped');
@@ -61,7 +61,7 @@ const CardView = function() {
             () => {
                 this.card.style.transitionDuration = null;
             },
-            timeInSec*1000
+            timeInSec * 1000
         );
 
         taskQueue.continueWith(continuation);
@@ -84,7 +84,7 @@ const CardView = function() {
 
         const attackClass = this.inBottomRow ? 'attackUp' : 'attackDown';
 
-        const timeInSec = 0.3/SpeedRate.get();
+        const timeInSec = 0.3 / SpeedRate.get();
         taskQueue.push(
             () => {
                 this.card.classList.add(attackClass);
@@ -94,7 +94,7 @@ const CardView = function() {
                 this.card.classList.remove(attackClass);
                 this.card.style.animationDuration = null;
             },
-            timeInSec*1000
+            timeInSec * 1000
         );
 
         taskQueue.continueWith(continuation);
@@ -108,7 +108,7 @@ const CardView = function() {
         const dx = targetOffset.left - cardOffset.left;
         const dy = targetOffset.top - cardOffset.top;
 
-        const timeInSec = 0.5/SpeedRate.get();
+        const timeInSec = 0.5 / SpeedRate.get();
         taskQueue.push(
             () => {
                 this.card.style['transform'] = `translate(${dx}px, ${dy}px)`;
@@ -121,7 +121,7 @@ const CardView = function() {
                 this.card.style['transform'] = '';
                 this.card.style['transitionDuration'] = null;
             },
-            timeInSec*1000
+            timeInSec * 1000
         );
 
         taskQueue.continueWith(continuation);
@@ -130,7 +130,7 @@ const CardView = function() {
     CardView.prototype.remove = function(continuation) {
         const taskQueue = new TaskQueue();
 
-        const timeInSec = 0.3/SpeedRate.get();
+        const timeInSec = 0.3 / SpeedRate.get();
         taskQueue.push(
             () => {
                 this.card.classList.add('fadeOut')
@@ -140,7 +140,7 @@ const CardView = function() {
                 this.card.parentNode.removeChild(this.card);
                 this.card.style.animationDuration = null;
             },
-            timeInSec*1000
+            timeInSec * 1000
         );
 
         taskQueue.continueWith(continuation);
@@ -154,7 +154,7 @@ const CardView = function() {
     function signal(signalElement, speedRate, signalName, continuation) {
         const taskQueue = new TaskQueue();
 
-        const timeInSec = 0.5/speedRate;
+        const timeInSec = 0.5 / speedRate;
         taskQueue.push(
             () => {
                 signalElement.classList.add(signalName);
@@ -166,7 +166,7 @@ const CardView = function() {
                 signalElement.classList.remove(signalName);
                 signalElement.style.animationDuration = null;
             },
-            timeInSec*1000
+            timeInSec * 1000
         );
 
         taskQueue.continueWith(continuation);
