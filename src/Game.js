@@ -17,22 +17,18 @@ const Game = function() {
             ? copyAndShuffle(this.topPlayerStartDeck)
             : copyAndReverse(this.topPlayerStartDeck);
 
-        const bottomPlayer = new Player(this,
-            'Шериф уток', 'sheriff.png',
-            bottomPlayerDeck,
-            new PlayerView(
-                document.getElementById('bottomPlayerRow'),
-                document.getElementById('bottomPlayerTable'), true));
-
-        const topPlayer = new Player(this,
+        this.currentPlayer = new Player(this,
             'Главарь псов', 'bandit.png',
             topPlayerDeck,
             new PlayerView(
                 document.getElementById('topPlayerRow'),
                 document.getElementById('topPlayerTable'), false));
-
-        this.currentPlayer = topPlayer;
-        this.oppositePlayer = bottomPlayer;
+        this.oppositePlayer = new Player(this,
+            'Шериф уток', 'sheriff.png',
+            bottomPlayerDeck,
+            new PlayerView(
+                document.getElementById('bottomPlayerRow'),
+                document.getElementById('bottomPlayerTable'), true));
 
         playStaged(this, 0, onGameOver);
     };

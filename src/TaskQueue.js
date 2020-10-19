@@ -1,5 +1,3 @@
-export default TaskQueue;
-
 function runNextTask(taskQueue) {
     if (taskQueue.running || taskQueue.tasks.length === 0) {
         return;
@@ -42,3 +40,5 @@ class TaskQueue{
         this.push(action, null, 0);
     }
 }
+
+export default TaskQueue;
