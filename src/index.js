@@ -5,7 +5,7 @@ import SpeedRate from './SpeedRate.js';
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
-    return card instanceof Duck;
+    return card && card.quacks && card.swims;
 }
 
 // Отвечает является ли карта собакой.
@@ -180,18 +180,70 @@ class Brewer extends Duck {
     constructor(name = "Пивовар", maxPower = 2, image) {
         super(name, maxPower, image);
     }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const taskQueue = new TaskQueue();
+        currentPlayer.table
+            .concat(oppositePlayer.table)
+            .filter(isDuck)
+            .forEach(c => {
+                c.maxPower++;
+                c.currentPower += 2;
+                c.currentPower -= c.currentPower > c.maxPower ? c.currentPower - c.maxPower : 0;
+                taskQueue.push(onDone => {
+                    c.view.signalHeal(onDone);
+                });
+                taskQueue.push(onDone => {
+                    c.updateView();
+                    onDone();
+                });
+            });
+        taskQueue.continueWith(continuation);
+    }
+}
+
+class PseudoDuck extends Dog {
+    constructor(name = "Псевдоутка", maxPower = 3, image) {
+        super(name, maxPower, image);
+    }
+
+    quacks() {
+        console.log('quack');
+    }
+
+    swims() {
+        console.log('float: both;');
+    }
+}
+
+class Nemo extends Creature {
+    constructor(name = "Немо", maxPower = 4, image) {
+        super(name, maxPower, image);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+        if (oppositeCard)
+            this.stealPrototype(oppositeCard, gameContext, continuation);
+        else
+            continuation();
+    }
+    
+    stealPrototype(card, gameContext, continuation){
+        Object.setPrototypeOf(this, Object.getPrototypeOf(card));
+        if ('doBeforeAttack' in this)
+            this.doBeforeAttack(gameContext, continuation);
+    }
 }
 
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
-    new Rogue(),
+    new Nemo(),
 ];
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
-    new Lad(),
+    new Brewer(),
+    new Brewer(),
 ];
 
 
