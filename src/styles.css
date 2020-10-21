@@ -167,15 +167,20 @@ body {
 }
 
 .cardImage {
-    left: 5px;
-    right: 5px;
-    position: absolute;
+    left: 0;
+    right: 0;
+    position: relative;
     height: 100%;
     text-align: center;
+    overflow: hidden;
 }
 
 .cardImage img {
+    position: absolute;
     height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transform: translateX(-50%);
 }
 
 .cardDescriptions {

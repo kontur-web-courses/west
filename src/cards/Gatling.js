@@ -2,8 +2,8 @@ import Creature from "../Creature.js";
 import TaskQueue from "../TaskQueue.js";
 
 class Gatling extends Creature {
-    constructor(name = 'Мирная утка', maxPower = 6) {
-        super(name, maxPower);
+    constructor(name = 'Мирная утка', maxPower = 6, image = '../images/gatling.jpg') {
+        super(name, maxPower, image);
     }
 
     attack(gameContext, continuation) {

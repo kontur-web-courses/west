@@ -1,9 +1,9 @@
 import Duck from "./Duck.js";
-import {isDuck} from '../Creature.js'
+import {isDuck} from '../Creature.js';
 
 class Brewer extends Duck {
-    constructor(name = 'Пивовар', maxPower = 2) {
-        super(name, maxPower);
+    constructor(name = 'Пивовар', maxPower = 2, image = '../images/brewer.jpg') {
+        super(name, maxPower, image);
     }
 
     doBeforeAttack(gameContext, continuation) {

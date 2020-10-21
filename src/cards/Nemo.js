@@ -1,8 +1,8 @@
 import Creature from "../Creature.js";
 
 class Nemo extends Creature {
-    constructor(name = 'Немо', maxPower = 4) {
-        super(name, maxPower);
+    constructor(name = 'Немо', maxPower = 4, image = '../images/nemo.jpg') {
+        super(name, maxPower, image);
     }
 
     doBeforeAttack(gameContext, continuation) {

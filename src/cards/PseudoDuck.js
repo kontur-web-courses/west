@@ -1,8 +1,8 @@
 import Dog from "./Dog.js";
 
 class PseudoDuck extends Dog {
-    constructor(name = 'Псевдоутка', maxPower = 3) {
-        super(name, maxPower);
+    constructor(name = 'Псевдоутка', maxPower = 3, image = '../images/pseudoDuck.jpg') {
+        super(name, maxPower, image);
     }
 
     quacks() {

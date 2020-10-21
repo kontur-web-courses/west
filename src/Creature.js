@@ -2,8 +2,8 @@ import Card from "./Card.js";
 import Dog from "./cards/Dog.js";
 
 class Creature extends Card {
-    constructor(name, maxPower) {
-        super(name, maxPower);
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
     }
 
     get currentPower() {

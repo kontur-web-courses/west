@@ -1,8 +1,8 @@
 import Creature from "../Creature.js";
 
 class Duck extends Creature {
-    constructor(name = 'Мирная утка', maxPower = 2) {
-        super(name, maxPower);
+    constructor(name = 'Мирная утка', maxPower = 2, image = '../images/duck.jpg') {
+        super(name, maxPower, image);
     }
 
     quacks() {

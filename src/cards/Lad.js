@@ -3,8 +3,8 @@ import Dog from "./Dog.js";
 class Lad extends Dog {
     static inGameCount = 0;
 
-    constructor(name = 'Браток', maxPower = 2) {
-        super(name, maxPower);
+    constructor(name = 'Браток', maxPower = 2, image = '../images/lad.jpg') {
+        super(name, maxPower, image);
     }
 
     static getInGameCount() {

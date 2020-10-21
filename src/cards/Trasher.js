@@ -1,8 +1,8 @@
 import Dog from "./Dog.js";
 
 class Trasher extends Dog {
-    constructor(name = 'Громила', maxPower = 5) {
-        super(name, maxPower);
+    constructor(name = 'Громила', maxPower = 5, image = '../images/trasher.jpg') {
+        super(name, maxPower, image);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {

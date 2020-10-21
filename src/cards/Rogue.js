@@ -1,8 +1,8 @@
 import Creature from "../Creature.js";
 
 class Rogue extends Creature {
-    constructor(name = 'Изгой', maxPower = 2) {
-        super(name, maxPower);
+    constructor(name = 'Изгой', maxPower = 2, image = '../images/rogue.jpg') {
+        super(name, maxPower, image);
     }
 
     doBeforeAttack(gameContext, continuation) {
