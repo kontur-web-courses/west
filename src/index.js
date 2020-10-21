@@ -1,91 +1,61 @@
-import Card from './Card.js';
 import Game from './Game.js';
-import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+import Dog from "./cards/Dog.js";
+import Duck from "./cards/Duck.js";
+import Gatling from "./cards/Gatling.js";
+import Rogue from "./cards/Rogue.js";
+import Brewer from "./cards/Brewer.js";
+import Lad from "./cards/Lad.js";
+import Nemo from "./cards/Nemo.js";
+import PseudoDuck from "./cards/PseudoDuck.js";
+import Trasher from "./cards/Trasher.js";
 
-// Отвечает является ли карта уткой.
-function isDuck(card) {
-    return card instanceof Duck;
+const cards = {
+    Dog,
+    Duck,
+    Gatling,
+    Rogue,
+    Brewer,
+    Lad,
+    Nemo,
+    PseudoDuck,
+    Trasher
 }
 
-// Отвечает является ли карта собакой.
-function isDog(card) {
-    return card instanceof Dog;
+// Всего карт в игре (у каждого по половине)
+const countCards = 10;
+
+const getCards = (countCards) => {
+    const keys = Object.keys(cards);
+    return new Array(countCards)
+        .fill(null)
+        .map((el, ind) => createCard(keys[getRandomInt(0, 9)]));
 }
 
-// Дает описание существа по схожести с утками и собаками
-function getCreatureDescription(card) {
-    if (isDuck(card) && isDog(card)) {
-        return 'Утка-Собака';
-    }
-    if (isDuck(card)) {
-        return 'Утка';
-    }
-    if (isDog(card)) {
-        return 'Собака';
-    }
-    return 'Существо';
+const createCard = (key) => {
+    return new cards[key]();
 }
 
-class Creature extends Card{
-    constructor(name, maxPower) {
-        super(name, maxPower);
-    }
-
-    getDescriptions() {
-        return [getCreatureDescription(this), super.getDescriptions()]
-    }
+//Максимум не включается, минимум включается
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// Основа для утки.
-class Duck extends Creature {
-    constructor(name = 'Мирная утка', maxPower = 2) {
-        super(name, maxPower);
-    }
+// // Колода Шерифа, нижнего игрока.
+// const seriffStartDeck = getCards(countCards / 2);
+//
+// // Колода Бандита, верхнего игрока.
+// const banditStartDeck = getCards(countCards / 2);
 
-    quacks() {
-        console.log('quack');
-    }
-
-    swims() {
-        console.log('float: both;');
-    }
-}
-
-// Основа для собаки.
-class Dog extends Creature {
-    constructor(name = 'Пес-бандит', maxPower = 3) {
-        super(name, maxPower);
-    }
-}
-
-class Trasher extends Creature {
-    constructor(name = 'Громила', maxPower = 5) {
-        super(name, maxPower);
-    }
-
-    modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        this.view.signalAbility(() => continuation(value - 1));
-    }
-
-    getDescriptions() {
-        return [getCreatureDescription(this), super.getDescriptions(), 'Power: 5', 'Damage: -1'];
-    }
-}
-
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Nemo(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
+    new Brewer(),
+    new Brewer(),
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
