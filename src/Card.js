@@ -2,10 +2,11 @@ import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
 
 const Card = function () {
-    function Card(name, maxPower, image) {
+    function Card(name, maxPower, description, image) {
         this.name = name;
         this.image = image;
 
+        this.description = description;
         this.maxPower = maxPower;
         this.currentPower = maxPower;
 
@@ -218,15 +219,7 @@ const Card = function () {
 
     // Строит описание цепочки прототипов с помощью имен конструкторов.
     function getInheritanceDescription (card) {
-        const names = [];
-        let obj = card;
-        while (true) {
-            obj = Object.getPrototypeOf(obj);
-            names.push(obj.constructor.name);
-            if (obj === Card.prototype)
-                break;
-        }
-        return names.join('➔ ');
+        return [card.description];
     }
 
     // Обновляет вид карты.
