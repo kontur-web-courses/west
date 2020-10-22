@@ -10,29 +10,32 @@ import Nemo from "./cards/Nemo.js";
 import PseudoDuck from "./cards/PseudoDuck.js";
 import Trasher from "./cards/Trasher.js";
 
-const cards = {
-    Dog,
+const sheriffsCards = {
     Duck,
     Gatling,
     Rogue,
     Brewer,
-    Lad,
     Nemo,
+}
+
+const banditsCards = {
+    Dog,
+    Lad,
     PseudoDuck,
     Trasher
 }
 
 // Всего карт в игре (у каждого по половине)
-const countCards = 10;
+const countCards = 36;
 
-const getCards = (countCards) => {
+const getCards = (cards, countCards) => {
     const keys = Object.keys(cards);
     return new Array(countCards)
         .fill(null)
-        .map((el, ind) => createCard(keys[getRandomInt(0, 9)]));
+        .map((el, ind) => createCard(cards, keys[getRandomInt(0, keys.length)]));
 }
 
-const createCard = (key) => {
+const createCard = (cards, key) => {
     return new cards[key]();
 }
 
@@ -43,22 +46,22 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// // Колода Шерифа, нижнего игрока.
-// const seriffStartDeck = getCards(countCards / 2);
-//
-// // Колода Бандита, верхнего игрока.
-// const banditStartDeck = getCards(countCards / 2);
+// Колода Шерифа, нижнего игрока.
+const sheriffStartDeck = getCards(sheriffsCards, countCards / 2);
 
-const seriffStartDeck = [
-    new Nemo(),
-];
-const banditStartDeck = [
-    new Brewer(),
-    new Brewer(),
-];
+// Колода Бандита, верхнего игрока.
+const banditStartDeck = getCards(banditsCards, countCards / 2);
+
+// const seriffStartDeck = [
+//     new Nemo(),
+// ];
+// const banditStartDeck = [
+//     new Brewer(),
+//     new Brewer(),
+// ];
 
 // Создание игры.
-const game = new Game(seriffStartDeck, banditStartDeck);
+const game = new Game(sheriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
 SpeedRate.set(1);
