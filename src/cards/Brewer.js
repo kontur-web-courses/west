@@ -13,9 +13,9 @@ class Brewer extends Duck {
             .map((card) => {
                 card.maxPower++;
                 card.currentPower += 2;
+                updateView();
+                card.view.signalHeal(() => continuation());
             });
-        updateView();
-        continuation();
     }
 }
 

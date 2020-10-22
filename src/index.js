@@ -52,7 +52,7 @@ const sheriffStartDeck = getCards(sheriffsCards, countCards / 2);
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = getCards(banditsCards, countCards / 2);
 
-// const seriffStartDeck = [
+// const sheriffStartDeck = [
 //     new Nemo(),
 // ];
 // const banditStartDeck = [

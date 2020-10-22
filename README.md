@@ -119,7 +119,7 @@ https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Classes#%D0%9D%D0
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
@@ -180,7 +180,7 @@ const banditStartDeck = [
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
@@ -208,7 +208,7 @@ const banditStartDeck = [
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
@@ -258,7 +258,7 @@ const banditStartDeck = [
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
@@ -291,7 +291,7 @@ const banditStartDeck = [
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
@@ -337,7 +337,7 @@ const banditStartDeck = [
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Duck(),
     new Brewer(),
 ];
@@ -364,7 +364,7 @@ const banditStartDeck = [
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Duck(),
     new Brewer(),
 ];
@@ -394,7 +394,7 @@ const banditStartDeck = [
 
 Колоды для проверки:
 ```js
-const seriffStartDeck = [
+const sheriffStartDeck = [
     new Nemo(),
 ];
 const banditStartDeck = [
