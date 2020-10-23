@@ -13,8 +13,16 @@ function isDog(card) {
     return card instanceof Dog;
 }
 
+// Отвечает является ли карта собакой.
+function isTrasher(card) {
+    return card instanceof Trasher;
+}
+
 // Дает описание существа по схожести с утками и собаками
 function getCreatureDescription(card) {
+    if (isTrasher(card)) {
+        return 'Громила';
+    }
     if (isDuck(card) && isDog(card)) {
         return 'Утка-Собака';
     }
@@ -47,8 +55,8 @@ class Duck extends Creature {
 
 // Основа для собаки.
 class Dog extends Creature {
-    constructor() {
-        super('Пес-бандит', 3);
+    constructor(name, maxPower) {
+        super(name || 'Пес-бандит', maxPower || 3);
     }
 }
 
@@ -58,9 +66,11 @@ class Trasher extends Dog {
         super('Громила', 5);
     }
 
-    // modifyTakenDamage () {
-    //     super.modifyTakenDamage();
-    // }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(value - 1);
+        });
+    }
 
     // this.view.signalAbility(() => {
     //
