@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="389a890c-28ee-4d65-b527-93eee3863867" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/west.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/TaskQueue_old.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Card.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/Card.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TaskQueue.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/TaskQueue.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1jEfe8wtiDsRIiB9EhaY8U3hu4h" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="prettier.files.pattern" value="{**/*,*}.{js,ts,jsx,tsx,vue}" />
+    <property name="prettierjs.PrettierConfiguration.NodeInterpreter" value="C:/Program Files/nodejs/node" />
+    <property name="prettierjs.PrettierConfiguration.Package" value="C:\Users\admin\AppData\Roaming\npm\node_modules\prettier" />
+    <property name="run.prettier.on.save" value="true" />
+    <property name="settings.editor.selected.configurable" value="settings.javascript.prettier" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\MyProgectsNew\SHPORA_KONTUR\west\src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Node.js.2.js">
+    <configuration name="1.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/1.js" working-dir="$PROJECT_DIR$/src">
+      <method v="2" />
+    </configuration>
+    <configuration name="2.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/2.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.2.js" />
+        <item itemvalue="Node.js.1.js" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="389a890c-28ee-4d65-b527-93eee3863867" name="Default Changelist" comment="" />
+      <created>1603374263796</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1603374263796</updated>
+      <workItem from="1603374264893" duration="15029000" />
+      <workItem from="1603440903737" duration="2773000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="740" y="280" key="FileChooserDialogImpl" timestamp="1603394303403">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="740" y="280" key="FileChooserDialogImpl/0.0.1920.1050@0.0.1920.1050" timestamp="1603394303403" />
+    <state width="1876" height="285" key="GridCell.Tab.0.bottom" timestamp="1603394180168">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050@0.0.1920.1050" timestamp="1603394180168" />
+    <state width="1876" height="285" key="GridCell.Tab.0.center" timestamp="1603394180168">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="285" key="GridCell.Tab.0.center/0.0.1920.1050@0.0.1920.1050" timestamp="1603394180168" />
+    <state width="1876" height="285" key="GridCell.Tab.0.left" timestamp="1603394180168">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="285" key="GridCell.Tab.0.left/0.0.1920.1050@0.0.1920.1050" timestamp="1603394180168" />
+    <state width="1876" height="285" key="GridCell.Tab.0.right" timestamp="1603394180168">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1876" height="285" key="GridCell.Tab.0.right/0.0.1920.1050@0.0.1920.1050" timestamp="1603394180168" />
+  </component>
+</project>
