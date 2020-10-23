@@ -30,29 +30,98 @@ function getCreatureDescription(card) {
 
 
 // Основа для утки.
-function Duck() {
+/* function Duck() {
     this.quacks = function () { console.log('quack') };
     this.swims = function () { console.log('float: both;') };
+} */
+
+class Creature extends Card {
+    constructor(name, maxPower) {
+        super(name, maxPower);
+    }
+    getDescriptions() {
+        return [getCreatureDescription(this), ...super.getDescriptions()];
+    }
 }
 
+class Duck extends Creature {
+    constructor(name = 'Мирная утка', maxPower = 3) {
+        super(name, maxPower);
+    }
+
+    quacks() { console.log('quack') }
+    swims() { console.log('float: both;') }
+}
 
 // Основа для собаки.
-function Dog() {
+
+class Dog extends Creature {
+    constructor(name = 'Пес-бандит', maxPower = 3) {
+        super(name, maxPower);
+    }
 }
 
+class Trasher extends Dog {
+    constructor(name = 'Громила', maxPower = 5) {
+        super(name, maxPower, 'bandit.png');
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        //this.view.signalAbility(() => { continuation(value - 1) });
+        continuation(value - 1)
+    };
+    getDescriptions() {
+        return [getCreatureDescription(this),'Снижение урона на 1', ...super.getDescriptions()];
+    }
+} 
 
-// Колода Шерифа, нижнего игрока.
+class Gatling extends Creature {
+    constructor(name = 'Гатлинг', maxPower = 6) {
+        super(name, maxPower);
+    }
+
+    attack(gameContext, continuation) {
+        //super.attack(gameContext, continuation);
+
+        const taskQueue = new TaskQueue();
+        let oppositeTable = gameContext.oppositePlayer.table;
+
+
+        for (let position = 0; position < oppositeTable.length; position++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const card = oppositeTable[position];
+                if (card) {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    }
+}
+/* // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck('Мирный житель', 4),
+    new Duck('Мирный житель', 2),
+    new Duck('Мирный житель', 2),
+    new Gatling()
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Trasher(),
+    new Dog('Бандит', 3),
+]; */
+const seriffStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Gatling(),
 ];
-
+const banditStartDeck = [
+    new Trasher(),
+    new Dog(),
+    new Dog(),
+];
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
