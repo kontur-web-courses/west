@@ -31,14 +31,29 @@ function getCreatureDescription(card) {
 class Creature extends Card {
     constructor(name, maxPower) {
         super(name, maxPower);
+        this.maxPower = maxPower;
+        //this.currentPower = maxPower;
     }
+
+    get currentPower() {
+        return this._currentPower;
+    }
+
+    set currentPower(value) {
+        if (value <= this.maxPower) {
+            this._currentPower = value;
+        } else {
+            this._currentPower = this.maxPower;
+        }
+    }
+
     getDescriptions() {
         return [getCreatureDescription(this), ...super.getDescriptions()];
     }
 }
 
 class Duck extends Creature {
-    constructor(name = 'Мирная утка', maxPower = 1) {
+    constructor(name = 'Мирная утка', maxPower = 2) {
         super(name, maxPower);
     }
 
@@ -69,12 +84,12 @@ class Trasher extends Dog {
 
 class Gatling extends Creature {
     constructor(name = 'Гатлинг', maxPower = 6) {
+
         super(name, maxPower);
     }
 
     attack(gameContext, continuation) {
         //super.attack(gameContext, continuation);
-
         const taskQueue = new TaskQueue();
         let oppositeTable = gameContext.oppositePlayer.table;
 
@@ -142,36 +157,84 @@ class Rogue extends Creature {
         super(name, maxPower);
     }
     attack(gameContext, continuation) {
-        const { oppositePlayer, updateView } = gameContext;
-        for (const oppositeCard of oppositePlayer.table) {
-            if (!oppositeCard) {
-                continue;
-            }
+        const { currentPlayer, oppositePlayer, position, updateView } = gameContext;
+        let oppositeCard = oppositePlayer.table[position];
 
-            if (oppositeCard.constructor.name === oppositePlayer.table[0].constructor.name) {
-                let proto = Object.getPrototypeOf(oppositeCard);
-                console.log(proto);
-                if (proto.hasOwnProperty('modifyDealedDamageToCreature')) {
-                    this.modifyDealedDamageToCreature = proto.modifyDealedDamageToCreature;
-                    delete proto['modifyDealedDamageToCreature'];
+        let proto = Object.getPrototypeOf(oppositeCard);
+        if (proto.hasOwnProperty('modifyDealedDamageToCreature')) {
+            this.modifyDealedDamageToCreature = proto.modifyDealedDamageToCreature;
+            delete proto['modifyDealedDamageToCreature'];
 
-                }
-                if (proto.hasOwnProperty('modifyDealedDamageToPlayer')) {
-                    this.modifyDealedDamageToPlayer = proto.modifyDealedDamageToPlayer;
-                    delete proto['modifyDealedDamageToPlayer'];
+        }
+        if (proto.hasOwnProperty('modifyDealedDamageToPlayer')) {
+            this.modifyDealedDamageToPlayer = proto.modifyDealedDamageToPlayer;
+            delete proto['modifyDealedDamageToPlayer'];
 
-                }
-                if (proto.hasOwnProperty('modifyTakenDamage')) {
-                    this.modifyTakenDamage = proto.modifyTakenDamage;
-                    delete proto['modifyTakenDamage'];
+        }
+        if (proto.hasOwnProperty('modifyTakenDamage')) {
+            this.modifyTakenDamage = proto.modifyTakenDamage;
+            delete proto['modifyTakenDamage'];
 
-                }
-            }
         }
         console.log(this.updateView);
         updateView();
         super.attack(gameContext, continuation);
+    }
+}
 
+class Brewer extends Duck {
+    constructor(name = 'Пивовар', maxPower = 2) {
+        super(name, maxPower);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const { currentPlayer, oppositePlayer } = gameContext;
+        let allCards = currentPlayer.table.concat(oppositePlayer.table);
+        for (let card of allCards) {
+            if (!isDuck(card)) {
+                continue;
+            }
+
+
+            console.log(card.currentPower, 'do');
+            card.maxPower += 1;
+            //card.currentPower = card.currentPower + 2 > card.maxPower ? card.maxPower : card.currentPower + 2;
+            card.currentPower += 2;
+            console.log(card.currentPower);
+            card.updateView();
+            /* this.view.signalHeal(() => {
+                
+            })  */
+
+
+        }
+        //continuation();
+        super.doBeforeAttack(gameContext, continuation);
+    }
+}
+
+class PseudoDuck extends Dog {
+    constructor(name = 'Псевдоутка', maxPower = 3) {
+        super(name, maxPower);
+    }
+    quacks() { console.log('quack') }
+    swims() { console.log('float: both;') }
+    getDescriptions() {
+        console.log([this, this.quacks, this.swims]);
+        return super.getDescriptions();
+    }
+}
+
+class Nemo extends Creature {
+    constructor(name = 'Немо', maxPower = 4) {
+        super(name, maxPower);
+    }
+    doBeforeAttack(gameContext, continuation) {
+        const { currentPlayer, oppositePlayer, position, updateView } = gameContext;
+        Object.setPrototypeOf(this, Object.getPrototypeOf(oppositePlayer.table[position]));
+        
+        updateView();
+        this.doBeforeAttack(gameContext, continuation);
     }
 }
 
@@ -188,16 +251,32 @@ const banditStartDeck = [
     new Trasher(),
     new Dog('Бандит', 3),
 ]; */
+// const seriffStartDeck = [
+//     new Duck(),
+//     new Rogue(),
+// ];
+// const banditStartDeck = [
+//     new PseudoDuck(),
+//     new Trasher()
+// ];
 const seriffStartDeck = [
-
-    new Duck(),
-    new Rogue(),
+    new Nemo(),
 ];
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
-    new Lad(),
+    new Brewer(),
+    new Brewer(),
 ];
+
+// const seriffStartDeck = [
+//     new Duck(),
+//     new Brewer(),
+// ];
+// const banditStartDeck = [
+//     new Dog(),
+//     new Dog(),
+//     new Dog(),
+//     new Dog(),
+// ];
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
