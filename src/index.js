@@ -76,17 +76,49 @@ class Trasher extends Dog {
     }
 }
 
+// Гатлинг
+class Gatling extends Creature {
+    constructor(name = 'Гатлинг', maxPower = 6, image = '') {
+        super(name, maxPower, image);
+    }
+
+    attack(gameContext, continuation) {
+        const enemies = gameContext.oppositePlayer.table;
+
+        const taskQueue = new TaskQueue();
+
+        enemies.forEach(oppositeCard => {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                if (oppositeCard) {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                }
+            });
+        });
+
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    /*new Card('Мирный житель', 2),
+    new Card('Мирный житель', 2),
+    new Card('Мирный житель', 2),*/
+    new Duck(), 
     new Duck(),
     new Duck(),
-    new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    //new Card('Бандит', 3),
+    //new Dog(),
     new Trasher(),
+    new Dog(), 
+    new Dog(),
 ];
 
 // Создание игры.
