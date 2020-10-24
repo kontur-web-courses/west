@@ -146,15 +146,62 @@ class Lad extends Dog {
     }
 }
 
+// Изгой
+class Rogue extends Creature {
+    constructor(name = 'Изгой', maxPower = 2, image = '') {
+        super(name, maxPower, image);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        const enemy = oppositePlayer.table[position];
+
+        if (enemy) {
+            const enemyProto = Object.getPrototypeOf(enemy);
+            /*function steal(proto) {
+                if (enemy.hasOwnProperty(proto)) {
+                    this[proto] = enemy[proto];
+                    delete enemy[proto];
+                }
+            }
+
+            steal('modifyDealedDamageToCreature');
+            steal('modifyDealedDamageToPlayer');
+            steal('modifyTakenDamage');*/
+
+            if (enemy.hasOwnProperty('modifyDealedDamageToCreature')) {
+                this.modifyDealedDamageToCreature = enemy.modifyDealedDamageToCreature;
+                delete enemy['modifyDealedDamageToCreature'];
+            }
+
+            if (enemy.hasOwnProperty('modifyDealedDamageToPlayer')) {
+                this.modifyDealedDamageToPlayer = enemy.modifyDealedDamageToPlayer;
+                delete enemy['modifyDealedDamageToPlayer'];
+            }
+
+            if (enemy.hasOwnProperty('modifyTakenDamage')) {
+                this.modifyTakenDamage = enemy.modifyTakenDamage;
+                delete enemy['modifyTakenDamage'];
+            }
+        }
+
+        updateView();
+        super.doBeforeAttack(gameContext, continuation);
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Rogue(),
 ];
-
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Lad(),
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
