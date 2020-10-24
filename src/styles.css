@@ -213,7 +213,6 @@ body {
 }
 
 .cardSignal {
-    transform: rotateY(180deg);
 }
 
 .cardSignal.damage,
