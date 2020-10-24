@@ -213,7 +213,7 @@ body {
 }
 
 .cardSignal {
-    transform: rotateY(180deg);
+    /*transform: rotateY(180deg); баг - анимацию не видно*/
 }
 
 .cardSignal.damage,

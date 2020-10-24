@@ -70,7 +70,6 @@ const Player = function () {
         for(let position = 0; position < this.table.length; position++) {
             taskQueue.push(onDone => {
                 const card = this.table[position];
-                console.log(card);
                 if (card) {
                     const gameContext = this.game.getContextForCard(position);
                     card.actInTurn(gameContext, onDone);
