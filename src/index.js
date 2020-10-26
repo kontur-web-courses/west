@@ -67,7 +67,6 @@ class Duck extends Creature {
 
 }
 
-
 // Основа для собаки.
 class Dog extends Creature {
     constructor(name = 'Пес-бандит', power = 3) {
@@ -228,16 +227,31 @@ class PseudoDuck extends Dog {
     }
 }
 
+//Немо
+class Nemo extends Creature {
+    constructor(name = 'Немо', power = 4) {
+        super(name, power);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        super.doBeforeAttack(gameContext, continuation);
+        const {oppositePlayer, position, updateView} = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+        const cardPrototype = Object.getPrototypeOf(oppositeCard);
+        Object.setPrototypeOf(this, cardPrototype);
+        cardPrototype.doBeforeAttack(gameContext, continuation);
+        updateView();
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Brewer(),
+    new Nemo(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
-    new PseudoDuck(),
+    new Brewer(),
     new Dog(),
 ];
 
