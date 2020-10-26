@@ -75,7 +75,7 @@ class Trasher extends Dog {
     }
 
     getDescriptions() {
-       return super.getDescriptions().concat(['Получает на 1 меньше урона']);
+        return super.getDescriptions().concat(['Получает на 1 меньше урона']);
     }
 }
 
@@ -90,7 +90,7 @@ class Gatling extends Creature {
 
         const {oppositePlayer} = gameContext;
 
-        for(let position = 0; position < oppositePlayer.table.length; position++) {
+        for (let position = 0; position < oppositePlayer.table.length; position++) {
             taskQueue.push(onDone => this.view.showAttack(onDone));
             taskQueue.push(onDone => {
                 const oppositeCard = oppositePlayer.table[position];
@@ -152,10 +152,36 @@ class Lad extends Dog {
     }
 
     getDescriptions() {
-        if(Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
             return super.getDescriptions().concat(['Чем их больше, тем они сильнее']);
         }
         return super.getDescriptions();
+    }
+}
+
+//Изгой
+class Rogue extends Creature {
+    ability = [`modifyDealedDamageToCreature`, `modifyDealedDamageToPlayer`, `modifyTakenDamage`];
+
+    constructor(name = 'Изгой', power = 2) {
+        super(name, power);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        super.doBeforeAttack(gameContext, continuation);
+
+        const {oppositePlayer, updateView} = gameContext;
+
+        for (const card of oppositePlayer.table) {
+            const cardPrototype = Object.getPrototypeOf(card);
+            const ownProperties = Object.getOwnPropertyNames(cardPrototype);
+
+            for (const property of ownProperties) {
+                if (this.ability.includes(property))
+                    delete cardPrototype[property];
+            }
+        }
+        updateView();
     }
 }
 
@@ -164,20 +190,14 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    // new Gatling(),
-    // new Card('Мирный житель', 2),
-    // new Card('Мирный житель', 2),
-    // new Card('Мирный житель', 2),
+    new Rogue(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Lad(),
     new Lad(),
-    // new Trasher(),
-    // new Dog(),
-    // new Dog(),
-    // new Card('Бандит', 3),
+    new Lad(),
 ];
 
 
