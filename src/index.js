@@ -112,12 +112,59 @@ class Gatling extends Creature {
     };
 }
 
+//Браток
+class Lad extends Dog {
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        return this.inGameCount * (this.inGameCount + 1) / 2
+    }
+
+    constructor(name = 'Браток', power = 2) {
+        super(name, power);
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        super.doBeforeRemoving(continuation);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() =>
+            super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation));
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        this.view.signalAbility(() =>
+            super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation));
+    }
+
+    getDescriptions() {
+        if(Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
+            return super.getDescriptions().concat(['Чем их больше, тем они сильнее']);
+        }
+        return super.getDescriptions();
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
+    // new Gatling(),
     // new Card('Мирный житель', 2),
     // new Card('Мирный житель', 2),
     // new Card('Мирный житель', 2),
@@ -125,9 +172,11 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
+    // new Trasher(),
+    // new Dog(),
+    // new Dog(),
     // new Card('Бандит', 3),
 ];
 
