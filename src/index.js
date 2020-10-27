@@ -30,17 +30,20 @@ function getCreatureDescription(card) {
 class Creature extends Card {
     constructor(name, strength, description) {
         super(name, strength, description);
-        this._currentPower = strength
+        this._currentPower = strength;
 
     }
 
-    get currentPower(){
-        return this._currentPower
+    get currentPower() {
+        return this._currentPower;
     }
-    set currentPower(value){
-        console.log(this.maxPower, value);
-        if(this.maxPower >= value) this._currentPower = value
-        else this._currentPower = this.maxPower
+
+    set currentPower(value) {
+        if (this.maxPower >= value) {
+            this._currentPower = value;
+        } else {
+            this._currentPower = this.maxPower;
+        }
     }
 
     getDescriptions() {
@@ -69,20 +72,21 @@ class Dog extends Creature {
     }
 
 }
+
 class Gatling extends Creature {
     constructor() {
-        super('Гатлинг', 6, 'наносит 2 урона всем картам противника на столе')
+        super('Гатлинг', 6, 'наносит 2 урона всем картам противника на столе');
     }
 
     attack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
-        
-        const { currentPlayer, oppositePlayer, position, updateView } = gameContext;
+
+        const { oppositePlayer } = gameContext;
 
         taskQueue.push(onDone => this.view.showAttack(onDone));
-    
+
         const oppositeCards = oppositePlayer.table;
-        
+
         for (const oppositeCard of oppositeCards) {
             if (oppositeCard) {
                 taskQueue.push(onDone => {
@@ -97,41 +101,41 @@ class Gatling extends Creature {
 
 class Lad extends Dog {
     constructor() {
-        super('Браток', 2, 'Чем их больше, тем они сильнее')
-        this.inGameCount = 0
+        super('Браток', 2, 'Чем их больше, тем они сильнее');
+        this.inGameCount = 0;
     }
-    
+
     static getInGameCount() {
         return this.inGameCount || 0;
-    } 
+    }
     static setInGameCount(value) {
-         this.inGameCount = value; 
+         this.inGameCount = value;
     }
-    
-    doAfterComingIntoPlay(gameContext, continuation){
+
+    doAfterComingIntoPlay(gameContext, continuation) {
         console.log(gameContext);
-        Lad.setInGameCount(this.inGameCount++)
-        continuation()
-    }
-    
-    doBeforeRemoving(continuation){
-        Lad.setInGameCount(this.inGameCount--)
-        continuation()
+        Lad.setInGameCount(this.inGameCount++);
+        continuation();
     }
 
-    modifyTakenDamage(actualValue, fromCard, gameContext, continuation){
-        const count = Lad.getInGameCount()
-        const check = actualValue - count
-        const dmg = Math.max(check, 0);
-        console.log(count, check, dmg);
-        continuation(dmg)
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(this.inGameCount--);
+        continuation();
     }
 
-    modifyDealedDamageToCreature(actualValue, toCard, gameContext, continuation){
-        const count = Lad.getInGameCount()
+    modifyTakenDamage(actualValue, fromCard, gameContext, continuation) {
+        const count = Lad.getInGameCount();
+        const check = actualValue - count;
+        const damage = Math.max(check, 0);
+
+        continuation(damage);
+    }
+
+    modifyDealedDamageToCreature(actualValue, toCard, gameContext, continuation) {
+        const count = Lad.getInGameCount();
         continuation(actualValue+count);
     }
-    
+
 }
 
 class Rouge extends Creature {
@@ -145,14 +149,11 @@ class Rouge extends Creature {
 
         if (oppositeCard) {
             const cardProto = Object.getPrototypeOf(oppositeCard);
-            console.log(cardProto, oppositeCard);
 
             this.modifyTakenDamage = oppositeCard.modifyTakenDamage;
             this.modifyDealedDamageToCreature = oppositeCard.modifyDealedDamageToCreature;
             this.modifyDealedDamageToPlayer = oppositeCard.modifyDealedDamageToPlayer;
 
-            console.log(this);
-            
             delete cardProto['modifyTakenDamage'];
             delete cardProto['modifyDealedDamageToCreature'];
             delete cardProto['modifyDealedDamageToPlayer'];
@@ -171,36 +172,36 @@ class Trasher extends Dog {
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         this.view.signalAbility(() => {
-            continuation(value - 1); 
+            continuation(value - 1);
         });
     }
 }
 
-class Brewer extends Duck{
+class Brewer extends Duck {
     constructor(){
-        super('Пивовар', 2, 'Ты меня уважаешь??')
+        super('Пивовар', 2, 'Ты меня уважаешь??');
     }
 
-    doBeforeAttack(gameContext, continuation){
-        let currentCardsInTable = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table)
+    doBeforeAttack(gameContext, continuation) {
+        let currentCardsInTable = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
         currentCardsInTable.forEach(card => {
             if(isDuck(card)){
                 card.maxPower += 1;
                 card.currentPower += 2;
-                card.view.signalHeal()
-                card.updateView()
+                card.view.signalHeal();
+                card.updateView();
             }
-        })
+        });
 
-        continuation()
+        continuation();
     }
-    //attack(gameContext, continuation);
 }
 
-class PseudoDuck extends Dog{
-    constructor(){
-        super('Псевдоутка', 3, 'Амальгама')
+class PseudoDuck extends Dog {
+    constructor() {
+        super('Псевдоутка', 3, 'Амальгама');
     }
+
     quacks() { console.log('quack') };
     swims() { console.log('float: both;') };
 }
@@ -209,24 +210,29 @@ class Nemo extends Creature{
     constructor(){
         super('Немо', 4, 'The one without a name without an honest heart as compass')
     }
-    //do something
-}
 
-//перерывы для нубасов кста
-//yep Потом доделаем xD
+    doBeforeAttack(gameContext, continuation) {
+        const { oppositePlayer, position } = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+
+        if (oppositeCard) {
+            const cardProto = Object.getPrototypeOf(oppositeCard);
+            Object.setPrototypeOf(this, cardProto);
+
+            gameContext.updateView();
+        }
+        Object.getPrototypeOf(this).doBeforeAttack(gameContext, continuation);
+    }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new PseudoDuck(),
-    new Brewer(),
+    new Nemo(),
 ];
 
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new PseudoDuck(),
-    new PseudoDuck(),
-    new Dog(),
-    new Dog(),
+    new Brewer(),
+    new Brewer(),
 ];
 
 
