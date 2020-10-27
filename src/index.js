@@ -3,9 +3,10 @@ import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
-    return card && card.quacks && card.swims;
+    return card instanceof Duck;
 }
 
 // Отвечает является ли карта собакой.
@@ -28,21 +29,56 @@ function getCreatureDescription(card) {
 }
 
 
-
 // Основа для утки.
-function Duck() {
+/*function Duck() {
     this.quacks = function () { console.log('quack') };
     this.swims = function () { console.log('float: both;') };
+}*/
+
+class Creature extends Card {
+    constructor(name,power) {
+        super(name,power);
+    }
+
+    getDescriptions() {
+        return [getCreatureDescription(this), super.getDescriptions()]
+    }
 }
 
+class Duck extends Creature {
+    constructor() {
+        super('Мирная утка', 2);
+    }
+
+    quacks() {
+        console.log('quack')
+    }
+
+    swims() {
+        console.log('float: both;')
+    }
+}
 
 // Основа для собаки.
-function Dog() {
+class Dog extends Creature {
+    constructor() {
+        super('Пес-бандит', 3);
+    }
 }
+
+const seriffStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
+];
+const banditStartDeck = [
+    new Dog(),
+];
+
 
 
 // Колода Шерифа, нижнего игрока.
-const seriffStartDeck = [
+/*const seriffStartDeck = [
     new Card('Мирный житель', 2),
     new Card('Мирный житель', 2),
     new Card('Мирный житель', 2),
@@ -51,7 +87,7 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Card('Бандит', 3),
-];
+];*/
 
 
 // Создание игры.
