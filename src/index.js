@@ -145,12 +145,7 @@ class Lad extends Dog {
 }
 
 // Колода Шерифа, нижнего игрока.
-const seriffStartDeck = [
-  // new Gatling(),
-  new Duck(),
-  new Duck(),
-  new Duck(),
-];
+const seriffStartDeck = [new Duck(), new Duck(), new Duck()];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
