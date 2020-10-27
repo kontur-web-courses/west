@@ -131,11 +131,11 @@ class Lad extends Dog {
     }
 
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
-        continuation(Lad.getBonus());        
+        continuation(value + Lad.getBonus());        
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        continuation(Lad.getBonus());
+        continuation(value - Lad.getBonus());
     }
     
     getDescriptions() {
@@ -159,16 +159,6 @@ class Rogue extends Creature {
 
         if (enemy) {
             const enemyProto = Object.getPrototypeOf(enemy);
-            /*function steal(proto) {
-                if (enemy.hasOwnProperty(proto)) {
-                    this[proto] = enemy[proto];
-                    delete enemy[proto];
-                }
-            }
-
-            steal('modifyDealedDamageToCreature');
-            steal('modifyDealedDamageToPlayer');
-            steal('modifyTakenDamage');*/
 
             if (enemy.hasOwnProperty('modifyDealedDamageToCreature')) {
                 this.modifyDealedDamageToCreature = enemy.modifyDealedDamageToCreature;
@@ -196,12 +186,9 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Rogue(),
 ];
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
     new Lad(),
     new Lad(),
 ];
