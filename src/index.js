@@ -216,11 +216,11 @@ class Brewer extends Duck {
                     continue;
                 card.maxPower++;
                 card.currentPower += 2;
-                this.view.signalHeal(() => card.updateView()); //TODO атакует раньше, чем сработает подсветка и обновится вид
+                card.view.signalHeal(() => card.updateView()); //TODO атакует раньше, чем сработает подсветка и обновится вид
                 // card.updateView();
-                // this.view.signalHeal(() => {});
+                // card.view.signalHeal(() => {});
             }
-            super.doBeforeAttack(gameContext, continuation)
+            super.doBeforeAttack(gameContext, continuation);
         });
     }
 }
@@ -266,8 +266,7 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog(),
-    new Dog(),
-    new Dog(),
+    new PseudoDuck(),
     new Dog(),
 ];
 
