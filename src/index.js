@@ -216,10 +216,13 @@ class Brewer extends Duck {
                     continue;
                 card.maxPower++;
                 card.currentPower += 2;
-                card.view.signalHeal(() => card.updateView()); //TODO атакует раньше, чем сработает подсветка и обновится вид
-                // card.updateView();
-                // card.view.signalHeal(() => {});
+                card.view.signalHeal(() => {
+                    card.updateView();
+                    onDone();
+                });
             }
+        });
+        taskQueue.push(onDone => {
             super.doBeforeAttack(gameContext, continuation);
         });
     }
