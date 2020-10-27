@@ -258,10 +258,13 @@ class Nemo extends Creature {
             const oppositeCard = oppositePlayer.table[position];
             const cardPrototype = Object.getPrototypeOf(oppositeCard);
             Object.setPrototypeOf(this, cardPrototype);
-            cardPrototype.doBeforeAttack(gameContext, continuation);
             updateView();
-            super.doBeforeAttack(gameContext, continuation);
+            onDone();
         });
+        taskQueue.push(onDone => {
+            this.doBeforeAttack(gameContext, continuation);
+        });
+
     }
 }
 
