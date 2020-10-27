@@ -30,6 +30,17 @@ function getCreatureDescription(card) {
 class Creature extends Card {
     constructor(name, strength, description) {
         super(name, strength, description);
+        this._currentPower = strength
+
+    }
+
+    get currentPower(){
+        return this._currentPower
+    }
+    set currentPower(value){
+        console.log(this.maxPower, value);
+        if(this.maxPower >= value) this._currentPower = value
+        else this._currentPower = this.maxPower
     }
 
     getDescriptions() {
@@ -42,8 +53,8 @@ class Creature extends Card {
 
 // Основа для утки.
 class Duck extends Creature {
-    constructor() {
-        super('Мирная утка', 2, 'просто утка');
+    constructor(name = 'Злая-утка', strength = 2, description = 'просто утка') {
+        super(name, strength, description);
     }
 
     quacks() { console.log('quack') };
@@ -88,34 +99,37 @@ class Lad extends Dog {
     constructor() {
         super('Браток', 2, 'Чем их больше, тем они сильнее')
         this.inGameCount = 0
-        
     }
     
-    static getInGameCount() { 
+    static getInGameCount() {
         return this.inGameCount || 0;
     } 
     static setInGameCount(value) {
          this.inGameCount = value; 
     }
-
-    doAfterComingIntoPlay(){
-        setInGameCount(this.inGameCount++)
+    
+    doAfterComingIntoPlay(gameContext, continuation){
+        console.log(gameContext);
+        Lad.setInGameCount(this.inGameCount++)
+        continuation()
     }
     
-    doBeforeRemoving(){
-        setInGameCount(this.inGameCount--)
+    doBeforeRemoving(continuation){
+        Lad.setInGameCount(this.inGameCount--)
+        continuation()
     }
 
     modifyTakenDamage(actualValue, fromCard, gameContext, continuation){
         const count = Lad.getInGameCount()
-        const check = count - actualValue
-        const dmg = check > 0 ? check : 0;
+        const check = actualValue - count
+        const dmg = Math.max(check, 0);
+        console.log(count, check, dmg);
         continuation(dmg)
     }
 
     modifyDealedDamageToCreature(actualValue, toCard, gameContext, continuation){
         const count = Lad.getInGameCount()
-        continuation(value+count);
+        continuation(actualValue+count);
     }
     
 }
@@ -162,24 +176,57 @@ class Trasher extends Dog {
     }
 }
 
+class Brewer extends Duck{
+    constructor(){
+        super('Пивовар', 2, 'Ты меня уважаешь??')
+    }
+
+    doBeforeAttack(gameContext, continuation){
+        let currentCardsInTable = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table)
+        currentCardsInTable.forEach(card => {
+            if(isDuck(card)){
+                card.maxPower += 1;
+                card.currentPower += 2;
+                card.view.signalHeal()
+                card.updateView()
+            }
+        })
+
+        continuation()
+    }
+    //attack(gameContext, continuation);
+}
+
+class PseudoDuck extends Dog{
+    constructor(){
+        super('Псевдоутка', 3, 'Амальгама')
+    }
+    quacks() { console.log('quack') };
+    swims() { console.log('float: both;') };
+}
+
+class Nemo extends Creature{
+    constructor(){
+        super('Немо', 4, 'The one without a name without an honest heart as compass')
+    }
+    //do something
+}
+
 //перерывы для нубасов кста
 //yep Потом доделаем xD
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Trasher(),
-    new Trasher(),
-    new Gatling(),
-    new Duck(),
+    new PseudoDuck(),
+    new Brewer(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Rouge(),
-    new Duck(),
-    new Duck(),
+    new PseudoDuck(),
+    new PseudoDuck(),
+    new Dog(),
+    new Dog(),
 ];
 
 
