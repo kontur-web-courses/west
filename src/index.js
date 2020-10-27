@@ -160,20 +160,16 @@ class Rogue extends Creature {
         if (enemy) {
             const enemyProto = Object.getPrototypeOf(enemy);
 
-            if (enemy.hasOwnProperty('modifyDealedDamageToCreature')) {
-                this.modifyDealedDamageToCreature = enemy.modifyDealedDamageToCreature;
-                delete enemy['modifyDealedDamageToCreature'];
+            function stealPower(rogue, enemy, power) {
+                if (enemy.hasOwnProperty(power)) {
+                    rogue[power] = enemy[power];
+                    delete enemy[power];
+                }
             }
 
-            if (enemy.hasOwnProperty('modifyDealedDamageToPlayer')) {
-                this.modifyDealedDamageToPlayer = enemy.modifyDealedDamageToPlayer;
-                delete enemy['modifyDealedDamageToPlayer'];
-            }
-
-            if (enemy.hasOwnProperty('modifyTakenDamage')) {
-                this.modifyTakenDamage = enemy.modifyTakenDamage;
-                delete enemy['modifyTakenDamage'];
-            }
+            stealPower(this, enemyProto, 'modifyDealedDamageToCreature');
+            stealPower(this, enemyProto, 'modifyDealedDamageToPlayer');
+            stealPower(this, enemyProto, 'modifyTakenDamage');
         }
 
         updateView();
@@ -186,9 +182,11 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Rogue(),
 ];
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
