@@ -174,20 +174,28 @@ class Rogue extends Creature {
         super(name, power);
     }
 
-    doBeforeAttack(gameContext, continuation) {
-        super.doBeforeAttack(gameContext, continuation);
-        const {oppositePlayer, updateView} = gameContext;
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
 
-        for (const card of oppositePlayer.table) {
-            const cardPrototype = Object.getPrototypeOf(card);
-            const ownProperties = Object.getOwnPropertyNames(cardPrototype);
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
 
-            for (const property of ownProperties) {
-                if (this.ability.includes(property))
-                    delete cardPrototype[property];
+        taskQueue.push(onDone => this.view.signalAbility(onDone));
+        taskQueue.push(onDone => {
+            const oppositeCard = oppositePlayer.table[position];
+            const currentCard = currentPlayer.table[position];
+
+            const oppositeCardPrototype = Object.getPrototypeOf(oppositeCard);
+            const oppositeOwnProperties = Object.getOwnPropertyNames(oppositeCardPrototype);
+
+            for (const property of oppositeOwnProperties) {
+                if (this.ability.includes(property)) {
+                    currentCard[property] = oppositeCardPrototype[property];
+                    delete oppositeCardPrototype[property];
+                }
             }
-        }
-        updateView();
+            updateView();
+            super.attack(gameContext, continuation);
+        });
     }
 }
 
@@ -246,13 +254,19 @@ class Nemo extends Creature {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Nemo(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Rogue(),
+    new Rogue(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Lad(),
+    new Lad(),
     new Brewer(),
-    new Dog(),
+    new Trasher(),
 ];
 
 
