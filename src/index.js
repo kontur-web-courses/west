@@ -174,7 +174,7 @@ class Rogue extends Creature {
         super(name, power);
     }
 
-    attack(gameContext, continuation) {
+    doBeforeAttack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
 
@@ -193,7 +193,7 @@ class Rogue extends Creature {
                 }
             }
             updateView();
-            super.attack(gameContext, continuation);
+            super.doBeforeAttack(gameContext, continuation);
         });
     }
 }
