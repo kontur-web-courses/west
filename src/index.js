@@ -92,6 +92,8 @@ class Trasher extends Dog {
 
 //Гатлинг
 class Gatling extends Creature {
+    _damageBullet = 2;
+
     constructor(name = 'Гатлинг', power = 6) {
         super(name, power);
     }
@@ -100,17 +102,13 @@ class Gatling extends Creature {
         const taskQueue = new TaskQueue();
         const {oppositePlayer} = gameContext;
 
+        taskQueue.push(onDone => this.view.signalAbility(onDone));
         for (let position = 0; position < oppositePlayer.table.length; position++) {
             taskQueue.push(onDone => this.view.showAttack(onDone));
             taskQueue.push(onDone => {
                 const oppositeCard = oppositePlayer.table[position];
-
-                this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
-
-                const card = this.table[position];
-                if (card) {
-                    const gameContext = this.game.getContextForCard(position);
-                    card.actInTurn(gameContext, onDone);
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this._damageBullet, oppositeCard, gameContext, onDone);
                 } else {
                     onDone();
                 }
