@@ -176,7 +176,6 @@ class Rogue extends Creature {
 
     attack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
-
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
 
         taskQueue.push(onDone => this.view.signalAbility(onDone));
@@ -206,17 +205,23 @@ class Brewer extends Duck {
     }
 
     doBeforeAttack(gameContext, continuation) {
-        super.doBeforeAttack(gameContext, continuation);
+        const taskQueue = new TaskQueue();
         const {oppositePlayer, currentPlayer} = gameContext;
-        const allCards = currentPlayer.table.concat(oppositePlayer.table);
 
-        for (const card of allCards) {
-            if (!isDuck(card))
-                continue;
-            card.maxPower++;
-            card.currentPower += 2;
-            card.view.signalHeal(() => card.updateView());
-        }
+        taskQueue.push(onDone => this.view.signalAbility(onDone));
+        taskQueue.push(onDone => {
+            const allCards = currentPlayer.table.concat(oppositePlayer.table);
+            for (const card of allCards) {
+                if (!isDuck(card))
+                    continue;
+                card.maxPower++;
+                card.currentPower += 2;
+                this.view.signalHeal(() => card.updateView()); //TODO атакует раньше, чем сработает подсветка и обновится вид
+                // card.updateView();
+                // this.view.signalHeal(() => {});
+            }
+            super.doBeforeAttack(gameContext, continuation)
+        });
     }
 }
 
@@ -255,18 +260,15 @@ class Nemo extends Creature {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Rogue(),
-    new Rogue(),
+    new Brewer(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
-    new Brewer(),
-    new Trasher(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 
