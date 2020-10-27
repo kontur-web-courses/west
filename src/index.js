@@ -247,27 +247,30 @@ class Nemo extends Creature {
     }
 
     doBeforeAttack(gameContext, continuation) {
-        super.doBeforeAttack(gameContext, continuation);
+        const taskQueue = new TaskQueue();
         const {oppositePlayer, position, updateView} = gameContext;
-        const oppositeCard = oppositePlayer.table[position];
-        const cardPrototype = Object.getPrototypeOf(oppositeCard);
-        Object.setPrototypeOf(this, cardPrototype);
-        cardPrototype.doBeforeAttack(gameContext, continuation);
-        updateView();
+
+        taskQueue.push(onDone => this.view.signalAbility(onDone));
+        taskQueue.push(onDone => {
+            const oppositeCard = oppositePlayer.table[position];
+            const cardPrototype = Object.getPrototypeOf(oppositeCard);
+            Object.setPrototypeOf(this, cardPrototype);
+            cardPrototype.doBeforeAttack(gameContext, continuation);
+            updateView();
+            super.doBeforeAttack(gameContext, continuation);
+        });
     }
 }
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Brewer(),
+    new Nemo(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog(),
-    new PseudoDuck(),
-    new Dog(),
+    new Brewer(),
 ];
 
 
