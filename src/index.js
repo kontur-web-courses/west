@@ -63,24 +63,57 @@ class Trasher extends Dog{
         this.name = 'Громила'
         this.currentPower = 5
         this.maxPower = 5
+        this.powerDescription = 'Получает на 1 единицу меньше урона.'
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation){
         this.view.signalAbility(() => super.modifyTakenDamage(value-1, fromCard, gameContext, continuation))
     }
+
+    getDescriptions() {
+        let superDescriptions = super.getDescriptions();
+        return [...superDescriptions, this.powerDescription]
+    }
+}
+
+class Gatling extends Creature{
+    constructor() {
+        super();
+        this.name = 'Гатлинг'
+        this.currentPower = 6
+        this.maxPower = this.currentPower
+    }
+    attack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const taskQueue = new TaskQueue();
+        for (let card of gameContext.oppositePlayer.table) {
+
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+
+                if (card) {
+                    this.dealDamageToCreature(this.currentPower, card, gameContext, onDone);
+                }
+            });
+
+
+        }
+        taskQueue.continueWith(continuation);
+    }
 }
 
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Gatling(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),];
+    new Trasher(),
+    new Dog(),
+    new Dog(),
+];
 
 
 // Создание игры.
