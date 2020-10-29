@@ -97,14 +97,9 @@ class Gatling extends Creature {
 
 class Lad extends Dog {
     constructor() {
-        let description;
-        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')
-         && Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
-            description = 'Чем их больше, тем они сильнее';
-        }
-
-        super('Браток', 2, description);
+        super('Браток', 2);
     }
+
     static inGameCount = 0;
 
     static getInGameCount() {
@@ -145,6 +140,16 @@ class Lad extends Dog {
         continuation(newDamage);
     }
 
+    getDescriptions() {
+        if (!Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') &&
+              !Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
+            this.description = '';
+        } else {
+            this.description = 'Чем их больше, тем они сильнее';
+        }
+
+        return super.getDescriptions();
+    };
 }
 
 class Rogue extends Creature {
@@ -163,7 +168,7 @@ class Rogue extends Creature {
         return false;
     }
 
-    attack(gameContext, continuation) {
+    doBeforeAttack(gameContext, continuation) {
         const { oppositePlayer, position } = gameContext;
         const oppositeCard = oppositePlayer.table[position];
 
@@ -172,19 +177,23 @@ class Rogue extends Creature {
             const abilitiesToSteal = [
                 'modifyTakenDamage',
                 'modifyDealedDamageToCreature',
-                'modifyDealedDamageToCreature'
+                'modifyDealedDamageToCreature',
             ];
 
-            const hasStolen = abilitiesToSteal.some(ability => this.checkAndSteal(ability, cardProto, oppositeCard));
+            let isSomethingStolen = false;
+            for (const ability of abilitiesToSteal) {
+              const isCurrentAbilityStolen = this.checkAndSteal(ability, cardProto, oppositeCard);
+              isSomethingStolen = isSomethingStolen || isCurrentAbilityStolen;
+            }
 
-            if (hasStolen) {
+            if (isSomethingStolen) {
                 this.description = oppositeCard.description;
             }
 
             gameContext.updateView();
         }
 
-        super.attack(gameContext, continuation);
+        continuation();
     }
 }
 
