@@ -137,7 +137,7 @@ class Lad extends Dog {
 
 }
 
-class Rouge extends Creature {
+class Rogue extends Creature {
     constructor() {
         super('Изгой', 2, 'забирает способности у карты');
     }
@@ -157,10 +157,13 @@ class Rouge extends Creature {
             delete cardProto['modifyDealedDamageToCreature'];
             delete cardProto['modifyDealedDamageToPlayer'];
 
+            this.description = oppositeCard.description
+
             gameContext.updateView();
         }
 
         super.attack(gameContext, continuation);
+
     }
 }
 
@@ -225,14 +228,15 @@ class Nemo extends Creature{
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new Rogue(),
     new Duck(),
     new Duck(),
     new Duck(),
 ];
 
 const banditStartDeck = [
-    new Trasher(),
-    new Lad(),
+    new Rogue(),
+    new Duck(),
     new Lad(),
 ];
 
