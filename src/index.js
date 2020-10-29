@@ -39,11 +39,7 @@ class Creature extends Card {
     }
 
     set currentPower(value) {
-        if (this.maxPower >= value) {
-            this._currentPower = value;
-        } else {
-            this._currentPower = this.maxPower;
-        }
+        this._currentPower = Math.min(value, this.maxPower)
     }
 
     getDescriptions() {
@@ -101,39 +97,42 @@ class Gatling extends Creature {
 
 class Lad extends Dog {
     constructor() {
-        super('Браток', 2, 'Чем их больше, тем они сильнее');
-        this.inGameCount = 0;
+        let discription
+        if(Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')
+         && Lad.prototype.hasOwnProperty('modifyTakenDamage')){
+            discription = 'Чем их больше, тем они сильнее'
+           }
+        super('Браток', 2, discription);
     }
-
+    static inGameCount = 0
     static getInGameCount() {
-        return this.inGameCount || 0;
+        return Lad.inGameCount || 0;
     }
     static setInGameCount(value) {
-         this.inGameCount = value;
+         Lad.inGameCount = value;
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
-        console.log(gameContext);
-        Lad.setInGameCount(this.inGameCount++);
+        Lad.setInGameCount(Lad.getInGameCount()+1);
         continuation();
     }
 
     doBeforeRemoving(continuation) {
-        Lad.setInGameCount(this.inGameCount--);
+        Lad.setInGameCount(Lad.inGameCount--);
         continuation();
     }
 
     modifyTakenDamage(actualValue, fromCard, gameContext, continuation) {
-        const count = Lad.getInGameCount();
-        const check = actualValue - count;
-        const damage = Math.max(check, 0);
-
+        const count = Lad.getInGameCount(); 
+        const check = count * (count + 1) / 2;
+        const damage = Math.max(Math.ceil(check), 0);
         continuation(damage);
     }
 
     modifyDealedDamageToCreature(actualValue, toCard, gameContext, continuation) {
-        const count = Lad.getInGameCount();
-        continuation(actualValue+count);
+        const count = Lad.getInGameCount(); 
+        const check = count * (count + 1) / 2;
+        continuation(Math.ceil(check));
     }
 
 }
@@ -183,16 +182,15 @@ class Brewer extends Duck {
     }
 
     doBeforeAttack(gameContext, continuation) {
-        let currentCardsInTable = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
-        currentCardsInTable.forEach(card => {
+        const currentCardsOnTheTable = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
+        for (card of currentCardsOnTheTable){
             if(isDuck(card)){
                 card.maxPower += 1;
                 card.currentPower += 2;
                 card.view.signalHeal();
                 card.updateView();
             }
-        });
-
+        }
         continuation();
     }
 }
@@ -227,12 +225,15 @@ class Nemo extends Creature{
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Nemo(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
 ];
 
 const banditStartDeck = [
-    new Brewer(),
-    new Brewer(),
+    new Trasher(),
+    new Lad(),
+    new Lad(),
 ];
 
 

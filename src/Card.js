@@ -219,7 +219,15 @@ const Card = function () {
 
     // Строит описание цепочки прототипов с помощью имен конструкторов.
     function getInheritanceDescription (card) {
-        return [card.description];
+        const names = [];
+        let obj = card;
+        while (true) {
+            obj = Object.getPrototypeOf(obj);
+            names.push(obj.constructor.name);
+            if (obj === Card.prototype)
+                break;
+        }
+        return [`${card.description} ${'<br />'} ${names.join('➔ ')}`];
     }
 
     // Обновляет вид карты.
