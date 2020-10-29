@@ -177,7 +177,7 @@ class Rogue extends Creature {
             const abilitiesToSteal = [
                 'modifyTakenDamage',
                 'modifyDealedDamageToCreature',
-                'modifyDealedDamageToCreature',
+                'modifyDealedDamageToPlayer',
             ];
 
             let isSomethingStolen = false;
