@@ -120,7 +120,7 @@ class Lad extends Dog {
     }
 
     doBeforeRemoving(continuation) {
-        Lad.setInGameCount(Lad.inGameCount--);
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
         continuation();
     }
 
@@ -144,26 +144,34 @@ class Rogue extends Creature {
         super('Изгой', 2, 'забирает способности у карты');
     }
 
+    checkAndSteal(property, cardProto, oppositeCard) {
+        if (cardProto.hasOwnProperty(property)) {
+            this[property] = oppositeCard[property];
+            delete cardProto[property];
+
+            return true;
+        }
+
+        return false;
+    }
+
     attack(gameContext, continuation) {
         const { oppositePlayer, position } = gameContext;
         const oppositeCard = oppositePlayer.table[position];
 
         if (oppositeCard) {
             const cardProto = Object.getPrototypeOf(oppositeCard);
+            const abilitiesToSteal = [
+                'modifyTakenDamage',
+                'modifyDealedDamageToCreature',
+                'modifyDealedDamageToCreature'
+            ];
 
-            if (cardProto.hasOwnProperty('modifyTakenDamage')) {
-                this.modifyTakenDamage = oppositeCard.modifyTakenDamage;
-            }
-            if (cardProto.hasOwnProperty('modifyDealedDamageToCreature')) {
-                this.modifyDealedDamageToCreature = oppositeCard.modifyDealedDamageToCreature;
-            }
-            if (cardProto.hasOwnProperty('modifyDealedDamageToPlayer')) {
-                this.modifyDealedDamageToPlayer = oppositeCard.modifyDealedDamageToPlayer;
-            }
+            const hasStolen = abilitiesToSteal.some(ability => this.checkAndSteal(ability, cardProto, oppositeCard));
 
-            delete cardProto['modifyTakenDamage'];
-            delete cardProto['modifyDealedDamageToCreature'];
-            delete cardProto['modifyDealedDamageToPlayer'];
+            if (hasStolen) {
+                this.description = oppositeCard.description;
+            }
 
             gameContext.updateView();
         }
