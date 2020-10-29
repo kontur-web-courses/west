@@ -97,14 +97,16 @@ class Gatling extends Creature {
 
 class Lad extends Dog {
     constructor() {
-        let discription
-        if(Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')
-         && Lad.prototype.hasOwnProperty('modifyTakenDamage')){
-            discription = 'Чем их больше, тем они сильнее'
-           }
-        super('Браток', 2, discription);
+        let description;
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')
+         && Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
+            description = 'Чем их больше, тем они сильнее';
+        }
+
+        super('Браток', 2, description);
     }
-    static inGameCount = 0
+    static inGameCount = 0;
+
     static getInGameCount() {
         return Lad.inGameCount || 0;
     }
@@ -113,7 +115,7 @@ class Lad extends Dog {
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
-        Lad.setInGameCount(Lad.getInGameCount()+1);
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
         continuation();
     }
 
@@ -123,21 +125,21 @@ class Lad extends Dog {
     }
 
     modifyTakenDamage(actualValue, fromCard, gameContext, continuation) {
-        const count = Lad.getInGameCount(); 
+        const count = Lad.getInGameCount();
         const check = count * (count + 1) / 2;
         const damage = Math.max(Math.ceil(check), 0);
         continuation(damage);
     }
 
     modifyDealedDamageToCreature(actualValue, toCard, gameContext, continuation) {
-        const count = Lad.getInGameCount(); 
+        const count = Lad.getInGameCount();
         const check = count * (count + 1) / 2;
         continuation(Math.ceil(check));
     }
 
 }
 
-class Rouge extends Creature {
+class Rogue extends Creature {
     constructor() {
         super('Изгой', 2, 'забирает способности у карты');
     }
@@ -149,9 +151,15 @@ class Rouge extends Creature {
         if (oppositeCard) {
             const cardProto = Object.getPrototypeOf(oppositeCard);
 
-            this.modifyTakenDamage = oppositeCard.modifyTakenDamage;
-            this.modifyDealedDamageToCreature = oppositeCard.modifyDealedDamageToCreature;
-            this.modifyDealedDamageToPlayer = oppositeCard.modifyDealedDamageToPlayer;
+            if (cardProto.hasOwnProperty('modifyTakenDamage')) {
+                this.modifyTakenDamage = oppositeCard.modifyTakenDamage;
+            }
+            if (cardProto.hasOwnProperty('modifyDealedDamageToCreature')) {
+                this.modifyDealedDamageToCreature = oppositeCard.modifyDealedDamageToCreature;
+            }
+            if (cardProto.hasOwnProperty('modifyDealedDamageToPlayer')) {
+                this.modifyDealedDamageToPlayer = oppositeCard.modifyDealedDamageToPlayer;
+            }
 
             delete cardProto['modifyTakenDamage'];
             delete cardProto['modifyDealedDamageToCreature'];
@@ -177,14 +185,14 @@ class Trasher extends Dog {
 }
 
 class Brewer extends Duck {
-    constructor(){
+    constructor() {
         super('Пивовар', 2, 'Ты меня уважаешь??');
     }
 
     doBeforeAttack(gameContext, continuation) {
         const currentCardsOnTheTable = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
-        for (card of currentCardsOnTheTable){
-            if(isDuck(card)){
+        for (const card of currentCardsOnTheTable) {
+            if (isDuck(card)) {
                 card.maxPower += 1;
                 card.currentPower += 2;
                 card.view.signalHeal();
@@ -228,13 +236,15 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Rogue(),
 ];
 
 const banditStartDeck = [
-    new Trasher(),
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
+
 
 
 // Создание игры.
