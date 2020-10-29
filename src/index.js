@@ -110,8 +110,16 @@ class Lad extends Dog {
     static getInGameCount() {
         return Lad.inGameCount || 0;
     }
+
     static setInGameCount(value) {
          Lad.inGameCount = value;
+    }
+
+    static recountDamage() {
+        const ladsCount = Lad.getInGameCount();
+        const newDamage = ladsCount * (ladsCount + 1) / 2;
+
+        return Math.ceil(newDamage);
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
@@ -125,16 +133,16 @@ class Lad extends Dog {
     }
 
     modifyTakenDamage(actualValue, fromCard, gameContext, continuation) {
-        const count = Lad.getInGameCount();
-        const check = count * (count + 1) / 2;
-        const damage = Math.max(Math.ceil(check), 0);
-        continuation(damage);
+        const protectionValue = Lad.recountDamage();
+        const newDamage = Math.max(actualValue - protectionValue, 0);
+
+        continuation(newDamage);
     }
 
     modifyDealedDamageToCreature(actualValue, toCard, gameContext, continuation) {
-        const count = Lad.getInGameCount();
-        const check = count * (count + 1) / 2;
-        continuation(Math.ceil(check));
+        const newDamage = Lad.recountDamage();
+
+        continuation(newDamage);
     }
 
 }
