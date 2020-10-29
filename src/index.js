@@ -38,11 +38,7 @@ class Creature extends Card {
     }
 
     set currentPower(value) {
-        if (value <= this.maxPower) {
-            this._currentPower = value;
-        } else {
-            this._currentPower = this.maxPower;
-        }
+        this._currentPower = Math.min(value, this.maxPower)
     }
 
     getDescriptions() {
@@ -71,7 +67,7 @@ class Trasher extends Dog {
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        this.view.signalAbility(() => { continuation(value - 1) });
+        this.view.signalAbility(() => continuation(value - 1));
     };
     getDescriptions() {
         return [getCreatureDescription(this), 'Снижение урона на 1', super.getDescriptions()[1]];
@@ -151,9 +147,9 @@ class Rogue extends Creature {
 
     attack(gameContext, continuation) {
         const { currentPlayer, oppositePlayer, position, updateView } = gameContext;
-        let oppositeCard = oppositePlayer.table[position];
+        const oppositeCard = oppositePlayer.table[position];
 
-        let proto = Object.getPrototypeOf(oppositeCard);
+        const proto = Object.getPrototypeOf(oppositeCard);
         if (proto.hasOwnProperty('modifyDealedDamageToCreature')) {
             this.modifyDealedDamageToCreature = proto.modifyDealedDamageToCreature;
             delete proto['modifyDealedDamageToCreature'];
@@ -178,8 +174,7 @@ class Brewer extends Duck {
 
     doBeforeAttack(gameContext, continuation) {
         const { currentPlayer, oppositePlayer } = gameContext;
-        let allCards = currentPlayer.table.concat(oppositePlayer.table);
-        for (let card of allCards) {
+        for (let card of [...currentPlayer.table, ...oppositePlayer.table]) {
             if (!isDuck(card)) {
                 continue;
             }
@@ -220,11 +215,15 @@ class Nemo extends Creature {
 }
 
 const seriffStartDeck = [
-    new Nemo(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Rogue(),
 ];
 const banditStartDeck = [
-    new Brewer(),
-    new Brewer(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
 ];
 
 // Создание игры.
