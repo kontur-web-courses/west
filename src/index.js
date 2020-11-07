@@ -102,17 +102,49 @@ class Gatling extends Creature{
     }
 }
 
+class Lad extends Dog{
+    constructor(props) {
+        super(props);
+        this.name = 'Браток'
+        this.currentPower = 2
+        this.maxPower = this.currentPower
+        this.descriptions = 'Чем их больше, тем они сильнее'
+    }
+    static getInGameCount() { return this.inGameCount || 0; }
+    static setInGameCount(value) { this.inGameCount = value; }
+    doAfterComingIntoPlay(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        Lad.setInGameCount(Lad.getInGameCount() + 1)
+        continuation();
+    };
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1)
+        continuation();
+    };
+    static getBonus() {
+        return Lad.getInGameCount() * (Lad.getInGameCount() + 1) /  2
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation){
+        this.view.signalAbility(() => super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation))
+    }
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        // continuation(value);
+        this.view.signalAbility(() => super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation))
+    };
+    getDescriptions() {
+        let superDescriptions = super.getDescriptions();
+        return [...superDescriptions, Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') ? this.descriptions : null]
+    }
+}
 
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
 ];
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 
