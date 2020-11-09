@@ -2,9 +2,10 @@ import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
 
 const Card = function () {
-    function Card(name, maxPower, image) {
+    function Card(name, maxPower, image, description) {
         this.name = name;
         this.image = image;
+        this.description = description;
 
         this.maxPower = maxPower;
         this.currentPower = maxPower;
@@ -19,7 +20,7 @@ const Card = function () {
         this.view.putInDeck(deck, inBottomRow, position);
     };
 
-    // Вызвается, когда карта должна войти в игру.
+    // Вызывается, когда карта должна войти в игру.
     // Нельзя переопределять в наследниках.
     Card.prototype.comeIntoPlay = function (gameContext, place, continuation) {
         const taskQueue = new TaskQueue();
@@ -94,7 +95,7 @@ const Card = function () {
         let actualValue = value;
 
         taskQueue.push(onDone => {
-            this.modifyDealedDamageToCreature(actualValue, toCard, gameContext, (v) => {
+            this.modifyDealtDamageToCreature(actualValue, toCard, gameContext, (v) => {
                 if (v !== undefined) {
                     actualValue = v;
                 }
@@ -112,7 +113,7 @@ const Card = function () {
     // Изменяет урон, наносимый картой при атаке карт противника.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые меняют наносимый урон при атаке карт противника.
-    Card.prototype.modifyDealedDamageToCreature = function (value, toCard, gameContext, continuation) {
+    Card.prototype.modifyDealtDamageToCreature = function (value, toCard, gameContext, continuation) {
         continuation(value);
     };
 
@@ -125,7 +126,7 @@ const Card = function () {
         let actualValue = value;
 
         taskQueue.push(onDone => {
-            this.modifyDealedDamageToPlayer(actualValue, gameContext, (v) => {
+            this.modifyDealtDamageToPlayer(actualValue, gameContext, (v) => {
                 if (v !== undefined) {
                     actualValue = v;
                 }
@@ -143,7 +144,7 @@ const Card = function () {
     // Изменяет урон, наносимый картой при атаке игрока-противника.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые меняют наносимый урон при атаке игрока-противника.
-    Card.prototype.modifyDealedDamageToPlayer = function (value, gameContext, continuation) {
+    Card.prototype.modifyDealtDamageToPlayer = function (value, gameContext, continuation) {
         continuation(value);
     };
 
