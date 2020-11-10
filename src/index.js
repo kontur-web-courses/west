@@ -97,9 +97,10 @@ class Gatling extends Creature {
         taskQueue.push(onDone => this.view.showAttack(onDone));
 
         for (const oppositeCard of gameContext.oppositePlayer.table)
-            taskQueue.push(onDone => {
-                this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
-            });
+            if (oppositeCard)
+                taskQueue.push(onDone => {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                });
 
         taskQueue.continueWith(continuation);
     }
@@ -272,10 +273,9 @@ class Lad extends Dog {
 const sheriffStartDeck = [
     new Nemo(),
     new Brewer(),
-    new Duck(),
+    new Gatling(),
     new Duck(),
     new Rogue(),
-    new Gatling(),
     new Brewer(),
 ];
 
