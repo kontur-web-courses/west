@@ -39,7 +39,7 @@ class Creature extends Card{
 }
 
 class Duck extends Creature {
-    constructor(name, maxPower) {
+    constructor(name = "Мирная утка", maxPower = 2) {
         super(name, maxPower);
     }
 
@@ -53,8 +53,8 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor() {
-        super('Пес-бандит', 3);
+    constructor(name = "Пес-бандит", maxPower = 3) {
+        super(name, maxPower);
     }
 }
 
@@ -188,27 +188,60 @@ class Brewer extends Duck {
     doBeforeAttack(gameContext, continuation) {
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
         const taskQueue = new TaskQueue();
-        const allCards = currentPlayer.table.concat(oppositePlayer.table).filter((value) => { return value !== null });
-        for (let card of allCards) {
-            if (card.getCreatureDescription() === "Утка") {
-                card.maxPower++;
-                card._currentPower += 2;
-                taskQueue.push(onDone => card.view.signalHeal(onDone));
-                //taskQueue.push(onDone => { card.updateView(); onDone(); })
-            }
+        const allDuckCards = currentPlayer.table.concat(oppositePlayer.table).filter(isDuck);
+        for (let card of allDuckCards) {
+            card.maxPower++;
+            card._currentPower += 2;
+            taskQueue.push(onDone => card.view.signalHeal(onDone));
+            taskQueue.push(onDone => { card.updateView(); onDone(); })
         }
         taskQueue.continueWith(continuation);
         continuation();
     }
 }
 
+class PseudoDuck extends Dog {
+    constructor() {
+        super("Псевдоутка", 3);
+    }
+
+    quacks() {
+        console.log('quack')
+    };
+
+    swims() {
+        console.log('float: both;')
+    };
+}
+
+class Nemo extends Creature {
+    constructor() {
+        super("Немо", 4);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        let oppositeCard = oppositePlayer.table[position];
+        if (oppositeCard) {
+            let stolenPrototype = Object.getPrototypeOf(oppositeCard);
+            Object.setPrototypeOf(this, stolenPrototype);
+            updateView();
+        }
+        Object.getPrototypeOf(this).doBeforeAttack(gameContext, continuation)
+    }
+}
+
+function isDuck(card) {
+    return card && card.quacks && card.swims;
+}
+
 
 const seriffStartDeck = [
-    new Duck("Мирная утка", 2),
-    new Brewer(),
+    new Nemo()
 ];
 const banditStartDeck = [
-    new Trasher(),
+    new Brewer(),
+    new Brewer()
 ];
 
 
