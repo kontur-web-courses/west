@@ -108,7 +108,7 @@ class Lad extends Dog{
         this.name = 'Браток'
         this.currentPower = 2
         this.maxPower = this.currentPower
-        this.descriptions = 'Чем их больше, тем они сильнее'
+        this.description = 'Чем их больше, тем они сильнее'
     }
     static getInGameCount() { return this.inGameCount || 0; }
     static setInGameCount(value) { this.inGameCount = value; }
@@ -133,7 +133,54 @@ class Lad extends Dog{
     };
     getDescriptions() {
         let superDescriptions = super.getDescriptions();
-        return [...superDescriptions, Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') ? this.descriptions : null]
+        return [...superDescriptions, Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') ? this.description : null]
+    }
+    // getDescriptions() {
+    //     if (!Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') &&
+    //         !Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
+    //         this.description = '';
+    //     } else {
+    //         this.description = 'Чем их больше, тем они сильнее';
+    //     }
+    //
+    //     return super.getDescriptions();
+    // }
+}
+
+class Rogue extends Creature{
+    constructor(props) {
+        super(props);
+        this.name = 'Изгой'
+        this.currentPower = 2
+        this.maxPower = 2
+    }
+    stealProto(property, cardProto, oppositeCard) {
+            this[property] = oppositeCard[property];
+            delete cardProto[property];
+            return true;
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const oppositeCard = gameContext.oppositePlayer.table[gameContext.position];
+
+        if (oppositeCard) {
+            const cardProto = Object.getPrototypeOf(oppositeCard);
+            const abilitiesToSteal = [
+                'modifyTakenDamage',
+                'modifyDealtDamageToCreature',
+                'modifyDealtDamageToPlayer',
+            ];
+
+            let isSomethingStolen = false;
+            for (const ability of abilitiesToSteal) {
+                const isCurrentAbilityStolen = cardProto.hasOwnProperty(ability) && this.stealProto(ability, cardProto, oppositeCard);
+                isSomethingStolen = isSomethingStolen || isCurrentAbilityStolen;
+            }
+            if (isSomethingStolen)
+                this.description = oppositeCard.description;
+        }
+        gameContext.updateView();
+        continuation();
     }
 }
 
@@ -141,8 +188,10 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Rogue(),
 ];
 const banditStartDeck = [
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
