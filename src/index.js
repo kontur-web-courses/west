@@ -184,16 +184,36 @@ class Rogue extends Creature{
     }
 }
 
+class Brewer extends Duck{
+    constructor(props){
+        super(props)
+        this.maxPower = 2
+        this.currentPower = this.maxPower
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const allCards = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
+        for (let card of allCards)
+            if (super.getCreatureDescription()==='Утка') {
+                card.maxPower += 1;
+                card.currentPower = Math.min(card.currentPower + 2, card.maxPower);
+                card.view.signalHeal(continuation);
+                card.updateView();
+            }
+        continuation();
+    }
+
+}
+
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Rogue(),
+    new Brewer(),
 ];
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
-    new Lad(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 
