@@ -177,18 +177,22 @@ class Rogue extends Creature {
         taskQueue.push(onDone => this.view.signalAbility(onDone));
         taskQueue.push(onDone => {
             const oppositeCard = oppositePlayer.table[position];
-            const currentCard = currentPlayer.table[position];
+            if (oppositeCard) {
+                const currentCard = currentPlayer.table[position];
+                const oppositeCardPrototype = Object.getPrototypeOf(oppositeCard);
+                const oppositeOwnProperties = Object.getOwnPropertyNames(oppositeCardPrototype);
 
-            const oppositeCardPrototype = Object.getPrototypeOf(oppositeCard);
-            const oppositeOwnProperties = Object.getOwnPropertyNames(oppositeCardPrototype);
-
-            for (const property of oppositeOwnProperties) {
-                if (this.ability.includes(property)) {
-                    currentCard[property] = oppositeCardPrototype[property];
-                    delete oppositeCardPrototype[property];
+                for (const property of oppositeOwnProperties) {
+                    if (this.ability.includes(property)) {
+                        currentCard[property] = oppositeCardPrototype[property];
+                        delete oppositeCardPrototype[property];
+                    }
                 }
+                updateView();
             }
-            updateView();
+            onDone();
+        });
+        taskQueue.push(onDone => {
             super.doBeforeAttack(gameContext, continuation);
         });
     }
@@ -252,13 +256,15 @@ class Nemo extends Creature {
         taskQueue.push(onDone => this.view.signalAbility(onDone));
         taskQueue.push(onDone => {
             const oppositeCard = oppositePlayer.table[position];
-            const cardPrototype = Object.getPrototypeOf(oppositeCard);
-            Object.setPrototypeOf(this, cardPrototype);
-            updateView();
+            if (oppositeCard) {
+                const cardPrototype = Object.getPrototypeOf(oppositeCard);
+                Object.setPrototypeOf(this, cardPrototype);
+                updateView();
+            }
             onDone();
         });
         taskQueue.push(onDone => {
-            this.doBeforeAttack(gameContext, continuation);
+            super.doBeforeAttack(gameContext, continuation);
         });
 
     }
@@ -266,16 +272,14 @@ class Nemo extends Creature {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Brewer(),
+    new Lad(),
+    new Lad(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
-    new Dog(),
-    new Dog(),
-    new Dog(),
+    new Rogue(),
+    new Rogue(),
 ];
 
 
