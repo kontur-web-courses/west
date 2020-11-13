@@ -37,12 +37,7 @@ class Creature extends Card {
     }
 
     set currentPower(value) {
-        if (value > this.maxPower) {
-            this._currentPower = this.maxPower;
-        } else {
-            this._currentPower = value;
-        }
-
+        this._currentPower = Math.min(value, this.maxPower);
     }
 
     getDescriptions() {
