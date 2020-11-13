@@ -30,6 +30,7 @@ function getCreatureDescription(card) {
 class Creature extends Card {
     constructor(name, power) {
         super(name, power);
+        this._currentPower = power;
     }
 
     get currentPower() {
@@ -266,14 +267,15 @@ class Nemo extends Creature {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
+    new Brewer(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 
