@@ -133,7 +133,8 @@ class Lad extends Dog {
     }
 
     static getBonus() {
-        return this.inGameCount * (this.inGameCount + 1) / 2
+        const inGameCount = this.getInGameCount();
+        return inGameCount * (inGameCount + 1) / 2;
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
@@ -157,7 +158,8 @@ class Lad extends Dog {
     }
 
     getDescriptions() {
-        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') ||
+            Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
             return super.getDescriptions().concat(['Чем их больше, тем они сильнее']);
         }
         return super.getDescriptions();
@@ -268,13 +270,15 @@ class Nemo extends Creature {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Nemo(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
-    new Brewer(),
+    new Lad(),
+    new Lad(),
 ];
 
 
