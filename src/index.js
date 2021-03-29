@@ -100,7 +100,6 @@ class Gatling extends Creature {
     }
 }
 
-
 class Lad extends Dog {
     constructor(name = 'Браток', power = 2, image) {
         super(name, power, image);
