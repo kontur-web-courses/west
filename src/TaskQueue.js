@@ -29,7 +29,7 @@ class TaskQueue {
         this.running = false;
     }
 
-    push = function(run, dispose, duration) {
+    push (run, dispose, duration) {
         if (duration === undefined || duration === null) {
             this.tasks.push({runAndContinue: run, dispose});
         } else {
@@ -46,7 +46,7 @@ class TaskQueue {
         runNextTask(this);
     };
 
-    continueWith = function(action) {
+    continueWith (action) {
         this.push(action, null, 0);
     };
 }
