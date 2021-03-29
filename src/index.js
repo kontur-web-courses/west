@@ -3,9 +3,9 @@ import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
-class Duck extends Creature {
-    constructor(image){
-        super('Мирная Утка', 2, image);
+class Duck extends Card{
+    constructor(name = 'Мирная Утка', power = 2, image){
+        super(name, power, image);
     };
 
     quacks() {
@@ -18,10 +18,20 @@ class Duck extends Creature {
 
 }
 
-class Dog extends Creature {
-    constructor(image){
-        super('Пес-бандит', 3, image);
+class Dog extends Card{
+    constructor(name = 'Пес-бандит', power = 3, image){
+        super(name, power, image);
     }
+}
+
+class Thrasher extends Dog{
+    constructor(name = 'Громила', power = 5, image){
+        super(name, power, image);
+    }
+
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        continuation(value - 1);
+    };
 }
 
 // Отвечает является ли карта уткой.
@@ -64,14 +74,14 @@ function getCreatureDescription(card) {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Duck('peaceful.png'),
+    new Duck('peaceful.png'),
+    new Duck('peaceful.png'),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Dog('banditDog.png'),
 ];
 
 
