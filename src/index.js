@@ -64,14 +64,14 @@ function getCreatureDescription(card) {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Duck('peaceful.png'),
+    new Duck('peaceful.png'),
+    new Duck('peaceful.png'),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Dog('banditDog.png'),
 ];
 
 
