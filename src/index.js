@@ -29,42 +29,48 @@ function getCreatureDescription(card) {
 
 
 class Creature extends Card {
-    constructor(props) {
-        super(...props);
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
     }
 
     getDescriptions() {
-        return [
-            getCreatureDescription(this),
-            ...super.getDescriptions(),
-        ];
-    };
+        return [getCreatureDescription(this), ...super.getDescriptions()]
+    }
 }
 
-
-// Основа для утки.
 class Duck extends Creature {
-    constructor() {
-        super('Мирная утка', 2);
+    constructor(name = 'Мирная утка', power = 2, image) {
+        super(name, power, image)
     }
 
-    quacks() {
+    quacks () {
         console.log('quack')
-    };
+    }
 
-    swims() {
+    swims () {
         console.log('float: both;')
-    };
-}
-
-
-// Основа для собаки.
-class Dog extends Creature {
-    constructor() {
-        super('Пес-бандит', 3);
     }
 }
 
+
+class Dog extends Creature {
+    constructor(name = 'Пес-бандит', power = 3, image) {
+        super(name, power, image)
+    }
+}
+
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value--);
+    };
+
+    // this.view.signalAbility(() => { // то, что надо сделать сразу после мигания. }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
