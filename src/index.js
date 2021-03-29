@@ -3,7 +3,18 @@ import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
-class Duck extends Card{
+class Creature extends Card {
+    constructor(name, power, image){
+        super(name, power, image);
+    }
+
+    getDescriptions(){
+        return [getCreatureDescription(this), super.getDescriptions()];
+    }
+}
+
+
+class Duck extends Creature {
     constructor(name = 'Мирная Утка', power = 2, image){
         super(name, power, image);
     };
@@ -18,13 +29,13 @@ class Duck extends Card{
 
 }
 
-class Dog extends Card{
+class Dog extends Creature {
     constructor(name = 'Пес-бандит', power = 3, image){
         super(name, power, image);
     }
 }
 
-class Thrasher extends Dog{
+class Thrasher extends Dog {
     constructor(name = 'Громила', power = 5, image){
         super(name, power, image);
     }
