@@ -39,20 +39,22 @@ class Thrasher extends Dog {
         super(image, name, power);
     }
 
-    // modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
-    //     this.view.signalAbility(continuation(value - 1));
-    // };
-
-
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(continuation(value - 1));
+    };
 }
 
 class ZigZag extends Duck{
-    constructor(image, name = 'ЗигЗаг', power = 3){
+    constructor(image, name = 'ЗигЗаг', power = 6){
         super(image, name, power);
     }
 
     modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
-        continuation(value);
+        continuation(value + 1);
+    };
+
+    modifyDealedDamageToCreature = function (value, toCard, gameContext, continuation) {
+        continuation(2);
     };
 }
 
@@ -96,6 +98,7 @@ function getCreatureDescription(card) {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new ZigZag('zigZag.png'),
     new Duck('peaceful.png'),
     new Duck('peaceful.png'),
     new ZigZag('zigZag.png'),
