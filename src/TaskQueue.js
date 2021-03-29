@@ -1,10 +1,9 @@
-export default TaskQueue;
-
-class TaskQueue{
+export default class TaskQueue {
     constructor() {
         this.tasks = [];
         this.running = false;
     }
+
     push(run, dispose, duration) {
         if (duration === undefined || duration === null) {
             this.tasks.push({runAndContinue: run, dispose});
@@ -21,6 +20,7 @@ class TaskQueue{
         }
         runNextTask(this);
     };
+
     continueWith(action) {
         this.push(action, null, 0);
     };
@@ -45,8 +45,7 @@ function runNextTask(taskQueue) {
                 });
             });
         }, 0);
-    }
-    else {
+    } else {
         runNextTask(taskQueue);
     }
 }
@@ -107,4 +106,3 @@ function runNextTask(taskQueue) {
 //
 //     return TaskQueue;
 // }();
-
