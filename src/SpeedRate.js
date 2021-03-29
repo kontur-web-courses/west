@@ -1,5 +1,5 @@
 const SpeedRate = function() {
-    let speedRate = 1;
+    let speedRate = 2;
 
     function set(value) {
         speedRate = value;
