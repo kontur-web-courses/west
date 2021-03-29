@@ -41,6 +41,7 @@ function Dog() {
 }
 
 
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Card('Мирный житель', 2),
