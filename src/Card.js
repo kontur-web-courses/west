@@ -1,5 +1,6 @@
 import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
+import getCreatureDescription from "./index.js";
 
 const Card = function () {
     function Card(name, maxPower, image) {
@@ -245,4 +246,17 @@ const Card = function () {
     return Card;
 }();
 
-export default Card;
+//export default Card;
+
+export default
+class Creature extends Card{
+    constructor(name, power) {
+        super(name, power);
+    }
+
+    getDescriptions() {
+        const fromIndex = getCreatureDescription(this);
+        const fromCard = super.getDescriptions();
+        return [fromIndex, ...fromCard]
+    }
+}
