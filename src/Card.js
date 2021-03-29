@@ -1,5 +1,6 @@
 import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
+import getCreatureDescription from "./index.js";
 
 const Card = function () {
     function Card(name, maxPower, image) {
@@ -78,7 +79,7 @@ const Card = function () {
             if (oppositeCard) {
                 this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
             } else {
-                this.dealDamageToPlayer(1, gameContext, onDone);
+                this.dealDamageToPlayer(this.currentPower, gameContext, onDone);
             }
         });
 
@@ -216,22 +217,21 @@ const Card = function () {
         ];
     };
 
-    // Строит описание цепочки прототипов с помощью имен конструкторов.
     function getInheritanceDescription (card) {
-        const names = [];
-        let obj = card;
-        while (true) {
-            obj = Object.getPrototypeOf(obj);
-            names.push(obj.constructor.name);
+        const names = []
+        let obj = card
+        
+        while (1) {
+            obj = Object.getPrototypeOf(obj)
+            names.push(obj.constructor.name)
+            
             if (obj === Card.prototype)
-                break;
+                break
         }
+        
         return names.join('➔ ');
     }
 
-    // Обновляет вид карты.
-    // Нельзя переопределять в наследниках.
-    // Можно использовать, если известно какие карты затронуты изменениями.
     Card.prototype.updateView = function () {
         this.view.updateData({
             name: this.name,
@@ -245,4 +245,18 @@ const Card = function () {
     return Card;
 }();
 
-export default Card;
+
+export default
+
+class Creature extends Card{
+    constructor(name, power) {
+        super(name, power)
+    }
+
+    getDescriptions() {
+       return [
+           getCreatureDescription(this), 
+           ...super.getDescriptions()
+        ]
+    }
+}

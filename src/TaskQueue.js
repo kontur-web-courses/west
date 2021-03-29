@@ -2,6 +2,7 @@ function runNextTask(taskQueue) {
   if (taskQueue.running || taskQueue.tasks.length === 0) {
     return
   }
+
   taskQueue.running = true
   const task = taskQueue.tasks.shift()
 
@@ -21,12 +22,12 @@ function runNextTask(taskQueue) {
   }
 }
 
-class TaskQueue {
+export default class TaskQueue {
   constructor() {
     this.tasks = []
     this.running = false
   }
-  
+
   push(run, dispose, duration) {
     if (duration === undefined || duration === null) {
       this.tasks.push({ runAndContinue: run, dispose })
@@ -43,9 +44,8 @@ class TaskQueue {
     }
     runNextTask(this)
   }
+
   continueWith(action) {
     this.push(action, null, 0)
   }
 }
-
-export default TaskQueue
