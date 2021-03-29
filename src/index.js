@@ -4,7 +4,7 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 class Creature extends Card {
-    constructor(name, power, image){
+    constructor(image, name, power){
         super(name, power, image);
     }
 
@@ -16,7 +16,7 @@ class Creature extends Card {
 
 class Duck extends Creature {
     constructor(image, name = 'Мирная Утка', power = 2){
-        super(name, power, image);
+        super(image, name, power);
     };
 
     quacks() {
@@ -30,18 +30,20 @@ class Duck extends Creature {
 
 class Dog extends Creature {
     constructor(image, name = 'Пес-бандит', power = 3){
-        super(name, power, image);
+        super(image, name, power);
     }
 }
 
 class Thrasher extends Dog {
     constructor(image, name = 'Громила', power = 5){
-        super(name, power, image);
+        super(image, name, power);
     }
 
-    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
-        continuation(value - 1);
-    };
+    // modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+    //     this.view.signalAbility(continuation(value - 1));
+    // };
+
+
 }
 
 class ZigZag extends Duck{
