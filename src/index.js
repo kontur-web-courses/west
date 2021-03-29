@@ -1,9 +1,9 @@
-import Card from './Card.js';
+import Creature from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
-class Duck extends Card{
+class Duck extends Creature {
     constructor(image){
         super('Мирная Утка', 2, image);
     };
@@ -18,7 +18,7 @@ class Duck extends Card{
 
 }
 
-class Dog extends Card{
+class Dog extends Creature {
     constructor(image){
         super('Пес-бандит', 3, image);
     }
