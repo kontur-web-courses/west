@@ -1,4 +1,4 @@
-import Creature from './Card.js';
+import Card from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
