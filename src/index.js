@@ -65,6 +65,44 @@ class Trasher extends Dog {
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         continuation(value - 1)
     }
+
+}
+
+class Lad extends Dog{
+    constructor() {
+        super("Браток", 2);
+    }
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        let count = 1;
+        for (let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            if (gameContext.oppositePlayer.table[position] && gameContext.oppositePlayer.table[position] instanceof Lad)
+                count++;
+        }
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        taskQueue.push(onDone => {
+            const oppositeCard = oppositePlayer.table[position];
+
+            if (oppositeCard) {
+                this.dealDamageToCreature(Math.max(0,this.currentPower - ((count + 1)/2 * count)), oppositeCard, gameContext, onDone);
+            } else {
+                this.dealDamageToPlayer(1, gameContext, onDone);
+            }
+        });
+
+        taskQueue.continueWith(continuation);
+    };
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        let count = 1;
+        for (let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            if (gameContext.oppositePlayer.table[position] && gameContext.oppositePlayer.table[position] instanceof Lad)
+                count++;
+        }
+        continuation(Math.max(0,value - ((count + 1)/2 * count)));
+    }
+
 }
 
 class Gatling extends Creature {
@@ -94,14 +132,10 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling()
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog()
+    new Lad(),
+    new Lad(),
 ];
 
 
