@@ -28,31 +28,85 @@ function getCreatureDescription(card) {
 }
 
 
-
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
+/*function Duck() {
+    this.quacks = function () {
+        console.log('quack')
+    };
+    this.swims = function () {
+        console.log('float: both;')
+    };
 }
 
 
 // Основа для собаки.
 function Dog() {
+}*/
+
+class Creature extends Card {
+    constructor(name, power) {
+        super(name, power);
+    }
+    getDescriptions() {
+        let first = getCreatureDescription(this);
+        let second = super.getDescriptions();
+        return [first].concat(second);
+    }
 }
 
+class Duck extends Creature {
+    constructor(name, power) {
+        super(name || 'Мирная утка', power || 2);
+    }
 
-// Колода Шерифа, нижнего игрока.
+    quacks() {
+        console.log('quack')
+    };
+
+    swims() {
+        console.log('float: both;')
+    };
+}
+
+class Dog extends Creature {
+    constructor(name, power) {
+        super(name || 'Пес-бандит', power || 3);
+    }
+}
+
+class Trasher extends Dog{
+    constructor(name, power) {
+        super(name || 'Громила', power || 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContent, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - 1, fromCard, gameContent, continuation)
+        });
+    }
+}
+
+class Gatling extends Creature{
+    constructor(name, power) {
+        super('Гатлинг', 6);
+    }
+    //мы не успели дальще :(((((((((((((((((((((((((((
+}
+
+Object.setPrototypeOf(Dog.prototype, Creature.prototype);
+Object.setPrototypeOf(Duck.prototype, Creature.prototype);
+
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Gatling(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
