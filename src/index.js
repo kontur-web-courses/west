@@ -34,8 +34,8 @@ class Duck extends Card {
     constructor() {
         super("Мирная утка", 2)
     }
-    quacks = function () { console.log('quack') };
-    swims = function () { console.log('float: both;') };
+    quacks() { console.log('quack') };
+    swims() { console.log('float: both;') };
 }
 
 
