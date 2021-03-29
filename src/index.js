@@ -34,7 +34,8 @@ class Creature extends Card {
     }
 
     getDescriptions() {
-        return [getCreatureDescription(this), ...super.getDescriptions()]
+        return [getCreatureDescription(this),
+            ...super.getDescriptions()]
     }
 }
 
