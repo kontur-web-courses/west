@@ -4,8 +4,8 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 class Duck extends Card{
-    constructor(image){
-        super('Мирная Утка', 2, image);
+    constructor(name = 'Мирная Утка', power = 2, image){
+        super(name, power, image);
     };
 
     quacks() {
@@ -19,9 +19,19 @@ class Duck extends Card{
 }
 
 class Dog extends Card{
-    constructor(image){
-        super('Пес-бандит', 3, image);
+    constructor(name = 'Пес-бандит', power = 3, image){
+        super(name, power, image);
     }
+}
+
+class Thrasher extends Dog{
+    constructor(name = 'Громила', power = 5, image){
+        super(name, power, image);
+    }
+
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        continuation(value - 1);
+    };
 }
 
 // Отвечает является ли карта уткой.
