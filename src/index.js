@@ -55,8 +55,14 @@ class Duck extends Creature {
 
 // Основа для собаки.
 class Dog extends Creature {
+    constructor(name = 'Пес бандит', maxPower = 3) {
+        super(name, maxPower, undefined);
+    }
+}
+
+class Trasher extends Dog{
     constructor() {
-        super('Пес бандит', 3, undefined);
+        super('Громила', 5);
     }
 }
 
