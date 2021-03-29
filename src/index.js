@@ -27,21 +27,18 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-
-
-// Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
-
-}
-
-class peacefulDuck extends Card {
+class Duck extends Card {
     constructor() {
         super('Мирная утка', 2, undefined);
     }
-    quacks () { console.log('quack') };
-    swims () { console.log('float: both;') };
+
+    quacks() {
+        console.log('quack')
+    };
+
+    swims() {
+        console.log('float: both;')
+    };
 }
 
 // Основа для собаки.
