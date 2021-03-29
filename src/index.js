@@ -39,9 +39,9 @@ class Thrasher extends Dog {
         super(image, name, power);
     }
 
-    // modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
-    //     this.view.signalAbility(continuation(value - 1));
-    // };
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        continuation(value - 1);
+    };
 
 
 }
