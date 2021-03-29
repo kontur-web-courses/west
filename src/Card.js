@@ -79,7 +79,7 @@ const Card = function () {
             if (oppositeCard) {
                 this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
             } else {
-                this.dealDamageToPlayer(1, gameContext, onDone);
+                this.dealDamageToPlayer(this.currentPower, gameContext, onDone);
             }
         });
 
