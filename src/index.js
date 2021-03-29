@@ -79,6 +79,28 @@ class Trasher extends Dog {
 }
 
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        for (let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => {
+                const card = gameContext.oppositePlayer.table[position];
+                if (card) {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    }
+}
+
+
 class Lad extends Dog {
     constructor(name = 'Браток', power = 2, image) {
         super(name, power, image);
@@ -114,7 +136,6 @@ class Lad extends Dog {
         super.modifyTakenDamage(value - Lad.getBonus(), ...args);
     }
 
-
     getDescriptions() {
         if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature'))
             return [
@@ -133,6 +154,7 @@ class Lad extends Dog {
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
+    new Gatling(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -141,10 +163,11 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Lad(),
+    new Lad(),
     new Lad(),
     new Trasher(),
-    new Lad(),
+    new Trasher(),
 ];
 
 
