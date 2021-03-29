@@ -64,6 +64,9 @@ class Trasher extends Dog{
     constructor() {
         super('Громила', 5);
     }
+    modifyTakenDamage (value, fromCard, gameContext, continuation) {
+        continuation(value-1);
+    }
 }
 
 // Колода Шерифа, нижнего игрока.
