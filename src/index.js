@@ -47,9 +47,20 @@ class Duck extends Creature{
 
 // Основа для собаки.
 class Dog extends  Creature{
-    constructor() {
-        super("Пес-банди", 3);
+    constructor(name="Пес-банди", power=3) {
+        super(name, power);
     }
+}
+
+class Trasher extends Dog {
+    constructor() {
+        super("Громила", 5);
+        this.view.signalAbility(this.modifyTakenDamage);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation){
+        continuation(value - 1)
+    }
+
 }
 
 
@@ -62,7 +73,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
