@@ -5,7 +5,7 @@ import SpeedRate from './SpeedRate.js';
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
-    return card && card.quacks && card.swims;
+    return card instanceof Duck;
 }
 
 // Отвечает является ли карта собакой.
@@ -28,29 +28,145 @@ function getCreatureDescription(card) {
 }
 
 
+class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+    }
 
-// Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
+    getDescriptions() {
+        return [getCreatureDescription(this),
+            ...super.getDescriptions()]
+    }
+}
+
+class Duck extends Creature {
+    constructor(name = 'Мирная утка', power = 2, image) {
+        super(name, power, image)
+    }
+
+    quacks () {
+        console.log('quack')
+    }
+
+    swims () {
+        console.log('float: both;')
+    }
 }
 
 
-// Основа для собаки.
-function Dog() {
+class Dog extends Creature {
+    constructor(name = 'Пес-бандит', power = 3, image) {
+        super(name, power, image)
+    }
 }
 
+
+class Trasher extends Dog {
+    constructor(name = 'Громила', power = 5, image) {
+        super(name, power, image);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value - 1));
+    }
+
+    getDescriptions() {
+        return [
+            'Если Громилу атакуют, то он получает на 1 меньше урона',
+            super.getDescriptions(),
+        ];
+    }
+}
+
+
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        for (let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => {
+                const card = gameContext.oppositePlayer.table[position];
+                if (card) {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    }
+}
+
+class Lad extends Dog {
+    constructor(name = 'Браток', power = 2, image) {
+        super(name, power, image);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        return this.inGameCount * (this.inGameCount + 1) / 2
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Math.max(0, Lad.getInGameCount() - 1))
+        super.doBeforeRemoving(continuation);
+    }
+
+    modifyDealedDamageToCreature(value, ...args) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), ...args);
+    }
+
+    modifyTakenDamage(value, ...args) {
+        super.modifyTakenDamage(value - Lad.getBonus(), ...args);
+    }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature'))
+            return [
+                'Чем их больше, тем они сильнее',
+                super.getDescriptions(),
+            ]
+        return [
+            getCreatureDescription(this),
+            super.getDescriptions(),
+        ]
+    }
+
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck(),
+    new Duck(),
+    new Gatling(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Lad(),
+    new Lad(),
+    new Lad(),
+    new Trasher(),
+    new Trasher(),
 ];
 
 
