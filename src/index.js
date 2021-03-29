@@ -66,10 +66,33 @@ class Trasher extends Dog {
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        continuation(value--);
-    };
+        this.view.signalAbility(() => {
+            continuation(value - 1)
+        })
+    }
+}
 
-    // this.view.signalAbility(() => { // то, что надо сделать сразу после мигания. }
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+
+        for (let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => {
+                const card = gameContext.oppositePlayer.table[position];
+                if (card) {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    }
 }
 
 // Колода Шерифа, нижнего игрока.
@@ -77,10 +100,12 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Gatling(),
 ];
 
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Trasher(),
+    new Dog(),
     new Dog(),
 ];
 
