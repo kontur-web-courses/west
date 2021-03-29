@@ -33,6 +33,16 @@ class Thrasher extends Dog{
     };
 }
 
+class ZigZag extends Duck{
+    constructor(image, name = 'ЗигЗаг', power = 3){
+        super(image, name, power);
+    }
+
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        continuation(value);
+    };
+}
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card && card.quacks && card.swims;
@@ -75,7 +85,8 @@ function getCreatureDescription(card) {
 const seriffStartDeck = [
     new Duck('peaceful.png'),
     new Duck('peaceful.png'),
-    new Duck('peaceful.png'),
+    new ZigZag('zigZag.png'),
+    new Duck('peaceful.png')
 ];
 
 // Колода Бандита, верхнего игрока.
