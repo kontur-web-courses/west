@@ -28,11 +28,14 @@ function getCreatureDescription(card) {
 }
 
 
-
 // Основа для утки.
 function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
+    this.quacks = function () {
+        console.log('quack')
+    };
+    this.swims = function () {
+        console.log('float: both;')
+    };
 }
 
 
@@ -64,3 +67,16 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+
+    modifyTakenDamage(value, toCard, gameContext, continuation) {
+        this.view.signalAbility(() => { continuation(--value); });
+    }
+
+}
+
