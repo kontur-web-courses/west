@@ -53,14 +53,13 @@ class Dog extends Card {
 
 
 // Колода Шерифа, нижнего игрока.
-
-// Колода Бандита, верхнего игрока.
-
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
 ];
+
+// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog(),
 ];
