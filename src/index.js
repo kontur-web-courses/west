@@ -124,10 +124,18 @@ class Lad extends Dog {
         continuation();
     };
 
+    getDescriptions() {
+        if (this.hasOwnProperty('modifyDealedDamageToCreature') || this.hasOwnProperty('modifyTakenDamage')) {
+            return [getCreatureDescription(this), 'Чем их больше, тем они сильнее', super.getDescriptions()[1]];
+        } else {
+            return super.getDescriptions();
+        }
+    }
+
     static getBonus() {
         return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
     };
-
+    
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
         super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
     };
