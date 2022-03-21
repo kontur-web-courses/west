@@ -8,7 +8,7 @@ class Creature extends Card{
         super(name, power);
     }
     getDescriptions(){
-        return super.getDescriptions(getCreatureDescription(this));
+        return super.getDescriptions().unshift(getCreatureDescription(this));
     }
 }
 
@@ -62,6 +62,10 @@ class Trasher extends Dog{
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         this.view.signalAbility(() => continuation(value - 1));
+    }
+
+    getDescriptions(){
+        super.getDescriptions()
     }
 }
 
