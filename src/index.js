@@ -64,7 +64,10 @@ class Trasher extends Dog {
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         continuation(value - 1);
-        //this.view.signalAbility(continuation(value - 1));
+    }
+
+    getDescriptions() {
+        return ['Если Громилу атакуют, то он получает на 1 меньше урона', super.getDescriptions()]
     }
 }
 
