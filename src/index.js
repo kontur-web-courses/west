@@ -79,7 +79,6 @@ class Trasher extends Dog {
 }
 
 
-
 class Gatling extends Creature {
     constructor() {
         super('Гатлинг', 6, null);
@@ -101,16 +100,54 @@ class Gatling extends Creature {
 }
 
 
+class Lad extends Dog {
+    constructor(name='Браток', power=2, image=null) {
+        super(name, power, image);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        continuation();
+    };
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
+    };
+
+    static getBonus() {
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    };
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+    };
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+        });
+    }
+}
+
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
 ];
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 
