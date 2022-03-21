@@ -37,8 +37,17 @@ class Duck extends Card {
 }
 
 class Dog extends Card {
+    constructor(name='Пес-бандит', power=3) {
+        super(name, power);
+    }
+}
+
+class Trasher extends Dog{
     constructor() {
-        super('Пес-бандит', 3);
+        super('Громила', 5);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
     }
 }
 
@@ -46,21 +55,11 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
-// Колода Шерифа, нижнего игрока.
-/*const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-];
-
-// Колода Бандита, верхнего игрока.
-const banditStartDeck = [
-    new Card('Бандит', 3),
-];*/
 
 
 // Создание игры.
