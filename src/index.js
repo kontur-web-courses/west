@@ -31,8 +31,8 @@ function getCreatureDescription(card) {
 
 // Основа для утки.
 class Duck extends Card {
-    constructor(name = 'Мирная утка', damage = 2) {
-        super(name, damage);
+    constructor(name = 'Мирная утка', power = 2) {
+        super(name, power);
     }
     quacks() { console.log('quack') };
     swims() { console.log('float: both;') };
@@ -42,8 +42,8 @@ class Duck extends Card {
 // Основа для собаки.
 class Dog extends Card{
 
-    constructor(name = 'Пес-бандит', damage = 3) {
-        super(name, damage);
+    constructor(name = 'Пес-бандит', power = 3) {
+        super(name, power);
     }
 }
 
