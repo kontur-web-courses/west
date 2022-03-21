@@ -52,6 +52,16 @@ class Gatling extends Creature {
     }
 }
 
+class Trasher extends Dog {
+    constructor(name = 'Громила', maxPower = 5, image = 'bandit.png') {
+        super(name, maxPower, image);
+    };
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+    }
+}
+
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -91,6 +101,7 @@ const banditStartDeck = [
     new Dog(),
     new Dog(),
     new Dog()
+    new Trasher(),
 ];
 
 
