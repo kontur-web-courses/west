@@ -49,7 +49,7 @@ class Duck extends Card {
 // Основа для собаки.
 class Dog extends Card {
     constructor(name='Default dog', power=1) {
-        super();
+        super(name, power);
     }
 }
 
@@ -63,6 +63,8 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Dog(),
+    new Dog(),
     new Dog(),
 ];
 
