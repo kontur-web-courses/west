@@ -4,7 +4,7 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 
-class Duck extends Card{
+class Duck extends Card {
     constructor(name = 'Мирная утка',maxPower = 2, image = 'sheriff.png') {
         super(name, maxPower, image);
     };
@@ -13,10 +13,20 @@ class Duck extends Card{
     swims = function () { console.log('float: both;') };
 }
 
-class Dog extends Card{
+class Dog extends Card {
     constructor(name = 'Пес-бандит', maxPower = 3, image = 'bandit.png') {
         super(name, maxPower, image);
     };
+}
+
+class Trasher extends Dog {
+    constructor(name = 'Громила', maxPower = 5, image = 'bandit.png') {
+        super(name, maxPower, image);
+    };
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+    }
 }
 
 
@@ -55,6 +65,7 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog(),
+    new Trasher(),
 ];
 
 

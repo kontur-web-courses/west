@@ -168,8 +168,8 @@ const Card = function () {
                 onDone();
                 return;
             }
-
-            this.currentPower = this.currentPower - actualValue;
+    
+            this.currentPower = Math.max(this.currentPower - actualValue, 0);
             this.updateView();
             this.view.signalDamage(onDone);
         });
