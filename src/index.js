@@ -94,7 +94,7 @@ class Gatling extends Creature {
 
 class Trasher extends Dog {
     constructor() {
-        super('Громила', 25);
+        super('Громила', 5);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
@@ -117,7 +117,6 @@ class Trasher extends Dog {
             ...super.getDescriptions()
         ]
     }
-
 }
 
 class Lad extends Dog {
@@ -183,6 +182,8 @@ const seriffStartDeck = [
 ];
 
 const banditStartDeck = [
+    new Lad(),
+    new Lad(),
     new Trasher(),
     new Trasher(),
     new Trasher(),
