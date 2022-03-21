@@ -150,6 +150,7 @@ const Card = function () {
     // Определяет правила получения картой урона.
     // Нельзя переопределять в наследниках.
     Card.prototype.takeDamage = function (value, fromCard, gameContext, continuation) {
+        debugger;
         const taskQueue = new TaskQueue();
 
         let actualValue = value;
