@@ -4,16 +4,28 @@ import Dog from "./Dog.js";
 import Duck from "./Duck.js";
 
 
-// Колода Шерифа, нижнего игрока.
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation){
+        this.view.signalAbility(() => {
+            continuation(value - 1);
+        });
+    }
+}
+
+
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
 ];
 
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
