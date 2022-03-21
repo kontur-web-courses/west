@@ -6,6 +6,15 @@ import SpeedRate from './SpeedRate.js';
 class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image);
+        this._currentPower = maxPower;
+    }
+
+    get currentPower() {
+        return this._currentPower || 0;
+    }
+
+    set currentPower(value) {
+        this._currentPower = Math.min(this.maxPower, value);
     }
 
     getDescriptions() {
@@ -42,8 +51,12 @@ function getCreatureDescription(card) {
 
 
 class Duck extends Creature {
-    constructor() {
-        super('Мирная утка', 2, null);
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || 'Мирная утка';
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || 'duck.jpeg';
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 
     quacks() {
@@ -59,7 +72,7 @@ class Dog extends Creature {
     constructor(name, maxPower, image) {
         const nameCorrect = name || 'Пес-бандит';
         const maxPowerCorrect = maxPower || 3;
-        const imageCorrect = image || null;
+        const imageCorrect = image || '/dog.png';
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
@@ -171,22 +184,39 @@ class Lad extends Dog {
     }
 }
 
+class Brewer extends Duck {
+    constructor() {
+        super('Пивовар', 2, 'bewer.jpeg');
+    }
+
+    attack(gameContext, continuation) {
+        const allCards = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
+
+        for (const card of allCards) {
+            if (!isDuck(card)) continue;
+
+            card.maxPower++;
+            card.currentPower += 2;
+            card.view.signalHeal(() => card.updateView());
+        }
+
+        super.attack(gameContext, continuation);
+    }
+
+}
+
 
 const seriffStartDeck = [
-    new Gatling(),
-    new Gatling(),
     new Duck(),
-    new Duck(),
-    new Duck(),
+    new Brewer(),
     new Duck(),
 ];
-
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
-    new Trasher(),
-    new Trasher(),
-    new Trasher(),
+    new Dog(),
+    new Duck(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 
