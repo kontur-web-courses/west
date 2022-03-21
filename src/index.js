@@ -7,6 +7,7 @@ class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image);
     }
+
     getDescriptions() {
         return [
             getCreatureDescription(this),
@@ -44,31 +45,65 @@ class Duck extends Creature {
     constructor() {
         super('Мирная утка', 2, null);
     }
+
     quacks() {
         console.log('quack')
     };
+
     swims() {
         console.log('float: both;')
     };
 }
 
 class Dog extends Creature {
-    constructor() {
-        super('Пес-бандит', 3, null);
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || 'Пес-бандит';
+        const maxPowerCorrect = maxPower || 3;
+        const imageCorrect = image || null;
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 }
 
 
-// Колода Шерифа, нижнего игрока.
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+    }
+
+    takeDamage(value, fromCard, gameContext, continuation) {
+        if (value === 2) {
+            this.view.signalAbility(() => {
+                super.takeDamage(value, fromCard, gameContext, continuation)
+            })
+        } else {
+            super.takeDamage(value, fromCard, gameContext, continuation);
+        }
+    }
+
+    getDescriptions() {
+        return [
+            'Получает на 1 урон меньше',
+            ...super.getDescriptions()
+        ]
+    }
+
+}
+
+
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
 ];
 
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
