@@ -65,10 +65,35 @@ class Dog extends Creature {
     }
 }
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6, null);
+    }
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        for (let i = 0; i < oppositePlayer.table.length; i++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[i];
+
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
+}
 
 class Trasher extends Dog {
     constructor() {
-        super('Громила', 5);
+        super('Громила', 25);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
@@ -96,6 +121,8 @@ class Trasher extends Dog {
 
 
 const seriffStartDeck = [
+    new Gatling(),
+    new Gatling(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -103,6 +130,8 @@ const seriffStartDeck = [
 ];
 
 const banditStartDeck = [
+    new Trasher(),
+    new Trasher(),
     new Trasher(),
 ];
 
