@@ -28,9 +28,20 @@ function getCreatureDescription(card) {
 }
 
 
+class Creature extends Card {
+    constructor(name, power) {
+        super(name, power);
+    }
+
+    getDescriptions() {
+        return [getCreatureDescription(this), super.getDescriptions()]
+    }
+}
+
+
 
 // Основа для утки.
-class Duck extends Card {
+class Duck extends Creature {
     constructor(name='Мирная утка', power=2) {
         super(name, power);
     }
@@ -40,9 +51,20 @@ class Duck extends Card {
 
 
 // Основа для собаки.
-class Dog extends Card {
+class Dog extends Creature {
     constructor(name='Пес-бандит', power=3) {
         super(name, power);
+    }
+}
+
+class Trasher extends Dog {
+    constructor(name, power) {
+        super(name, power);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value - 1);
+        //this.view.signalAbility(continuation(value - 1));
     }
 }
 
@@ -57,6 +79,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Trasher('Громила', 5),
     new Dog(),
     new Dog('Пес-бандит', 3),
     new Dog('Пес-бандит', 3)
