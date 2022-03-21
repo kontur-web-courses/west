@@ -45,7 +45,7 @@ class Creature extends Card {
 // Основа для утки.
 class Duck extends Creature {
     constructor(name='Мирная утка', power=2) {
-        super('name', power);
+        super(name, power);
     }
 
     quacks() {
@@ -82,6 +82,29 @@ class Trasher extends Dog {
     }
 }
 
+class Gatling extends Creature {
+    constructor(name='Гатлинг', power=6) {
+        super(name, power);
+    }
+
+    attack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const taskQueue = new TaskQueue();
+        for (let position = 0; position < oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[position];
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    }
+}
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -93,7 +116,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher()
+    new Gatling()
 ];
 
 
