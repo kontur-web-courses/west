@@ -1,10 +1,10 @@
-const TaskQueue = function() {
-    function TaskQueue() {
-        this.tasks = [];
-        this.running = false;
+class TaskQueue {
+    constructor(tasks = [], running = false) {
+        this.tasks = tasks;
+        this.running = running;
     }
 
-    TaskQueue.prototype.push = function(run, dispose, duration) {
+    push(run, dispose, duration) {
         if (duration === undefined || duration === null) {
             this.tasks.push({runAndContinue: run, dispose});
         } else {
@@ -21,9 +21,10 @@ const TaskQueue = function() {
         runNextTask(this);
     };
 
-    TaskQueue.prototype.continueWith = function(action) {
+    continueWith(action) {
         this.push(action, null, 0);
     };
+}
 
     function runNextTask(taskQueue) {
         if (taskQueue.running || taskQueue.tasks.length === 0) {
@@ -49,7 +50,5 @@ const TaskQueue = function() {
         }
     }
 
-    return TaskQueue;
-}();
 
 export default TaskQueue;
