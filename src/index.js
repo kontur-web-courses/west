@@ -38,7 +38,25 @@ class Trasher extends Dog{
     getDescriptions() {
         const ability = 'Если Громилу атакуют, то он получает на 1 меньше урона';
         const s_res = super.getDescriptions();
-        return [ability, ...s_res]
+        return [ability, ...s_res];
+    }
+}
+
+class Gatling extends Creature{
+    constructor(name = 'Гатлинг', power = 6) {
+        super(name, power);
+    };
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const oppositeCards = oppositePlayer.table;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        for (let oppositeCard of oppositeCards)
+            taskQueue.push(onDone => {
+                this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+            });
+        taskQueue.continueWith(continuation);
     }
 }
 
@@ -74,12 +92,14 @@ const sheriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 
