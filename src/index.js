@@ -129,6 +129,7 @@ class Lad extends Dog {
 
     static GetLadCount() {
         return this.inGameCount || 0;
+
     }
 
     static SetLagCount(value) {
