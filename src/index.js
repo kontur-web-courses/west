@@ -27,14 +27,29 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-class Creature extends Card{
+class Creature extends Card {
     constructor(name, power) {
         super(name, power);
     }
 
-    getDescriptions(){
+    getDescriptions() {
         return [getCreatureDescription(this),
             ...super.getDescriptions()]
+    }
+}
+
+class Gatling extends Creature {
+    constructor(name = 'Гатлинг', maxPower = 6) {
+        super(name, maxPower);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        gameContext.oppositePlayer.table.forEach(x => {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => this.dealDamageToCreature(2, x, gameContext, onDone));
+        });
+        taskQueue.continueWith(continuation);
     }
 }
 
@@ -78,10 +93,12 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 const banditStartDeck = [
     new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 
