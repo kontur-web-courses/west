@@ -8,7 +8,7 @@ class Creature extends Card{
         super(name, power);
     }
     getDescriptions(){
-        return super.getDescriptions(getCreatureDescription(this));
+        return [getCreatureDescription(this),...super.getDescriptions()];
     }
 }
 
