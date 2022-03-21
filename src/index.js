@@ -38,21 +38,32 @@ function Duck() {
 
 // Основа для собаки.
 class Dog extends Card {
+    constructor(name = 'Пес-бандит', power = 3){
+        super(name, power);
+    }
+}
+
+class Trasher extends Dog{
     constructor(){
-        super('Пес-бандит', 3);
+        super("Громила", 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value - 1));
     }
 }
 
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Dog(),
+    new Trasher(),
     new Card('Мирный житель', 2),
     new Card('Мирный житель', 2),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Trasher(),
     new Card('Бандит', 3),
 ];
 
