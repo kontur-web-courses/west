@@ -53,6 +53,7 @@ class Dog extends Card {
 
 
 // Колода Шерифа, нижнего игрока.
+
 // Колода Бандита, верхнего игрока.
 
 const seriffStartDeck = [
@@ -75,3 +76,16 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+
+    modifyTakenDamage(value, toCard, gameContext, continuation) {
+        this.view.signalAbility(() => { continuation(--value); });
+    }
+
+}
+
