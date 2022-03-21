@@ -12,6 +12,33 @@ class Creature extends Card{
     }
 }
 
+class Gatling extends Creature{
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        for(let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const card = gameContext.oppositePlayer.table[position];
+                if (card) {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                } else {
+                    onDone();
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    }
+
+    getDescriptions() {
+        return ["2 урона всем картам противника на столе, но не атакует игрока-противника.",...super.getDescriptions()];
+    }
+
+}
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card && card.quacks && card.swims;
@@ -125,14 +152,12 @@ const seriffStartDeck = [
     new Trasher(),
     new Trasher(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Lad(),
     new Lad(),
     new Lad(),
     new Trasher(),
-    new Card('Бандит', 3),
+    new Dog(),
     new Dog(),
 ];
 
