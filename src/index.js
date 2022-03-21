@@ -48,7 +48,6 @@ class Duck extends Creature{
     swims() { console.log('float: both;') };
 }
 
-
 // Основа для собаки.
 class Dog extends Creature{
     constructor(name = "Пес-бандит", power = 3) {
@@ -58,8 +57,25 @@ class Dog extends Creature{
     }
 }
 
+class Trasher extends Dog {
+    constructor(name = 'Громила', power = 5) {
+        super(name, power);
+    }
+
+    modifyTakenDamage (value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation)
+        });
+    }
+
+    getDescriptions() {
+        return ["Если Громилу атакуют, то он получает на 1 меньше урона", ...super.getDescriptions()];
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -67,15 +83,13 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
-
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
 SpeedRate.set(1);
-
 // Запуск игры.
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
