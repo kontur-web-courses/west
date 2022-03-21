@@ -8,7 +8,7 @@ class Creature extends Card{
         super(name, power);
     }
     getDescriptions(){
-        return super.getDescriptions().unshift(getCreatureDescription(this));
+        return [getCreatureDescription(this),...super.getDescriptions()];
     }
 }
 
@@ -65,7 +65,7 @@ class Trasher extends Dog{
     }
 
     getDescriptions(){
-        super.getDescriptions()
+        return ['Если Громилу атакуют, то он получает на 1 меньше урона',...super.getDescriptions()];
     }
 }
 
