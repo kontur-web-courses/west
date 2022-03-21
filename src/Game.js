@@ -2,40 +2,64 @@ import Player from './Player.js';
 import PlayerView from './PlayerView.js';
 
 const Game = function() {
-    function Game(bottomPlayerDeck, topPlayerDeck) {
-        this.bottomPlayerStartDeck = bottomPlayerDeck;
-        this.topPlayerStartDeck = topPlayerDeck;
+    class Game {
+        constructor(bottomPlayerDeck, topPlayerDeck) {
+            this.bottomPlayerStartDeck = bottomPlayerDeck;
+            this.topPlayerStartDeck = topPlayerDeck;
+        }
+
+        // Подготавливает колоды, создает игроков, запускает игру.
+        play(needShuffleDecks, onGameOver) {
+            const bottomPlayerDeck = needShuffleDecks
+                ? copyAndShuffle(this.bottomPlayerStartDeck)
+                : copyAndReverse(this.bottomPlayerStartDeck);
+
+            const topPlayerDeck = needShuffleDecks
+                ? copyAndShuffle(this.topPlayerStartDeck)
+                : copyAndReverse(this.topPlayerStartDeck);
+
+            const bottomPlayer = new Player(this,
+                'Шериф уток', 'sheriff.png',
+                bottomPlayerDeck,
+                new PlayerView(
+                    document.getElementById('bottomPlayerRow'),
+                    document.getElementById('bottomPlayerTable'), true));
+
+            const topPlayer = new Player(this,
+                'Главарь псов', 'bandit.png',
+                topPlayerDeck,
+                new PlayerView(
+                    document.getElementById('topPlayerRow'),
+                    document.getElementById('topPlayerTable'), false));
+
+            this.currentPlayer = topPlayer;
+            this.oppositePlayer = bottomPlayer;
+
+            playStaged(this, 0, onGameOver);
+        }
+
+        // Предоставляет картам необходимый доступ к объектам игры.
+        // Самое полезное:
+        // - currentPlayer.table - выложенные карты текущего игрока
+        // - oppositePlayer.table - выложенные карты противоположенного игрока
+        // - position - позиция текущей карты, начиная слева, считается с 0
+        // - updateView - обновляет вид всех объектов игры,
+        //   полезен когда действие некоторой карты повлияло на множество объектов
+        getContextForCard(position) {
+            return {
+                currentPlayer: this.currentPlayer,
+                oppositePlayer: this.oppositePlayer,
+                position: position,
+                updateView : () => this.updateView(),
+            }
+        }
+
+        // Обновляет вид всех объектов игры.
+        updateView() {
+            this.currentPlayer.updateView();
+            this.oppositePlayer.updateView();
+        }
     }
-
-    // Подготавливает колоды, создает игроков, запускает игру.
-    Game.prototype.play = function (needShuffleDecks, onGameOver) {
-        const bottomPlayerDeck = needShuffleDecks
-            ? copyAndShuffle(this.bottomPlayerStartDeck)
-            : copyAndReverse(this.bottomPlayerStartDeck);
-
-        const topPlayerDeck = needShuffleDecks
-            ? copyAndShuffle(this.topPlayerStartDeck)
-            : copyAndReverse(this.topPlayerStartDeck);
-
-        const bottomPlayer = new Player(this,
-            'Шериф уток', 'sheriff.png',
-            bottomPlayerDeck,
-            new PlayerView(
-                document.getElementById('bottomPlayerRow'),
-                document.getElementById('bottomPlayerTable'), true));
-
-        const topPlayer = new Player(this,
-            'Главарь псов', 'bandit.png',
-            topPlayerDeck,
-            new PlayerView(
-                document.getElementById('topPlayerRow'),
-                document.getElementById('topPlayerTable'), false));
-
-        this.currentPlayer = topPlayer;
-        this.oppositePlayer = bottomPlayer;
-
-        playStaged(this, 0, onGameOver);
-    };
 
     // Выполняет действия для некоторой стадии хода.
     // Переход к следующей стадии идет через самовызов в колбэке.
@@ -69,28 +93,6 @@ const Game = function() {
                 break;
         }
     }
-
-    // Предоставляет картам необходимый доступ к объектам игры.
-    // Самое полезное:
-    // - currentPlayer.table - выложенные карты текущего игрока
-    // - oppositePlayer.table - выложенные карты противоположенного игрока
-    // - position - позиция текущей карты, начиная слева, считается с 0
-    // - updateView - обновляет вид всех объектов игры,
-    //   полезен когда действие некоторой карты повлияло на множество объектов
-    Game.prototype.getContextForCard = function (position) {
-        return {
-            currentPlayer: this.currentPlayer,
-            oppositePlayer: this.oppositePlayer,
-            position: position,
-            updateView : () => this.updateView(),
-        }
-    };
-
-    // Обновляет вид всех объектов игры.
-    Game.prototype.updateView = function () {
-        this.currentPlayer.updateView();
-        this.oppositePlayer.updateView();
-    };
 
     function getWinner(game) {
         if (hasNoPower(game.oppositePlayer)) {
