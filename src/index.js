@@ -99,19 +99,71 @@ class Gatling extends Creature {
     }
 }
 
-// Колода Шерифа, нижнего игрока.
+class Lad extends Dog{
+
+    constructor(name="Браток", maxPower=2, image) {
+        super(name, maxPower, image);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        super.doAfterComingIntoPlay(gameContext, continuation);
+        continuation(Lad.setInGameCount(Lad.getInGameCount() + 1));
+    }
+
+    doBeforeRemoving(continuation) {
+        super.doBeforeRemoving(continuation);
+        continuation(Lad.setInGameCount(Lad.getInGameCount() - 1));
+    }
+
+    modifyDealedDamageToCreature(value, fromCard, gameContext, continuation) {
+        let bonus = Lad.getBonus();
+        if (bonus != 0) {
+            this.view.signalAbility(() => continuation(value + bonus));
+        } else {
+            continuation(value);
+        }
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        let bonus = Lad.getBonus();
+        if (bonus != 0) {
+            this.view.signalAbility(() => continuation(value - bonus));
+        } else {
+            continuation(value);
+        }
+    }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') ||
+            Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
+            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()];
+        }
+        return super.getDescriptions();
+    }
+
+}
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
 ];
 
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 
