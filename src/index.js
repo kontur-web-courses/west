@@ -45,8 +45,19 @@ class Duck extends Card {
 
 // Основа для собаки.
 class Dog extends Card {
-    constructor() {
-        super('Пёс-бандит', 3, null);
+    constructor(name='Пёс-бандит', power=3, image=null) {
+        super(name, power, image);
+    }
+}
+
+
+class Trasher extends Dog {
+    constructor(name='Громила', power=5, image=null) {
+        super();
+    }
+
+    modifyTakenDamage() {
+
     }
 }
 
