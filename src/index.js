@@ -55,6 +55,22 @@ class Dog extends Creature{
     }
 }
 
+class Trasher extends Dog{
+    constructor(name = "Громила", maxPower = 5){
+        super(name, maxPower);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+    };
+
+    getDescriptions() {
+        const abilityDesc = "Уменшьает весь получаемый урон на 1";
+        const desc = super.getDescriptions();
+        return [abilityDesc, ...desc];
+    };
+
+}
+
 class Gatling extends Creature{
     constructor(name='Гатлинг', maxPower=6) {
         super(name, maxPower);

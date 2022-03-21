@@ -171,7 +171,7 @@ const Card = function () {
 
             this.currentPower = this.currentPower - actualValue;
             this.updateView();
-            this.view.signalDamage(onDone);
+            this.view.signalAbility(() => { this.view.signalDamage(onDone) });
         });
 
         taskQueue.continueWith(continuation);
