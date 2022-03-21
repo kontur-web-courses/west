@@ -27,11 +27,20 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card{
+    constructor(name, power, image) {
+        super(name, power, image);
+    }
+
+    getDescriptions () {
+        return [getCreatureDescription(this), ...super.getDescriptions()]
+    }
+}
+
 // Основа для утки.
 
-class Duck extends Card{
+class Duck extends Creature{
     constructor() {
-
         super("Мирная утка", 2, 'sheriff.png');
     }
     static quacks() {
@@ -45,11 +54,26 @@ class Duck extends Card{
 
 
 // Основа для собаки.
-class Dog extends Card {
-    constructor() {
-        super("Пес-бандит", 3, 'bandit.png');
+class Dog extends Creature {
+    // constructor() {
+    //     super("Пес-бандит", 3, 'bandit.png');
+    // }
+    constructor(name, power, image) {
+        super(name, power, image);
     }
 }
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5, 'mouse.jpg');
+    }
+
+    modifyTakenDamage(value, toCard, gameContext, continuation) {
+        this.view.signalAbility(() => { continuation(--value); });
+    }
+
+}
+
 
 
 // Колода Шерифа, нижнего игрока.
@@ -57,11 +81,13 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
 
 // Колода Бандита, верхнего игрока.
+
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
@@ -77,14 +103,5 @@ game.play(false, (winner) => {
 });
 
 
-class Trasher extends Dog {
-    constructor() {
-        super('Громила', 5);
-    }
 
-    modifyTakenDamage(value, toCard, gameContext, continuation) {
-        this.view.signalAbility(() => { continuation(--value); });
-    }
-
-}
 
