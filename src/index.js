@@ -3,8 +3,17 @@ import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
+class Creature extends Card{
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+    }
 
-class Duck extends Card{
+    getDescriptions(){
+        return [getCreatureDescription(this), super.getDescriptions()]
+    }
+}
+
+class Duck extends Creature {
     constructor(name = 'Мирная утка',maxPower = 2, image = 'sheriff.png') {
         super(name, maxPower, image);
     };
@@ -13,10 +22,34 @@ class Duck extends Card{
     swims = function () { console.log('float: both;') };
 }
 
-class Dog extends Card{
+class Dog extends Creature {
     constructor(name = 'Пес-бандит', maxPower = 3, image = 'bandit.png') {
         super(name, maxPower, image);
     };
+}
+
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        for(let position = 0; position < oppositePlayer.table.length; position++) {
+            const card = oppositePlayer.table[position];
+            if (card) {
+                taskQueue.push(onDone => this.view.showAttack(onDone));
+                taskQueue.push(onDone => {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                });
+            } else {
+                onDone();
+            }
+        }
+        taskQueue.continueWith(continuation);
+    }
 }
 
 
@@ -48,6 +81,7 @@ function getCreatureDescription(card) {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
+    new Gatling(),
     new Duck(),
     new Duck(),
 ];
@@ -55,6 +89,8 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog(),
+    new Dog(),
+    new Dog()
 ];
 
 
