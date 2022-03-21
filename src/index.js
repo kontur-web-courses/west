@@ -43,10 +43,12 @@ class Duck extends Creature {
     constructor(name, power) {
         super(name || "Мирная утка", power || 2);
     }
-    quacks () {
+
+    quacks() {
         console.log('quack')
     };
-    swims () {
+
+    swims() {
         console.log('float: both;')
     };
 }
@@ -59,15 +61,27 @@ class Dog extends Creature {
     }
 }
 
+class Trasher extends Dog {
+    constructor(name, power) {
+        super(name || "Громила", power || 5);
+    }
 
-// Колода Шерифа, нижнего игрока.
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(--value);
+        });
+    }
+}
+
+
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
