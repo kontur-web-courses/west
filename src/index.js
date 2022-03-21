@@ -30,7 +30,7 @@ class Dog extends Creature {
 
 class Gatling extends Creature {
     constructor() {
-        super('Гатлинг', 6);
+        super('Гатлинг', 6, 'gatling.jpg');
     }
 
     attack(gameContext, continuation) {
@@ -44,8 +44,6 @@ class Gatling extends Creature {
                 taskQueue.push(onDone => {
                     this.dealDamageToCreature(2, card, gameContext, onDone);
                 });
-            } else {
-                onDone();
             }
         }
         taskQueue.continueWith(continuation);
@@ -53,7 +51,7 @@ class Gatling extends Creature {
 }
 
 class Trasher extends Dog {
-    constructor(name = 'Громила', maxPower = 5, image = 'bandit.png') {
+    constructor(name = 'Громила', maxPower = 5, image = 'trasher.png') {
         super(name, maxPower, image);
     };
 
@@ -90,6 +88,7 @@ function getCreatureDescription(card) {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Gatling(),
     new Duck(),
