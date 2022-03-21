@@ -37,8 +37,7 @@ function Duck() {
 
 
 // Основа для собаки.
-function Dog() {
-}
+class Dog extends
 
 
 // Колода Шерифа, нижнего игрока.
