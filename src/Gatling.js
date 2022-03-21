@@ -1,5 +1,5 @@
-import Creature from "./Creature";
-import TaskQueue from "./TaskQueue";
+import Creature from "./Creature.js";
+import TaskQueue from "./TaskQueue.js";
 
 export default class Gatling extends Creature {
     constructor() {
@@ -9,7 +9,7 @@ export default class Gatling extends Creature {
     attack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
 
-        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const {oppositePlayer} = gameContext;
 
         taskQueue.push(onDone => this.view.showAttack(onDone));
         taskQueue.push(onDone => {
@@ -19,7 +19,7 @@ export default class Gatling extends Creature {
                 if (oppositeCard) {
                     this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
                 } else {
-                    this.dealDamageToPlayer(1, gameContext, onDone);
+                    onDone();
                 }
             }
         });

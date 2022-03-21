@@ -2,6 +2,7 @@ import Game from './Game.js';
 import SpeedRate from './SpeedRate.js';
 import Dog from "./Dog.js";
 import Duck from "./Duck.js";
+import Gatling from "./Gatling.js";
 
 
 class Trasher extends Dog {
@@ -25,6 +26,7 @@ const seriffStartDeck = [
 ];
 
 const banditStartDeck = [
+    new Gatling(),
     new Trasher(),
 ];
 
