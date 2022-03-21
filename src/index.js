@@ -28,12 +28,15 @@ function getCreatureDescription(card) {
 }
 
 class Creature extends Card {
+    constructor(name, maxPower) {
+        super(name, maxPower);
+    }
     getDescriptions() {
         return [getCreatureDescription(this), super.getDescriptions()]
     }
 }
 
-class Duck extends Card{
+class Duck extends Creature{
     constructor(name = "Мирная утка", maxPower = 2){
         super(name, maxPower);
     }
@@ -45,15 +48,17 @@ class Duck extends Card{
     }
 }
 
-Object.setPrototypeOf(Duck.prototype, Creature.prototype);
 
-class Dog extends Card{
+class Dog extends Creature{
     constructor(name = "Пес-бандит", maxPower = 3){
         super(name, maxPower);
     }
 }
 
-Object.setPrototypeOf(Dog.prototype, Creature.prototype);
+class Gatling {
+
+}
+
 
 const seriffStartDeck = [
     new Duck(),
