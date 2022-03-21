@@ -55,17 +55,84 @@ class Dog extends Creature{
     }
 }
 
-class Gatling {
+class Gatling extends Creature{
+    constructor(name='Гатлинг', maxPower=6) {
+        super(name, maxPower);
+    }
 
+    attack(gameContext, continuation){
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+
+        for(let position = 0; position < oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[position];
+
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
 }
 
+class Lad extends Dog {
+    constructor(name='Браток', maxPower=2) {
+        super(name, maxPower);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        Lad.inGameCount += 1;
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.inGameCount -= 1;
+        continuation();
+    }
+
+    static getBonus() {
+        return  this.inGameCount * (this.inGameCount + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(value + Lad.getBonus());
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value - Lad.getBonus());
+    }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature'))
+            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()]
+        return super.getDescriptions()
+    }
+}
 
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 const banditStartDeck = [
+    new Dog(),
+    new Dog(),
     new Dog(),
 ];
 
