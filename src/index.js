@@ -2,6 +2,7 @@ import Card from './Card.js';
 import Game from './Game.js';
 //import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+import TaskQueue from "./TaskQueue.js";
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -39,22 +40,6 @@ class Creature extends Card {
 
 }
 
-
-class Duck extends Creature {
-    constructor(name = 'Мирная утка', power = 2) {
-        super(name, power);
-    }
-
-    quacks() {
-        console.log('quack')
-    };
-
-    swims() {
-        console.log('float: both;')
-    };
-}
-
-
 // Основа для собаки.
 class Dog extends Creature {
     constructor(name = 'Пес-бандит', power = 3) {
@@ -68,7 +53,9 @@ class Trasher extends Dog {
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        this.view.signalAbility(() => { continuation(value - 1)});
+        this.view.signalAbility(() => {
+            continuation(value - 1)
+        });
     }
 
     getDescriptions() {
@@ -76,15 +63,89 @@ class Trasher extends Dog {
     }
 }
 
-// Колода Шерифа, нижнего игрока.
+class Duck extends Creature {
+    constructor(name = 'Мирная утка', power = 2) {
+        super(name, power);
+    }
+
+    quacks() {
+        console.log('quack')
+    }
+
+    swims() {
+        console.log('float: both;')
+    }
+}
+
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        taskQueue.push(onDone => {
+            const oppositeCards = gameContext.oppositePlayer.table;
+            for (let oppositeCard of oppositeCards) {
+                this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+            }
+        });
+
+        taskQueue.continueWith(continuation);
+    }
+
+}
+
+class Lad extends Dog {
+    constructor() {
+        super('Браток', 2);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        this.inGameCount += 1;
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        this.inGameCount -= 1;
+        continuation();
+    }
+
+    static getBonus() {
+        return this.inGameCount * (this.inGameCount + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(value + Lad.getBonus());
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value - Lad.getBonus());
+    };
+}
+
+
 const seriffStartDeck = [
-    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
-    new Trasher(),
+    new Lad(),
+    new Lad(),
 ];
 
 
