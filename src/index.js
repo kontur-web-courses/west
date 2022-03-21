@@ -56,10 +56,28 @@ class Duck extends Creature {
 
 // Основа для собаки.
 class Dog extends Creature {
-    constructor() {
-        super('Пёс-бандит', 3, null);
+    constructor(name='Пёс-бандит', power=3, image=null) {
+        super(name, power, image);
     }
 }
+
+
+class Trasher extends Dog {
+    constructor(name='Громила', power=5, image=null) {
+        super(name, power, image);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+        });
+    }
+
+    getDescriptions() {
+        return [getCreatureDescription(this), 'Получает на 1 ед. урона меньше.', super.getDescriptions()[1]];
+    }
+}
+
 
 
 class Gatling extends Creature {
@@ -71,13 +89,12 @@ class Gatling extends Creature {
         const taskQueue = new TaskQueue();
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
 
+        taskQueue.push(onDone => this.view.showAttack(onDone));
         for (let oppositeCard of oppositePlayer.table)
         {
-            taskQueue.push(onDone => this.view.showAttack(onDone));
             taskQueue.push(onDone => {
                 this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
             });
-
             taskQueue.continueWith(continuation);
         }
     }
