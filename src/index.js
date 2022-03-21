@@ -37,13 +37,16 @@ function Duck() {
 
 
 // Основа для собаки.
-function Dog() {
+class Dog extends Card {
+    constructor(){
+        super('Пес-бандит', 3);
+    }
 }
 
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
+    new Dog(),
     new Card('Мирный житель', 2),
     new Card('Мирный житель', 2),
 ];
