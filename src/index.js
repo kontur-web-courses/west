@@ -100,7 +100,7 @@ const seriffStartDeck = [
 const banditStartDeck = [
     new Dog(),
     new Dog(),
-    new Dog()
+    new Dog(),
     new Trasher(),
 ];
 
