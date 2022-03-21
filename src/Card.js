@@ -245,4 +245,5 @@ const Card = function () {
     return Card;
 }();
 
+
 export default Card;
