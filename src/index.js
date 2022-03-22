@@ -94,6 +94,12 @@ class Trasher extends Dog {
         })
     }
 
+    getDescriptions() {
+        const description = super.getDescriptions();
+        description.unshift("Получает на 1 ед. меньше урона");
+        return description;
+    }
+
 }
 
 const seriffStartDeck = [
