@@ -89,19 +89,21 @@ class Trasher extends Dog {
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+        })
     }
+
 }
 
 const seriffStartDeck = [
     new Duck(),
-    new Gatling(),
+    new Duck(),
+    new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
-    new Dog(),
     new Trasher(),
-    new Dog(),
 ];
 
 
