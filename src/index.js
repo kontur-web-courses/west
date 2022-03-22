@@ -114,13 +114,12 @@ class Lad extends Dog {
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
-        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
-        this.inGameCount += 1;
+        Lad.setInGameCount(Lad.getInGameCount() + 1)
         continuation();
     }
 
     doBeforeRemoving(continuation) {
-        this.inGameCount -= 1;
+        Lad.setInGameCount(Lad.getInGameCount() - 1)
         continuation();
     }
 
@@ -135,6 +134,12 @@ class Lad extends Dog {
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         continuation(value - Lad.getBonus());
     };
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
+            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()];
+        }
+        return super.getDescriptions();
+    }
 }
 
 
