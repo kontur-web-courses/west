@@ -38,25 +38,24 @@ class Creature extends Card {
 }
 
 class Gatling extends Creature {
-    constructor(name='Гатлинг', health=6) {
+    constructor(name = 'Гатлинг', health = 6) {
         super(name, health);
     };
 
     attack(gameContext, continuation) {
+        const {oppositePlayer} = gameContext;
+        const oppositeCardList = oppositePlayer.table;
         const taskQueue = new TaskQueue();
-        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        for (let oppositeCard of oppositeCardList) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
 
-        taskQueue.push(onDone => this.view.showAttack(onDone));
-        taskQueue.push(onDone => {
-            const oppositeCardList = oppositePlayer.table;
-            for (let oppositeCard of oppositeCardList) {
                 if (oppositeCard) {
-                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
-                } else {
-                    this.dealDamageToPlayer(1, gameContext, onDone);
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
                 }
-            }
-        });
+
+            });
+        }
 
         taskQueue.continueWith(continuation);
     }
@@ -106,10 +105,12 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 const banditStartDeck = [
     new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 
@@ -117,7 +118,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(2);
 
 // Запуск игры.
 game.play(false, (winner) => {
