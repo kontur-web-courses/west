@@ -3,7 +3,7 @@ import getCreatureDescription from './index.js';
 
 class Creature extends Card {
     getDescriptions() {
-        return [getCreatureDescription(...values), super.getDescriptions()]
+        return [getCreatureDescription(this), super.getDescriptions()]
     }
 }
 
