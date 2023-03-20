@@ -59,6 +59,10 @@ class Trasher extends Dog {
         super("Громила", 5);
     }
 
+    getDescriptions() {
+        return ["Если Громилу атакуют, то он получает на 1 меньше урона", ...super.getDescriptions()];
+    }
+
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         this.view.signalAbility(() => continuation(value-1));
     }
