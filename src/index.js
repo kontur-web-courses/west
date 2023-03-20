@@ -73,12 +73,11 @@ class Lad extends Dog {
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
-        Lad.setInGameCount(Lad.getInGameCount+1)
-        continuation();
+        Lad.setInGameCount(Lad.getInGameCount()+1)
         super.doAfterComingIntoPlay(gameContext, continuation);
     };
     doBeforeRemoving (continuation) {
-        Lad.setInGameCount(Lad.getInGameCount-1)
+        Lad.setInGameCount(Lad.getInGameCount()-1)
         super.doBeforeRemoving(continuation);
     };
 
@@ -167,6 +166,23 @@ class Rogue extends Creature {
         continuation();
     }
 }
+class Brewer extends Duck {
+    constructor(name="Пивовар", maxPower=2) {
+        super(name, maxPower);
+    }
+
+    attack(gameContext, continuation) {
+        const allCards = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
+
+        for (const card of allCards) {
+            if (!isDuck(card)) continue;
+            card.maxPower++;
+            card.currentPower += 2;
+            card.view.signalHeal(() => card.updateView());
+        }
+        super.attack(gameContext, continuation);
+    }
+}
 
 // Основа для утки.
 // function Duck() {
@@ -183,14 +199,13 @@ class Rogue extends Creature {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Rogue(),
+    new Brewer(),
 ];
 const banditStartDeck = [
     new Dog(),
-    new Lad(),
-    new Lad(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 
