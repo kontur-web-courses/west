@@ -23,11 +23,24 @@ class Duck extends Creature{
 }
 
 class Dog extends Creature{
-    constructor() {
-        super("Пес-бандит", 3);
+    constructor(name="Пес-бандит", power=3) {
+        super(name, power);
     }
 }
 
+class Trasher extends Dog{
+    constructor() {
+        super("Громила", 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation){
+        if (value > 1){
+            this.view.signalAbility(() => {
+                continuation(value - 1)
+            });
+        }
+    }
+}
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -47,6 +60,9 @@ function getCreatureDescription(card) {
     if (isDuck(card)) {
         return 'Утка';
     }
+    if (card instanceof Trasher){
+        return 'Громилдыч';
+    }
     if (isDog(card)) {
         return 'Собака';
     }
@@ -58,12 +74,11 @@ function getCreatureDescription(card) {
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
-    new Duck()
+    new Duck(),
+    new Duck(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog()
+    new Trasher(),
 ];
 
 
