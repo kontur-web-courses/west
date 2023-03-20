@@ -68,16 +68,61 @@ class Trasher extends Dog {
     }
 }
 
+class Lad extends Dog {
+    constructor() {
+        super("Браток", 2);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount + 1);
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation){
+        continuation(value - Lad.getBonus());
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(value + Lad.getBonus());
+    }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') ||
+            Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
+            return ["Чем их больше, тем они сильнее", ...super.getDescriptions()];
+        }
+        return super.getDescriptions();
+    }
+
+
+    static getBonus() {
+        // Защита от урона = количество * (количество + 1) / 2 Дополнительный урон = количество * (количество + 1) / 2
+        return this.inGameCount * (this.inGameCount + 1) / 2;
+    }
+}
+
 const seriffStartDeck = [
-    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
-    new Trasher(),
+    new Lad(),
+    new Lad(),
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
