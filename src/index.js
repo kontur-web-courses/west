@@ -58,6 +58,63 @@ class Trasher extends Dog {
     constructor(name="Громила", power=5){
         super(name, power)
     }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => { super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation)})
+    };
+}
+
+class Lad extends Dog {
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Браток";
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || "/lad.jpeg";
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        const ladsInGame = Lad.getInGameCount();
+        Lad.setInGameCount(ladsInGame + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        const ladsInGame = Lad.getInGameCount();
+        Lad.setInGameCount(ladsInGame - 1);
+        super.doBeforeRemoving(continuation);
+    }
+
+    modifyTakenDamage = (value, fromCard, gameContext, continuation) =>
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+
+
+    modifyDealedDamageToCreature = (value, toCard, gameContext, continuation) =>
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty("modifyDealedDamageToCreature") || Lad.prototype.hasOwnProperty("modifyTakenDamage")) {
+            return [
+                "Чем их больше, тем они сильнее",
+                ...super.getDescriptions()
+            ];
+        }
+        return [
+            ...super.getDescriptions()
+        ];
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        const currentInGameCount = this.getInGameCount();
+        return currentInGameCount * (currentInGameCount + 1) / 2;
+    }
 }
 
 
@@ -70,6 +127,10 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Lad(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
     new Trasher(),
 ];
 
