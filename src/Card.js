@@ -1,27 +1,29 @@
 import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
 
-const Card = function () {
-    function Card(name, maxPower, image) {
+class Card {
+    constructor(name, maxPower, image) {
         this.name = name;
         this.image = image;
 
         this.maxPower = maxPower;
         this.currentPower = maxPower;
-
         this.view = new View();
         this.updateView();
     }
 
+
+
+
     // Размещает карту в колоде в начале игры.
     // Нельзя переопределять в наследниках.
-    Card.prototype.putInDeck = function (deck, inBottomRow, position) {
+    putInDeck(deck, inBottomRow, position)  {
         this.view.putInDeck(deck, inBottomRow, position);
     };
 
     // Вызвается, когда карта должна войти в игру.
     // Нельзя переопределять в наследниках.
-    Card.prototype.comeIntoPlay = function (gameContext, place, continuation) {
+    comeIntoPlay(gameContext, place, continuation) {
         const taskQueue = new TaskQueue();
 
         taskQueue.push(onDone => this.view.flipFront(onDone));
@@ -35,14 +37,14 @@ const Card = function () {
     // Вызывается при входе карты в игру, сразу после размещения карты в нужной позиции на столе.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые должны активироваться при входе в игру.
-    Card.prototype.doAfterComingIntoPlay = function (gameContext, continuation) {
+    doAfterComingIntoPlay(gameContext, continuation) {
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
         continuation();
     };
 
     // Карта действует в рамках хода, когда настало ее время.
     // Нельзя переопределять в наследниках.
-    Card.prototype.actInTurn = function (gameContext, continuation) {
+    actInTurn(gameContext, continuation) {
         const taskQueue = new TaskQueue();
 
         taskQueue.push(onDone => this.doBeforeAttack(gameContext, onDone));
@@ -57,7 +59,7 @@ const Card = function () {
     // Вызывается перед атакой.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые должны активироваться при атаке.
-    Card.prototype.doBeforeAttack = function (gameContext, continuation) {
+    doBeforeAttack(gameContext, continuation) {
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
         continuation();
     };
@@ -66,7 +68,7 @@ const Card = function () {
     // Обычно карта атакует противоположенную карту, а если ее нет, то наносит урон игроку-противнику.
     // Можно переопределять в наследниках.
     // Позволяет изменить поведение карты при атаке.
-    Card.prototype.attack = function (gameContext, continuation) {
+    attack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
 
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
@@ -88,7 +90,7 @@ const Card = function () {
     // Определяет правила нанесения урона другим картам.
     // Нельзя переопределять в наследниках.
     // Нужно использовать при изменении поведения карты при атаке.
-    Card.prototype.dealDamageToCreature = function (value, toCard, gameContext, continuation) {
+    dealDamageToCreature(value, toCard, gameContext, continuation) {
         const taskQueue = new TaskQueue();
 
         let actualValue = value;
@@ -112,14 +114,14 @@ const Card = function () {
     // Изменяет урон, наносимый картой при атаке карт противника.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые меняют наносимый урон при атаке карт противника.
-    Card.prototype.modifyDealedDamageToCreature = function (value, toCard, gameContext, continuation) {
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
         continuation(value);
     };
 
     // Определяет правила нанесения урона игроку-противнику.
     // Нельзя переопределять в наследниках.
     // Нужно использовать при изменении поведения карты при атаке.
-    Card.prototype.dealDamageToPlayer = function (value, gameContext, continuation) {
+    dealDamageToPlayer(value, gameContext, continuation) {
         const taskQueue = new TaskQueue();
 
         let actualValue = value;
@@ -143,13 +145,13 @@ const Card = function () {
     // Изменяет урон, наносимый картой при атаке игрока-противника.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые меняют наносимый урон при атаке игрока-противника.
-    Card.prototype.modifyDealedDamageToPlayer = function (value, gameContext, continuation) {
+    modifyDealedDamageToPlayer(value, gameContext, continuation) {
         continuation(value);
     };
 
     // Определяет правила получения картой урона.
     // Нельзя переопределять в наследниках.
-    Card.prototype.takeDamage = function (value, fromCard, gameContext, continuation) {
+    takeDamage (value, fromCard, gameContext, continuation) {
         const taskQueue = new TaskQueue();
 
         let actualValue = value;
@@ -180,19 +182,19 @@ const Card = function () {
     // Изменяет урон, наносимый карте.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые меняют наносимый карте урон.
-    Card.prototype.modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
         continuation(value);
     };
 
     // Перемещает карту в заданное место на столе.
     // Нельзя переопределять в наследниках.
-    Card.prototype.moveTo = function (place, continuation) {
+    moveTo(place, continuation) {
         this.view.moveTo(place, continuation);
     };
 
     // Выводит карту из игры.
     // Нельзя переопределять в наследниках.
-    Card.prototype.removeFromGame = function (continuation) {
+    CremoveFromGame(continuation) {
         const taskQueue = new TaskQueue();
 
         taskQueue.push(onDone => this.doBeforeRemoving(onDone));
@@ -204,13 +206,13 @@ const Card = function () {
     // Вызывается при выходе карты из игры непосредственно перед удалением ее со стола.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые должны активироваться или завершаться при выходе карты из игры.
-    Card.prototype.doBeforeRemoving = function (continuation) {
+    doBeforeRemoving(continuation) {
         continuation();
     };
 
     // Строит описания карты, которые показываются на ее лицевой стороне.
     // Можно переопределить в наследниках.
-    Card.prototype.getDescriptions = function () {
+    getDescriptions() {
         return [
             getInheritanceDescription(this)
         ];
@@ -232,7 +234,7 @@ const Card = function () {
     // Обновляет вид карты.
     // Нельзя переопределять в наследниках.
     // Можно использовать, если известно какие карты затронуты изменениями.
-    Card.prototype.updateView = function () {
+    updateView() {
         this.view.updateData({
             name: this.name,
             descriptions: this.getDescriptions(),
@@ -242,7 +244,6 @@ const Card = function () {
         });
     };
 
-    return Card;
-}();
+}
 
 export default Card;
