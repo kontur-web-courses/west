@@ -7,6 +7,15 @@ import SpeedRate from "./SpeedRate.js";
 class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image);
+        this._currentPower = maxPower;
+    }
+
+    get currentPower() {
+        return this._currentPower || 0;
+    }
+
+    set currentPower(value) {
+        this._currentPower = Math.min(this.maxPower, value);
     }
 
     getDescriptions() {
@@ -43,8 +52,12 @@ function getCreatureDescription(card) {
 
 
 class Duck extends Creature {
-    constructor() {
-        super("Мирная утка", 2, null);
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || 'Мирная утка';
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || '/duck.webp';
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 
     quacks() {
@@ -60,15 +73,19 @@ class Dog extends Creature {
     constructor(name, maxPower, image) {
         const nameCorrect = name || "Пес-бандит";
         const maxPowerCorrect = maxPower || 3;
-        const imageCorrect = image || null;
+        const imageCorrect = image || '/dog.webp';
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 }
 
 class Trasher extends Dog {
-    constructor() {
-        super("Громила", 5);
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Громила";
+        const maxPowerCorrect = maxPower || 5;
+        const imageCorrect = image || '/trasher.png';
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
@@ -94,8 +111,12 @@ class Trasher extends Dog {
 }
 
 class Gatling extends Creature {
-    constructor() {
-        super("Гатлинг", 6, null);
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Гатлинг";
+        const maxPowerCorrect = maxPower || 6;
+        const imageCorrect = image || '/gatling.webp';
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 
     attack(gameContext, continuation) {
@@ -121,8 +142,12 @@ class Gatling extends Creature {
 }
 
 class Lad extends Dog {
-    constructor() {
-        super("Браток", 2);
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Браток";
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || '/lad.png';
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
@@ -152,6 +177,7 @@ class Lad extends Dog {
                 ...super.getDescriptions()
             ];
         }
+
         return [
             ...super.getDescriptions()
         ];
@@ -171,17 +197,44 @@ class Lad extends Dog {
     }
 }
 
+class Brewer extends Duck {
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Пивовар";
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || '/brewer.jpg';
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
+    }
+
+    attack(gameContext, continuation) {
+        const allCards = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
+
+        for (const card of allCards) {
+            if (!isDuck(card)) continue;
+
+            card.maxPower++;
+            card.currentPower += 2;
+            card.view.signalHeal(() => card.updateView());
+        }
+
+        super.attack(gameContext, continuation);
+    }
+}
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Dog(),
+    new Dog(),
+    new Trasher(),
+    new Brewer(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Lad(),
     new Lad(),
+    new Lad(),
+    new Duck(),
+    new Gatling(),
 ];
 
 
