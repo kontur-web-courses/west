@@ -44,12 +44,14 @@ class Dog extends Card {
     constructor() {
         super('Dog', 3, 'bandit.png');
     }
+
+
 }
 
 class Trasher extends Dog{
     constructor(){
-        super()
-        super("Громила", 5, );
+       // super()
+        super("Громила", 5, 'trasher.jpg');
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
