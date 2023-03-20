@@ -19,6 +19,9 @@ export function getCreatureDescription(card) {
     if (isDuck(card) && isDog(card)) {
         return 'Утка-Собака';
     }
+    if (isDuck(card) && isDog(card)) {
+        return 'Утка-Собака';
+    }
     if (isDuck(card)) {
         return 'Утка';
     }
@@ -59,10 +62,11 @@ class Gatling extends Creature {
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
 
         for (let i = 0; i < oppositePlayer.table.length; i++){
+            const oppositeCard = oppositePlayer.table[i];
+            if (!oppositeCard)
+                continue;
             taskQueue.push(onDone => this.view.showAttack(onDone));
             taskQueue.push(onDone => {
-                const oppositeCard = oppositePlayer.table[i];
-
                 if (oppositeCard) {
                     this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
                 } else {
@@ -134,15 +138,31 @@ class Lad extends Dog {
     }
 }
 
+class PseudoDuck extends Dog{
+    constructor() {
+        super();
+        this.name = 'PseudoDuck';
+    }
+
+    quacks() {
+        console.log('kek')
+    };
+
+    swims() {
+        console.log('lol')
+    };
+}
+
 
 const seriffStartDeck = [
     new Duck(),
-    new Gatling(),
     new Duck(),
+    new Gatling(),
     new Duck(),
 ];
 
 const banditStartDeck = [
+    new PseudoDuck(),
     new Trasher(),
     new Dog(),
     new Lad()
