@@ -82,7 +82,7 @@ class Lad extends Dog {
     }
 
     doAfterComingIntoPlay(gameContext, continuation) {
-        Lad.setInGameCount(Lad.getInGameCount + 1);
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
         continuation();
     }
 
@@ -92,11 +92,11 @@ class Lad extends Dog {
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation){
-        continuation(value - Lad.getBonus());
+        this.view.signalAbility(() => continuation(value - Lad.getBonus()));
     }
 
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
-        continuation(value + Lad.getBonus());
+        this.view.signalAbility(() => continuation(value + Lad.getBonus()));
     }
 
     getDescriptions() {
@@ -110,7 +110,7 @@ class Lad extends Dog {
 
     static getBonus() {
         // Защита от урона = количество * (количество + 1) / 2 Дополнительный урон = количество * (количество + 1) / 2
-        return this.inGameCount * (this.inGameCount + 1) / 2;
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
     }
 }
 
