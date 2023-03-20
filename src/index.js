@@ -27,10 +27,19 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-
+class Creature extends Card {
+    constructor(name, power) {
+        super(name, power);
+    }
+    getDescriptions() {
+        let s1 = getCreatureDescription(this);
+        let s2 = super.getDescriptions();
+        return [s1, s2];
+    }
+}
 
 // Основа для утки.
-class Duck extends Card {
+class Duck extends Creature {
     constructor() {
         super('Мирная утка', 2);
     }
@@ -41,7 +50,7 @@ class Duck extends Card {
 
 
 // Основа для собаки.
-class Dog extends Card{
+class Dog extends Creature{
     constructor() {
         super('Бандит', 3);
     }
@@ -65,7 +74,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(3);
+SpeedRate.set(1);
 
 // Запуск игры.
 game.play(false, (winner) => {
