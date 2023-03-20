@@ -1,5 +1,3 @@
-export default TaskQueue;
-
 class TaskQueue {
     constructor() {
         this.tasks = [];
@@ -42,12 +40,14 @@ function runNextTask(taskQueue) {
                 taskQueue.running = false;
 
                 setTimeout(() => {
-                    TaskQueue.runNextTask(taskQueue);
+                    runNextTask(taskQueue);
                 });
             });
         }, 0);
     }
     else {
-        TaskQueue.runNextTask(taskQueue);
+        runNextTask(taskQueue);
     }
 }
+
+export default TaskQueue;
