@@ -123,7 +123,8 @@ function getCreatureDescription(card) {
 
 const seriffStartDeck = [
     new Duck(),
-    new Gatling()
+    new Gatling(),
+    new Trasher()
 ];
 
 // Колода Бандита, верхнего игрока.
