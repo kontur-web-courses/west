@@ -73,7 +73,18 @@ class Trasher extends Dog {
         super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation)
     }
 }
+class Rogue extends Creature {
+    constructor(image) {
+        super("Изгой", 2, image);
+    }
 
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation){
+        this.modifyDealedDamageToCreature = toCard.modifyDealedDamageToCreature;
+        this.modifyDealedDamageToPlayer = toCard.modifyDealedDamageToPlayer;
+        this.modifyTakenDamage = toCard.modifyTakenDamage;
+        this.modifyDealedDamageToCreature(value, toCard, gameContext, continuation);
+    }
+}
 class Lad extends Dog {
     constructor(image) {
         super(image, "Браток", 2);
@@ -112,13 +123,10 @@ class Lad extends Dog {
 }
 
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Rogue(),
 ];
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
+    new Trasher(),
 ];
 
 // Создание игры.
