@@ -12,6 +12,7 @@ const Card = function () {
         this.view = new View();
         this.updateView();
     }
+    
 
     // Размещает карту в колоде в начале игры.
     // Нельзя переопределять в наследниках.
