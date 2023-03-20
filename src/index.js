@@ -24,6 +24,10 @@ function getCreatureDescription(card) {
     if (isDog(card)) {
         return 'Собака';
     }
+    if (isDog(card) && card.prototype.hasOwnProperty('modifyDealedDamageToCreature') ||
+                            card.prototype.hasOwnProperty('modifyTakenDamage')){
+        return 'Браток';
+    }
     return 'Существо';
 }
 
