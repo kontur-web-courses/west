@@ -53,9 +53,9 @@ function getCreatureDescription(card) {
 
 class Duck extends Creature {
     constructor(name, maxPower, image) {
-        const nameCorrect = name || 'Мирная утка';
+        const nameCorrect = name || "Мирная утка";
         const maxPowerCorrect = maxPower || 2;
-        const imageCorrect = image || '/duck.webp';
+        const imageCorrect = image || "/duck.webp";
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
@@ -73,7 +73,7 @@ class Dog extends Creature {
     constructor(name, maxPower, image) {
         const nameCorrect = name || "Пес-бандит";
         const maxPowerCorrect = maxPower || 3;
-        const imageCorrect = image || '/dog.webp';
+        const imageCorrect = image || "/dog.webp";
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
@@ -83,7 +83,7 @@ class Trasher extends Dog {
     constructor(name, maxPower, image) {
         const nameCorrect = name || "Громила";
         const maxPowerCorrect = maxPower || 5;
-        const imageCorrect = image || '/trasher.png';
+        const imageCorrect = image || "/trasher.png";
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
@@ -114,7 +114,7 @@ class Gatling extends Creature {
     constructor(name, maxPower, image) {
         const nameCorrect = name || "Гатлинг";
         const maxPowerCorrect = maxPower || 6;
-        const imageCorrect = image || '/gatling.webp';
+        const imageCorrect = image || "/gatling.webp";
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
@@ -145,7 +145,7 @@ class Lad extends Dog {
     constructor(name, maxPower, image) {
         const nameCorrect = name || "Браток";
         const maxPowerCorrect = maxPower || 2;
-        const imageCorrect = image || '/lad.png';
+        const imageCorrect = image || "/lad.png";
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
@@ -201,7 +201,7 @@ class Brewer extends Duck {
     constructor(name, maxPower, image) {
         const nameCorrect = name || "Пивовар";
         const maxPowerCorrect = maxPower || 2;
-        const imageCorrect = image || '/brewer.jpg';
+        const imageCorrect = image || "/brewer.jpg";
 
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
@@ -220,14 +220,14 @@ class Brewer extends Duck {
         super.attack(gameContext, continuation);
     }
 }
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Brewer(),
-    new Duck(),
+    new Brewer(),
     new Duck(),
     new Dog(),
-    new Trasher(),
     new Brewer(),
 ];
 
@@ -236,11 +236,13 @@ const banditStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Lad(),
-    new Lad(),
+    new Trasher(),
+    new Trasher(),
+    new Trasher(),
     new Lad(),
     new Lad(),
     new Duck(),
+    new Trasher(),
     new Gatling(),
 ];
 
@@ -248,7 +250,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(3);
 
 // Запуск игры.
 game.play(false, (winner) => {
