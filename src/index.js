@@ -222,7 +222,10 @@ class Brewer extends Duck {
 }
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Dog(),
+    new Duck(),
+    new Brewer(),
+    new Duck(),
+    new Duck(),
     new Dog(),
     new Trasher(),
     new Brewer(),
@@ -230,13 +233,16 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Lad(),
     new Lad(),
     new Lad(),
     new Lad(),
     new Duck(),
     new Gatling(),
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
