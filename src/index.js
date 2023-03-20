@@ -58,12 +58,13 @@ class Gatling extends Creature{
 
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
 
-        for(let oppositeCard in oppositePlayer){
+        for(let oppositeCard of oppositePlayer){
             if(oppositeCard){
                 taskQueue.push(onDone => this.view.showAttack(onDone));
                 taskQueue.push(onDone => {
                         this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
                 });
+                setTimeout(() => {}, 1000);
             }
         }
 
@@ -103,20 +104,18 @@ Trasher.prototype.modifyTakenDamage = function (value, fromCard, gameContext, co
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Gatling()
+    new Gatling(),
+    new Duck()
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-<<<<<<< HEAD
-    new Dog(),
-    new Dog(),
-    new Dog(),
-    new Dog(),
+    // new Dog(),
+    // new Dog(),
+    // new Dog(),
+    // new Dog(),
     
-=======
     new Trasher()
->>>>>>> 8a813b2b64a0bb8571bfa293e63a2ec215d17d22
 ];
 
 
