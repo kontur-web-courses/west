@@ -1,7 +1,20 @@
 import Card from './Card.js';
 import Game from './Game.js';
-import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+//import Creature from "./Card.js";
+
+class Creature extends Card {
+    constructor(name, power) {
+        super(name, power)
+    }
+
+    getDescriptions() {
+       return [
+           getCreatureDescription(this), 
+           ...super.getDescriptions()
+        ]
+    }
+}
 
 function isDuck(card) {
     return card instanceof Duck;
@@ -27,7 +40,7 @@ function getCreatureDescription(card) {
 
 
 // Основа для утки.
-class Duck extends Card {
+class Duck extends Creature {
     constructor(name, power) {
         super(name || 'Мирная утка', power || 2);
     }
@@ -43,7 +56,7 @@ class Duck extends Card {
 
 
 // Основа для собаки.
-class Dog extends Card {
+class Dog extends Creature {
     constructor(name, power) {
         super(name || 'Пес-бандит', power || 3);
     }
@@ -73,3 +86,4 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
