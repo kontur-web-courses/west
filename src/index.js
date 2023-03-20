@@ -24,10 +24,6 @@ function getCreatureDescription(card) {
     if (isDog(card)) {
         return 'Собака';
     }
-    if (isDog(card) && card.prototype.hasOwnProperty('modifyDealedDamageToCreature') ||
-                            card.prototype.hasOwnProperty('modifyTakenDamage')){
-        return 'Браток';
-    }
     return 'Существо';
 }
 
@@ -169,11 +165,24 @@ class Lad extends Dog{
     }
 }
 
+class PseudoDuck extends Dog {
+    constructor() {
+        super("Псевдоутка", 3);
+    }
+    quacks(){
+        alert("quack");
+    }
+    swims(){
+        alert("swim");
+    }
+}
+
 
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new PseudoDuck(),
     new Rogue(),
 ];
 const banditStartDeck = [
