@@ -27,30 +27,58 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Duck extends Card {
+    constructor() {
+        super();
+        this.name = "Мирная утка";
+        this.power = 2;
+    }
+
+    quacks = function () {
+        console.log('quack');
+    };
+
+    swims = function () {
+        console.log('float: both;');
+    };
+}
+
+class Dog extends Card {
+    constructor() {
+        super();
+        this.name = "Пес-бандит";
+        this.power = 3;
+    };
+
+}
 
 
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
-}
+// function Duck() {
+//     this.quacks = function () {
+//         console.log('quack')
+//     };
+//     this.swims = function () {
+//         console.log('float: both;')
+//     };
+// }
 
 
 // Основа для собаки.
-function Dog() {
-}
+// function Dog() {
+// }
 
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck(),
+    new Duck(),
+    new Duck(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Dog(),
 ];
 
 
