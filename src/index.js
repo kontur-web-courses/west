@@ -75,15 +75,32 @@ class Trasher extends Dog {
     }
 }
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        for (const entity of gameContext.oppositePlayer.table) {
+            if (entity !== gameContext.oppositePlayer) {
+                entity.takeDamage(2, this, gameContext, continuation)
+                continuation(2);
+            }
+        }
+    }
+}
+
 
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 const banditStartDeck = [
     new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 
