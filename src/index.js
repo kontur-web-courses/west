@@ -32,7 +32,7 @@ function getCreatureDescription(card) {
 // Основа для утки.
 class Duck extends Card {
     constructor() {
-        super('Duck', 2, '/sheriff.png');
+        super('Duck', 2, 'sheriff.png');
     }
     quacks = function () { console.log('quack') };
     swims = function () { console.log('float: both;') };
@@ -42,7 +42,7 @@ class Duck extends Card {
 // Основа для собаки.
 class Dog extends Card {
     constructor() {
-        super('Dog', 3, '/bandit.png');
+        super('Dog', 3, 'bandit.png');
     }
 }
 
@@ -65,14 +65,14 @@ class Trasher extends Dog{
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck('Мирный житель', 2),
+    new Duck('Мирный житель', 2),
+    new Duck('Мирный житель', 2),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Dog('Бандит', 3),
 ];
 
 
