@@ -71,6 +71,17 @@ class Gatling extends Creature {
 }
 
 
+class Trasher extends Dog {
+    constructor(name) {
+        super(name, 5);
+    }
+    
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value - 1));
+    };
+}
+
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card instanceof Dog;
@@ -110,7 +121,6 @@ function getCreatureDescription(card) {
 // }
 
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Gatling()
