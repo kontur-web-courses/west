@@ -15,7 +15,7 @@ class Creature extends Card{
 
 class Duck extends Creature{
     constructor() {
-        super("Мирная утка", 1);
+        super("Мирная утка", 2);
     }
 
     quacks() { console.log('quack') };
@@ -140,6 +140,8 @@ const seriffStartDeck = [
     new Gatling()
 ];
 const banditStartDeck = [
+    new Lad(),
+    new Lad(),
     new Lad(),
     new Lad(),
     new Lad()
