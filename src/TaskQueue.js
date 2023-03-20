@@ -1,5 +1,3 @@
-export default TaskQueue;
-
 class TaskQueue {
     constructor() {
         this.tasks = [];
@@ -23,6 +21,9 @@ class TaskQueue {
         runNextTask(this);
     }
 
+    continueWith(action) {
+        this.push(action, null, 0);
+    };
 }
 
 function runNextTask(taskQueue) {
@@ -31,8 +32,8 @@ function runNextTask(taskQueue) {
     }
     taskQueue.running = true;
     const task = taskQueue.tasks.shift();
-
     if (task.runAndContinue) {
+
         setTimeout(() => {
             task.runAndContinue(() => {
                 task.dispose && task.dispose();
@@ -48,3 +49,4 @@ function runNextTask(taskQueue) {
         runNextTask(taskQueue);
     }
 }
+export default TaskQueue;
