@@ -52,8 +52,14 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
+    constructor(name = "Пес-бандит", power = 3, image = "angryDog.png") {
+        super(name, power, image);
+    }
+}
+
+class Trasher extends Dog {
     constructor() {
-        super("Пес-бандит", 1, "angryDog.png");
+        super("Громила", 5, "Trasher.png");
     }
 }
 
@@ -77,6 +83,16 @@ class Gatling extends Creature {
         }
         taskQueue.continueWith(continuation);
     }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+    };
+
+    getDescriptions() {
+        const abilityDesc = "Уменшьает весь получаемый урон на 1";
+        const desc = super.getDescriptions();
+        return [abilityDesc, ...desc];
+    };
 }
 
 
@@ -84,7 +100,7 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
+    new Duck(),
 ];
 const banditStartDeck = [
     new Trasher(),
@@ -97,7 +113,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(5);
 
 // Запуск игры.
 game.play(false, (winner) => {
