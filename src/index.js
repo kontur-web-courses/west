@@ -61,11 +61,21 @@ class Trasher extends Dog {
     constructor() {
         super("Громила", 5, "Trasher.png");
     }
+
+    getDescriptions() {
+        const abilityDesc = "Уменшьает весь получаемый урон на 1";
+        const desc = super.getDescriptions();
+        return [abilityDesc, ...desc];
+    };
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+    };
 }
 
 class Gatling extends Creature {
     constructor() {
-        super("Гатлинг", 2, "gatling.png");
+        super("Гатлинг", 6, "gatling.png");
     }
 
     attack(gameContext, continuation) {
@@ -77,30 +87,19 @@ class Gatling extends Creature {
             taskQueue.push(onDone => {
                 const oppositeCard = oppositePlayer.table[i];
                 if (oppositeCard) {
-                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
                 }
             });
         }
         taskQueue.continueWith(continuation);
     }
-
-    modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
-    };
-
-    getDescriptions() {
-        const abilityDesc = "Уменшьает весь получаемый урон на 1";
-        const desc = super.getDescriptions();
-        return [abilityDesc, ...desc];
-    };
 }
 
 
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
-    new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 const banditStartDeck = [
     new Trasher(),
