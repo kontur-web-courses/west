@@ -46,6 +46,33 @@ class Dog extends Card {
     }
 }
 
+class Gatling extends Card {
+    constructor() {
+        super('Dog', 6, 'gatling.png');
+        this.currentPower = 2;
+        this.attack = function (gameContext, continuation) {
+            const taskQueue = new TaskQueue();
+
+            const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const oppositeCards = oppositePlayer.table;
+
+                if (oppositeCards.length) {
+                    for (let oppositeCard of oppositeCards)
+                        if (oppositeCard)
+                            this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+
+            taskQueue.continueWith(continuation);
+        }
+    }
+}
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -57,6 +84,7 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog('Бандит', 3),
+    new Gatling('Гатлинг', 2),
 ];
 
 
