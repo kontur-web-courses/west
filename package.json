@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "west",
   "version": "0.0.1",
   "dependencies": {
