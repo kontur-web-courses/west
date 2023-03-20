@@ -59,9 +59,32 @@ class Dog extends Creature {
     }
 }
 
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
 
-const seriffStartDeck = [new Duck(), new Duck(), new Duck(),];
-const banditStartDeck = [new Dog(),];
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(value - 1);
+        });
+    };
+
+    getDescriptions() {
+        return [getCreatureDescription(this), 'Получает на 1 меньше урона', ...super.getDescriptions()];
+    }
+}
+
+
+const seriffStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+];
+const banditStartDeck = [
+    new Trasher(),
+];
 
 
 // Создание игры.
