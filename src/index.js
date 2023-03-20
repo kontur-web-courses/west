@@ -51,6 +51,21 @@ class Dog extends Creature{
     }
 }
 
+class Trasher extends Dog{
+    constructor(name = 'Громила', power = 5) {
+        super(name, power);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value - 1));
+    }
+
+    getDescriptions() {
+        const ability = 'Если Громилу атакуют, то он получает на 1 меньше урона';
+        const s_res = super.getDescriptions();
+        return [ability, ...s_res];
+    }
+}
 
 // Основа для утки.
 // function Duck() {
