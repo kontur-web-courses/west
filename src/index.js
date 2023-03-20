@@ -30,15 +30,11 @@ function getCreatureDescription(card) {
 
 
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
-}
+
 
 
 // Основа для собаки.
-function Dog() {
-}
+
 
 
 // Колода Шерифа, нижнего игрока.
@@ -64,3 +60,21 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
+class Duck extends Card{
+    constructor() {
+        super();
+        this.name = "Мирная утка";
+        this.maxPower = 2;
+    }
+    quacks() { console.log('quack') };
+    swims() { console.log('float: both;') };
+}
+
+class Dog extends Card{
+    constructor() {
+        super();
+        this.name = "Пес-бандит";
+        this.maxPower = 3;
+    }
+}
