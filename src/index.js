@@ -29,7 +29,7 @@ class Dog extends Creature{
 }
 
 class Lad extends Dog{
-    static inGameCount;
+    static inGameCount = 0;
     constructor() {
         super("Братки", 2);
     }
@@ -41,21 +41,23 @@ class Lad extends Dog{
     }
 
     doAfterComingIntoPlay(gameContext, continuation){
-        Lad.setInGameCount(Lad.inGameCount + 1);
+        Lad.inGameCount ++;
+        console.log(Lad.inGameCount);
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
         continuation();
     }
     doBeforeRemoving(continuation){
-        Lad.setInGameCount(Lad.inGameCount - 1);
+        Lad.inGameCount --;
         continuation();
     }
 
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation){
-        continuation(Lad.getBonus() + value);
+        continuation(Lad.getBonus());
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation){
-        continuation(value - Lad.getBonus());
+        const newVal = value - Lad.getBonus();
+        continuation(newVal <= 0 ? 1 : newVal);
     }
 }
 
@@ -72,6 +74,7 @@ class Trasher extends Dog{
         }
     }
 }
+
 class Gatling extends Creature {
     constructor() {
         super("Гатлинг", 6);
