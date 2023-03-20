@@ -48,18 +48,81 @@ class Duck extends Creature{
 
     quacks() { console.log('quack') };
     swims () { console.log('float: both;') };
+}
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const opponentCards = oppositePlayer.table;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        for (let oppositeCard of opponentCards)
+            taskQueue.push(onDone => {
+                this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+            });
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
+class Lad extends Dog {
+    constructor() {
+        super('Браток', 2);
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(value + Lad.getBonus());
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value - Lad.getBonus());
+    }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature'))
+            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()]
+        return super.getDescriptions()
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        if (value < 0)
+            value = 0;
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        return (this.inGameCount * (this.inGameCount + 1)) / 2;
+    }
 }
 
 
 // Основа для собаки.
-class Dog extends Creature{
+class Dog extends Creature {
     constructor(name='Пес-бандит', power=3) {
         super(name, power);
     }
 }
 
-class Trasher extends Dog{
+class Trasher extends Dog {
     constructor(name='Громила', power=5) {
         super(name, power);
     }
