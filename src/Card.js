@@ -24,9 +24,6 @@ class Card {
         this.updateView();
     }
 
-
-
-
     // Размещает карту в колоде в начале игры.
     // Нельзя переопределять в наследниках.
     putInDeck(deck, inBottomRow, position)  {
@@ -206,7 +203,7 @@ class Card {
 
     // Выводит карту из игры.
     // Нельзя переопределять в наследниках.
-    CremoveFromGame(continuation) {
+    removeFromGame(continuation) {
         const taskQueue = new TaskQueue();
 
         taskQueue.push(onDone => this.doBeforeRemoving(onDone));
