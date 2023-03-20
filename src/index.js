@@ -71,6 +71,24 @@ class Dog extends Creature {
 //     };
 // }
 
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(value - 1);
+        });
+    }
+
+    getDescriptions() {
+        const first = 'Если Громилу атакуют, то он получает на 1 меньше урона';
+        const second = super.getDescriptions();
+        return [first, ...second];
+    }
+}
+
 
 // Основа для собаки.
 // function Dog() {
@@ -82,11 +100,10 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
@@ -94,7 +111,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(1.8);
 
 // Запуск игры.
 game.play(false, (winner) => {
