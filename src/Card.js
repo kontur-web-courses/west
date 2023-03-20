@@ -245,3 +245,15 @@ export default class Card {
         });
     };
 }
+
+
+class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+    }
+
+    getDescriptions() {
+        let res = [];
+        res.push();
+    }
+}
