@@ -2,8 +2,8 @@ import {getCreatureDescription} from "./index.js";
 import Card from "./Card.js";
 
 class Creature extends Card {
-    constructor() {
-        super();
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
     }
 
     getDescriptions() {
