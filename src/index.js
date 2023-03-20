@@ -68,7 +68,7 @@ class Dog extends Creature {
 
 class Trasher extends Dog {
     constructor() {
-        super("Громила", 5);
+        super('Громила', 5);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
@@ -78,8 +78,8 @@ class Trasher extends Dog {
     takeDamage(value, fromCard, gameContext, continuation) {
         if (value === 2) {
             this.view.signalAbility(() => {
-                super.takeDamage(value, fromCard, gameContext, continuation);
-            });
+                super.takeDamage(value, fromCard, gameContext, continuation)
+            })
         } else {
             super.takeDamage(value, fromCard, gameContext, continuation);
         }
@@ -87,9 +87,35 @@ class Trasher extends Dog {
 
     getDescriptions() {
         return [
-            "Получает на 1 урон меньше",
+            'Получает на 1 урон меньше',
             ...super.getDescriptions()
-        ];
+        ]
+    }
+}
+
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6, null);
+    }
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        for (let i = 0; i < oppositePlayer.table.length; i++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[i];
+
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
     }
 }
 
@@ -98,12 +124,14 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 
