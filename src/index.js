@@ -89,6 +89,43 @@ class Trasher extends Dog {
     }
 }
 
+class Lad extends Dog {
+    constructor() {
+        super('Браток', 2);
+    }
+
+    modifyTakenDamage (value, fromCard, gameContext, continuation) {
+        continuation(value - Lad.getBonus());
+    }
+
+    modifyDealedDamageToPlayer (value, gameContext, continuation) {
+        continuation(value + Lad.getBonus());
+    }
+
+    doAfterComingIntoPlay (gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        continuation();
+    }
+
+    doBeforeRemoving (continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
+    }
+
+    getDescriptions() {
+        const first = 'Чем их больше, тем они сильнее';
+        const second = super.getDescriptions();
+        return [first, ...second];
+    }
+
+    static getBonus() {
+        return this.inGameCount * (this.inGameCount + 1) / 2;
+    }
+
+    static getInGameCount() { return this.inGameCount || 0; }
+    static setInGameCount(value) { this.inGameCount = value; }
+}
+
 class Gatling extends Creature {
     constructor(name = 'Гатлинг', power = 6) {
         super(name, power);
@@ -108,7 +145,6 @@ class Gatling extends Creature {
     }
 }
 
-
 // Основа для собаки.
 // function Dog() {
 // }
@@ -119,12 +155,10 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
 ];
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 
@@ -132,7 +166,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1.8);
+SpeedRate.set(1);
 
 // Запуск игры.
 game.play(false, (winner) => {
