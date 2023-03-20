@@ -94,36 +94,42 @@ class Lad extends Dog {
         super('Браток', 2);
     }
 
-    modifyTakenDamage (value, fromCard, gameContext, continuation) {
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
         continuation(value - Lad.getBonus());
     }
 
-    modifyDealedDamageToPlayer (value, gameContext, continuation) {
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
         continuation(value + Lad.getBonus());
     }
 
-    doAfterComingIntoPlay (gameContext, continuation) {
+    doAfterComingIntoPlay(gameContext, continuation) {
         Lad.setInGameCount(Lad.getInGameCount() + 1);
         continuation();
     }
 
-    doBeforeRemoving (continuation) {
+    doBeforeRemoving(continuation) {
         Lad.setInGameCount(Lad.getInGameCount() - 1);
         continuation();
     }
 
     getDescriptions() {
-        const first = 'Чем их больше, тем они сильнее';
-        const second = super.getDescriptions();
-        return [first, ...second];
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature'))
+            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()];
+        return super.getDescriptions();
     }
 
     static getBonus() {
         return this.inGameCount * (this.inGameCount + 1) / 2;
     }
 
-    static getInGameCount() { return this.inGameCount || 0; }
-    static setInGameCount(value) { this.inGameCount = value; }
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        if (value < 0) value = 0;
+        this.inGameCount = value;
+    }
 }
 
 class Gatling extends Creature {
