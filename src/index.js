@@ -67,7 +67,7 @@ class Gatling extends Creature{
 }
 
 
-class Trasher extends Dog{
+class Trasher extends Dog {
     constructor(name = 'Громила', power = 5) {
         super(name, power);
     }
@@ -80,6 +80,33 @@ class Trasher extends Dog{
         const ability = 'Если Громилу атакуют, то он получает на 1 меньше урона';
         const s_res = super.getDescriptions();
         return [ability, ...s_res];
+    }
+}
+
+class Rogue extends Creature {
+    constructor(name = 'Изгой', power = 2) {
+        super(name, power);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+
+        let prototype = Object.getPrototypeOf(oppositeCard);
+        if (prototype.hasOwnProperty("modifyTakenDamage")) {
+            this.modifyTakenDamage = prototype.modifyTakenDamage;
+            delete prototype["modifyTakenDamage"];
+        }
+        if (prototype.hasOwnProperty("modifyDealedDamageToPlayer")) {
+            this.modifyDealedDamageToPlayer = prototype.modifyDealedDamageToPlayer;
+            delete prototype["modifyDealedDamageToPlayer"];
+        }
+        if (prototype.hasOwnProperty("modifyDealedDamageToCreature")) {
+            this.modifyDealedDamageToCreature = prototype.modifyDealedDamageToCreature;
+            delete prototype["modifyDealedDamageToCreature"];
+        }
+        updateView();
+        continuation();
     }
 }
 
@@ -100,10 +127,12 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Rogue(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Dog(),
     new Dog(),
 ];
 
