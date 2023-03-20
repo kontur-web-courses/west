@@ -85,7 +85,7 @@ class Gatling extends Creature {
         const taskQueue = new TaskQueue();
 
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
-        
+
         if (oppositePlayer.table.length > 0) {
             for (const oppositeCard of oppositePlayer.table) {
                 taskQueue.push(onDone => this.view.showAttack(onDone));
@@ -101,26 +101,65 @@ class Gatling extends Creature {
     };
 }
 
-// const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
-// if(oppositePlayer.table.length > 0) {
-//     for (const oppositeCard of oppositePlayer.table) {
-//         taskQueue.push(onDone => this.view.showAttack(onDone));
-//         taskQueue.push(onDone => {
-//             this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone)});
-//     }
-// } else {
-//     this.dealDamageToPlayer(1, gameContext, onDone);
-// }
-// Колода Шерифа, нижнего игрока.
+class Lad extends Dog {
+    constructor() {
+        super('Браток', 5);
+    }
+
+    static attackBonus = 0;
+    static defenceBonus = 0;
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay (gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        if(Lad.getInGameCount() !== 0) {
+            Lad.setInGameCount(Lad.getInGameCount() - 1);
+        }
+        continuation();
+    }
+
+    static getBonus() {
+        this.attackBonus = this.getInGameCount()*(this.getInGameCount()+1)/2;
+        this.defenceBonus = this.getInGameCount()*(this.getInGameCount()+1)/2;
+    }
+
+    modifyDealedDamageToCreature = function (value, toCard, gameContext, continuation) {
+        continuation(value + Lad.attackBonus);
+    }
+
+    modifyDealedDamageToPlayer = function (value, gameContext, continuation) {
+        continuation(value + Lad.attackBonus);
+    }
+
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        continuation(value - Lad.defenceBonus);
+    }
+
+    getDescriptions() {
+        return [...super.getDescriptions(), 'Чем их больше, тем они сильнее'];
+    }
+}
+
 const seriffStartDeck = [
     new Dog(),
     new Dog(),
-    new Dog()
+    new Dog(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Gatling()
+    new Lad(),
+    new Lad(),
+    new Lad(),
 ];
 
 
