@@ -3,18 +3,6 @@ import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
-class Trasher extends Dog{
-    constructor(){
-        super("Громила", 5);
-    }
-
-    modifyTakenDamage(value, fromCard, gameContext, continuation) {
-        this.view.signalAbility(() => continuation(value - 1));
-    }
-
-    getDescribtions
-}
-
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card && card.quacks && card.swims;
@@ -42,15 +30,37 @@ function getCreatureDescription(card) {
 
 
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
+class Duck extends Card {
+    constructor() {
+        super('Duck', 2, '/sheriff.png');
+    }
+    quacks = function () { console.log('quack') };
+    swims = function () { console.log('float: both;') };
 }
 
 
 // Основа для собаки.
-function Dog() {
+class Dog extends Card {
+    constructor() {
+        super('Dog', 3, '/bandit.png');
+    }
 }
+
+class Trasher extends Dog{
+    constructor(){
+        super()
+        super("Громила", 5, );
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value - 1));
+    }
+
+    getDescribtions() {
+        super(getDescribtions())
+    }
+}
+
 
 
 // Колода Шерифа, нижнего игрока.

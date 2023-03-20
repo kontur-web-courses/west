@@ -24,7 +24,7 @@ class TaskQueue {
     continueWith(action) {
         this.push(action, null, 0);
     };
-};
+}
 
 function runNextTask(taskQueue) {
     if (taskQueue.running || taskQueue.tasks.length === 0) {
