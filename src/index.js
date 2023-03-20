@@ -29,8 +29,10 @@ function getCreatureDescription(card) {
 
 class Creature extends Card{
     getDescriptions(){
-        return [getCreatureDescription(this), 
-                super.getDescriptions()];
+        return [
+            getCreatureDescription(this), 
+            super.getDescriptions()
+        ];
     }
 }
 
@@ -45,6 +47,29 @@ class Duck extends Creature {
     swims() { console.log('float: both;') }
 }
 
+class Gatling extends Creature{
+    constructor(){
+        super('Гатлиг', 6);
+    }
+
+    attack(gameContext, continuation){
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        for(let oppositeCard in oppositePlayer){
+            if(oppositeCard){
+                taskQueue.push(onDone => this.view.showAttack(onDone));
+                taskQueue.push(onDone => {
+                        this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                });
+            }
+        }
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
 
 // Основа для собаки.
 class Dog extends Creature{
@@ -56,14 +81,16 @@ class Dog extends Creature{
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Gatling()
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog()
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    
 ];
 
 
@@ -71,7 +98,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(2);
 
 // Запуск игры.
 game.play(false, (winner) => {
