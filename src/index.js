@@ -38,6 +38,7 @@ class Creature extends Card {
         return [first, second[0]]
     }
 }
+
 class Duck extends Creature {
     constructor(image) {
         super("Мирная утка", 2, image);
@@ -54,25 +55,34 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor(image) {
-        super("Пес-бандит", 3, image);
+    constructor(image, name = "Пес-бандит", power = 3) {
+        super(name, power, image);
     }
 
 }
 
+class Trasher extends Dog {
+    constructor(image) {
+        super(image, "Громила", 5);
+    }
 
-// Колода Шерифа, нижнего игрока.
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        if (value > 1) {
+            this.view.signalAbility(() => this.view.signalDamage());
+        }
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation)
+    }
+}
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
