@@ -33,8 +33,8 @@ class Creature extends Card {
 
 
 class Duck extends Creature {
-    constructor() {
-        super("Мирная утка", 2);
+    constructor(name = "Мирная утка", maxPower = 2) {
+        super(name, maxPower);
     }
 
     quacks() {
@@ -54,7 +54,7 @@ class Gatling extends Creature {
     attack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
 
-        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const {oppositePlayer} = gameContext;
         for (const card of oppositePlayer.table) {
 
             taskQueue.push(onDone => this.view.showAttack(onDone));
@@ -64,6 +64,32 @@ class Gatling extends Creature {
         }
 
         taskQueue.continueWith(continuation);
+    }
+}
+
+class Rogue extends Creature {
+    constructor() {
+        super("Изгой", 2);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {oppositePlayer, position} = gameContext;
+        const abilities = ["modifyDealedDamageToCreature", "modifyDealedDamageToPlayer", "modifyTakenDamage"]
+        taskQueue.push(onDone => {
+            const oppositeCard = oppositePlayer.table[position];
+            const proto = Object.getPrototypeOf(oppositeCard);
+            for (const ability of abilities) {
+                if (proto.hasOwnProperty(ability)) {
+                    this[ability] = proto[ability];
+                    delete proto[ability];
+                }
+            }
+            gameContext.updateView()
+        });
+
+        super.attack(gameContext, continuation);
     }
 }
 
@@ -128,6 +154,9 @@ class Lad extends Dog {
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые меняют наносимый карте урон.
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(value - 1)
+        });
         super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
     };
 
@@ -146,17 +175,22 @@ class Lad extends Dog {
 function isDuck(card) {
     return card instanceof Duck;
 }
+
 // Отвечает является ли карта собакой.
 
 function isDog(card) {
     return card instanceof Dog;
 }
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
-    new Duck(),
+    new Rogue(),
+    new Rogue(),
 ];
 const banditStartDeck = [
+    new Lad(),
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
