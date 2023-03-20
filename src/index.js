@@ -124,12 +124,12 @@ class Lad extends Dog{
         return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
     }
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation){
-        value = Lad.getBonus() + value;
+        value += Lad.getBonus();
         super.modifyDealedDamageToCreature(value, toCard, gameContext, continuation);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation){
-        value -= Lad.getBonus() - value;
+        value -= Lad.getBonus();
         super.modifyTakenDamage(value, fromCard, gameContext, continuation);
     }
 
@@ -147,14 +147,13 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
+    new Duck(),
+    new Duck()
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
@@ -164,7 +163,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(3);
 
 // Запуск игры.
 game.play(false, (winner) => {
