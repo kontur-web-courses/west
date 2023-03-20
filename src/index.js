@@ -27,22 +27,52 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card {
+    constructor(...rest) {
+        super(...rest);
+    }
 
-class Duck extends Card{
+    getDescriptions() {
+        return [getCreatureDescription(this), super.getDescriptions()]
+    }
+}
+
+class Duck extends Creature {
     constructor(...rest) {
         super(rest);
         this.name = "Мирная утка";
         this.maxPower = 2;
     }
-    quacks = function () { console.log('quack') };
-    swims = function () { console.log('float: both;') };
+
+    quacks = function () {
+        console.log('quack')
+    };
+    swims = function () {
+        console.log('float: both;')
+    };
 }
 
-class Dog extends Card{
+class Dog extends Creature {
     constructor(...rest) {
         super(rest);
         this.name = "Пес-бандит";
         this.maxPower = 3;
+    }
+}
+
+class Trasher extends Dog {
+    constructor(...rest) {
+        super(rest);
+        this.name = 'Громила';
+        this.maxPower = 5;
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            if (value > 1) {
+                continuation(value - 1);
+            }
+        })
     }
 }
 
@@ -51,12 +81,13 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
 
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
@@ -70,3 +101,4 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
