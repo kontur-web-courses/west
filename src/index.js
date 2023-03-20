@@ -2,7 +2,6 @@ import Card from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
-
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card && card.quacks && card.swims;
@@ -26,7 +25,35 @@ function getCreatureDescription(card) {
     }
     return 'Существо';
 }
-class Duck extends Card {
+class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+        this.currentPower = maxPower;
+    }
+
+    getDescriptions() {
+        return [getCreatureDescription(this), ...super.getDescriptions()];
+    }
+
+    // doBeforeAttacking(gameContext, continuation) {
+    //     const taskQueue = new TaskQueue();
+    //
+    //     taskQueue.push(onDone => this.view.showAttack(onDone));
+    //     taskQueue.push(onDone => this.view.hideAttack(onDone));
+    //
+    //     taskQueue.continueWith(continuation);
+    // }
+    //
+    // doBeforeTakingDamage(damage, fromCard, gameContext, continuation) {
+    //     const taskQueue = new TaskQueue();
+    //
+    //     taskQueue.push(onDone => this.view.showDamage(onDone));
+    //     taskQueue.push(onDone => this.view.hideDamage(onDone));
+    //
+    //     taskQueue.continueWith(continuation);
+    // }
+}
+class Duck extends Creature {
     constructor(name = 'Мирная утка', maxPower = 2) {
         super(name, maxPower);
     }
@@ -40,7 +67,7 @@ class Duck extends Card {
     }
 }
 
-class Dog extends Card {
+class Dog extends Creature {
     constructor(name = 'Пес-бандит', maxPower = 3) {
         super(name, maxPower);
     }
