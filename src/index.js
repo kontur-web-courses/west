@@ -56,6 +56,17 @@ class Dog extends Creature{
     }
 }
 
+class Trasher extends Dog{
+    constructor() {
+        super('Громила', 5);
+    }
+
+    modifyTakenDamage (value, fromCard, gameContext, continuation){
+        this.view.signalAbility(() =>
+        {super.modifyTakenDamage(value-1, fromCard, gameContext, continuation)});
+    }
+}
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -66,7 +77,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
@@ -74,7 +85,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(3);
 
 // Запуск игры.
 game.play(false, (winner) => {
