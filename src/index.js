@@ -57,10 +57,6 @@ class Trasher extends Dog{
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         this.view.signalAbility(() => continuation(value - 1));
     }
-
-    getDescribtions() {
-        super(getDescribtions())
-    }
 }
 
 
@@ -75,6 +71,7 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog('Бандит', 3),
+    new Trasher('Властелин', 5)
 ];
 
 
