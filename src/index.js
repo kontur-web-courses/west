@@ -56,6 +56,30 @@ class Dog extends Creature {
     }
 }
 
+class Rogue extends Creature {
+    constructor(name = 'Изгой', power = 2) {
+        super(name, power)
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+        if (oppositeCard) {
+            const otherProto = Object.getPrototypeOf(oppositeCard);
+            if (otherProto.hasOwnProperty('modifyDealedDamageToCreature')) {
+                this.modifyDealedDamageToCreature = otherProto.modifyDealedDamageToCreature;
+                delete otherProto['modifyDealedDamageToCreature'];
+            }
+            if (otherProto.hasOwnProperty('modifyTakenDamage')) {
+                this.modifyTakenDamage = otherProto.modifyTakenDamage;
+                delete otherProto['modifyTakenDamage'];
+            }
+            gameContext.updateView();
+        }
+        continuation();
+    }
+}
+
 class Gatling extends Creature {
     constructor(name = 'Гатлинг', power = 6) {
         super(name, power);
@@ -142,16 +166,12 @@ class Lad extends Dog{
 }
 
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Duck(),
-    new Duck()
+    new Rogue(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Lad(),
     new Lad(),
@@ -163,7 +183,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(3);
+SpeedRate.set(2);
 
 // Запуск игры.
 game.play(false, (winner) => {
