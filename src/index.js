@@ -162,6 +162,7 @@ const banditStartDeck = [
     new Dog(),
     new PseudoDuck(),
     new Dog(),
+    new Lad()
 ];
 
 
