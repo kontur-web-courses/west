@@ -32,10 +32,10 @@ class Creature extends Card {
         super(name, maxPower, image);
     }
 
-    getDescription() {
+    getDescriptions() {
         return [
             getCreatureDescription(self),
-            ...super.getDescription()
+            ...super.getDescriptions()
         ];
     }
 }
@@ -70,10 +70,10 @@ class Trasher extends Dog {
         this.view.signalAbility(() => continuation(value - 1));
     }
 
-    getDescription() {
+    getDescriptions() {
         return [
             'Получает на 1 урон меньше',
-            ...super.getDescription()
+            ...super.getDescriptions()
         ];
     }
 }
