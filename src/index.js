@@ -34,6 +34,16 @@ class Dog extends Creature {
     }
 }
 
+class Trasher extends Dog {
+    constructor(name) {
+        super(name, 5);
+    }
+    
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value - 1));
+    };
+}
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card instanceof Dog;
@@ -73,16 +83,15 @@ function getCreatureDescription(card) {
 // }
 
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck("Mirnaya utka", 2),
-    new Duck("Mirnaya utka", 2),
-    new Duck("Mirnaya utka", 2),
+    new Duck("", 2),
+    new Duck("", 2),
+    new Duck("", 2),
+    new Duck("", 2),
 ];
-
-// Колода Бандита, верхнего игрока.
-const banditStartDeck = [new Dog('Sobaken', 3)];
-
+const banditStartDeck = [
+    new Trasher("Joe"),
+];
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
