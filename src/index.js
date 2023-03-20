@@ -15,8 +15,8 @@ class Creature extends Card {
 
 
 class Duck extends Creature{
-    constructor(name, power){
-        super(name, power, "");
+    constructor(name="Мирная утка", power=2){
+        super(name, power);
     }
     
     quck() {
@@ -29,10 +29,47 @@ class Duck extends Creature{
 }
 
 class Dog extends Creature {
-    constructor(name, power) {
-        super(name, power, "");
+    constructor(name="Собакен", power=3) {
+        super(name, power);
     }
 }
+
+class Gatling extends Creature {
+    constructor(name = "Гатлинг", power = 6) {
+        super(name, power);
+    }
+
+    
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const { currentPlayer, oppositePlayer, position, updateView } = gameContext;
+
+        taskQueue.push((onDone) => this.view.showAttack(onDone));
+        taskQueue.push((onDone) => {  
+            
+            while (position >= 0){
+                const oppositeCard = oppositePlayer.table[position];
+                if (oppositeCard) {
+                  console.log(position);
+                  this.dealDamageToCreature(
+                    this.currentPower,
+                    oppositeCard,
+                    gameContext,
+                    onDone
+                  );
+                } else {
+                  this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+                position--;
+            }
+            
+        });
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
 
 class Trasher extends Dog {
     constructor(name = "Громила", power = 5) {
@@ -130,18 +167,19 @@ function getCreatureDescription(card) {
 
 
 const seriffStartDeck = [
-    new Duck("", 2),
-    new Duck("", 2),
-    new Duck("", 2),
-    new Duck("", 2),
+    new Duck(),
+    new Gatling(),
+    new Trasher()
 ];
-const banditStartDeck = [
-    new Lad(),
-    new Lad(),
-];
+
+// Колода Бандита, верхнего игрока.
+const banditStartDeck = [new Dog(), new Dog(), new Dog(), new Dog()];
+
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
+new Game(seriffStartDeck, banditStartDeck);
+new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
 SpeedRate.set(1);
