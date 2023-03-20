@@ -28,6 +28,29 @@ class Dog extends Creature{
     }
 }
 
+class Gatling extends Creature {
+    constructor() {
+        super("Гатлинг", 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        for (let position = 0; position < gameContext.oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => {
+                const card = gameContext.oppositePlayer.table[position];
+                if (card) {
+                    this.view.showAttack(onDone);
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                } else {
+                    onDone();
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -37,6 +60,10 @@ function isDuck(card) {
 // Отвечает является ли карта собакой.
 function isDog(card) {
     return card instanceof Dog;
+}
+
+function isGatling(card) {
+    return card instanceof Gatling;
 }
 
 // Дает описание существа по схожести с утками и собаками
@@ -50,6 +77,9 @@ function getCreatureDescription(card) {
     if (isDog(card)) {
         return 'Собака';
     }
+    if (isGatling(card)) {
+        return 'Гатлинг';
+    }
     return 'Существо';
 }
 
@@ -57,12 +87,15 @@ function getCreatureDescription(card) {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck()
+    new Gatling()
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
     new Dog()
 ];
 
