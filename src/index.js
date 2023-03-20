@@ -14,6 +14,10 @@ function isDog(dog) {
     return dog instanceof Dog;
 }
 
+function isTrasher(trasher) {
+    return trasher instanceof Trasher;
+}
+
 // Дает описание существа по схожести с утками и собаками
 export function getCreatureDescription(card) {
     if (isDuck(card) && isDog(card)) {
@@ -24,6 +28,9 @@ export function getCreatureDescription(card) {
     }
     if (isDog(card)) {
         return 'Собака';
+    }
+    if (isTrasher(card)){
+        return 'Громила\nПолучает на 1 урона меньше';
     }
     return 'Существо';
 }
@@ -47,6 +54,12 @@ class Dog extends Creature {
     }
 }
 
+class Trasher extends Dog {
+    constructor(name="Громила", power=5){
+        super(name, power)
+    }
+}
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -57,7 +70,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 

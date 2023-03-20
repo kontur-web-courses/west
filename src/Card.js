@@ -2,6 +2,7 @@ import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
 import {getCreatureDescription} from './index.js';
 
+<<<<<<< Updated upstream
 
 function getInheritanceDescription (card) {
     const names = [];
@@ -17,6 +18,10 @@ function getInheritanceDescription (card) {
 
 export default class Card {
     constructor(name, maxPower, image) {
+=======
+const Card = function () {
+    function Card(name, maxPower, damage, image) {
+>>>>>>> Stashed changes
         this.name = name;
         this.image = image;
 
