@@ -58,7 +58,6 @@ class Dog extends Creature {
     }
 }
 
-<<<<<<< HEAD
 class Gatling extends Creature {
     constructor(name, power) {
         super(name || 'Гатлинг', power || 6)
@@ -74,7 +73,6 @@ class Gatling extends Creature {
     }
 }
 
-=======
 class Trasher extends Dog {
     constructor(name, power) {
         super(name || 'Громила', power || 5);
@@ -92,28 +90,21 @@ class Trasher extends Dog {
         return description;
     }
 }
->>>>>>> origin/master
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-<<<<<<< HEAD
     new Gatling(),
-=======
     new Duck(),
     new Duck(),
     new Duck(),
->>>>>>> origin/master
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-<<<<<<< HEAD
     new Dog(),
     new Dog(),
-=======
     new Trasher(),
->>>>>>> origin/master
 ];
 
 
