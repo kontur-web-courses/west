@@ -103,7 +103,7 @@ class Gatling extends Creature {
 
 class Lad extends Dog {
     constructor() {
-        super('Браток', 5);
+        super('Браток', 2);
     }
 
     static attackBonus = 0;
