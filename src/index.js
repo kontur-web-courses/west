@@ -24,6 +24,10 @@ function getCreatureDescription(card) {
     if (isDog(card)) {
         return 'Собака';
     }
+    if (isDog(card) && card.prototype.hasOwnProperty('modifyDealedDamageToCreature') ||
+                            card.prototype.hasOwnProperty('modifyTakenDamage')){
+        return 'Браток';
+    }
     return 'Существо';
 }
 
@@ -98,12 +102,12 @@ class Lad extends Dog{
         return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
     }
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation){
-        value = Lad.getBonus() + value;
+        value += Lad.getBonus();
         super.modifyDealedDamageToCreature(value, toCard, gameContext, continuation);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation){
-        value -= Lad.getBonus() - value;
+        value -= Lad.getBonus();
         super.modifyTakenDamage(value, fromCard, gameContext, continuation);
     }
 
