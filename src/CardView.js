@@ -26,6 +26,7 @@ const CardView = function() {
         } else {
             this.image = null;
         }
+        debugger;
         this.descriptions.innerHTML = descriptions.map(d => `<div>${d}</div>`).join('');
         this.currentPower.innerText = currentPower;
         this.maxPower.innerText = maxPower;

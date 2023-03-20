@@ -159,6 +159,33 @@ class Lad extends Dog {
         if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') || Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
             return ['Чем их больше, тем они сильнее', ...super.getDescriptions()];
         }
+        return super.getDescriptions();
+    }
+}
+
+class Rogue extends Dog {
+    constructor(name = 'Изгой', maxPower = 2) {
+        super(name, maxPower);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        const oppositeCard = oppositePlayer.table[position];
+
+        if (oppositeCard) {
+            let proto = Object.getPrototypeOf(oppositeCard);
+            if (proto.hasOwnProperty('modifyTakenDamage')) {
+                delete proto.modifyTakenDamage;
+            }
+            if (proto.hasOwnProperty('modifyDealedDamageToCreature')) {
+                delete proto.modifyDealedDamageToCreature;
+            }
+            if (proto.hasOwnProperty('modifyDealedDamageToPlayer')) {
+                delete proto.modifyDealedDamageToPlayer;
+            }
+        }
+        gameContext.updateView();
     }
 }
 
@@ -186,8 +213,11 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Rogue(),
+    new Duck(),
 ];
 const banditStartDeck = [
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
