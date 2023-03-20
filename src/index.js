@@ -54,9 +54,35 @@ class Duck extends Creature {
 
 
 // Основа для собаки.
-class Dog extends Creature{
+class Dog extends Creature {
     constructor(name = 'Пес-бандит', power = 3) {
         super(name, power);
+    }
+}
+
+class Gatling extends Creature {
+    constructor(name = 'Гатлинг', power = 6) {
+        super(name, power);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        for(let position = 0; position < oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[position];
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                } else {
+                    onDone();
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
     }
 }
 
@@ -125,8 +151,13 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
+    new Duck()
 ];
+
+// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
@@ -136,7 +167,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(3);
 
 // Запуск игры.
 game.play(false, (winner) => {
