@@ -45,7 +45,6 @@ class Dog extends Card{
     constructor() {
         super('Бандит', 3);
     }
-
 }
 
 
