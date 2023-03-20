@@ -38,6 +38,7 @@ class Creature extends Card {
         return [first, second[0]]
     }
 }
+
 class Duck extends Creature {
     constructor(image) {
         super("Мирная утка", 2, image);
@@ -54,25 +55,79 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor(image) {
-        super("Пес-бандит", 3, image);
+    constructor(image, name = "Пес-бандит", power = 3) {
+        super(name, power, image);
     }
 
 }
 
+class Trasher extends Dog {
+    constructor(image) {
+        super(image, "Громила", 5);
+    }
 
-// Колода Шерифа, нижнего игрока.
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        if (value > 1) {
+            this.view.signalAbility(() => this.view.signalDamage());
+        }
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation)
+    }
+}
+class Rogue extends Creature {
+    constructor(image) {
+        super("Изгой", 2, image);
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation){
+        this.modifyDealedDamageToCreature = toCard.modifyDealedDamageToCreature;
+        this.modifyDealedDamageToPlayer = toCard.modifyDealedDamageToPlayer;
+        this.modifyTakenDamage = toCard.modifyTakenDamage;
+        this.modifyDealedDamageToCreature(value, toCard, gameContext, continuation);
+    }
+}
+class Lad extends Dog {
+    constructor(image) {
+        super(image, "Браток", 2);
+        this.inGameCount = 0;
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        super.doBeforeRemoving(continuation);
+    }
+
+    static getBonus() {
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+    }
+}
+
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Rogue(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
