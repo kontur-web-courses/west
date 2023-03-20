@@ -32,10 +32,10 @@ class Creature extends Card {
         super(name, maxPower, image);
     }
 
-    getDescription() {
+    getDescriptions() {
         return [
             getCreatureDescription(self),
-            ...super.getDescription()
+            ...super.getDescriptions()
         ];
     }
 }
@@ -70,11 +70,37 @@ class Trasher extends Dog {
         this.view.signalAbility(() => continuation(value - 1));
     }
 
-    getDescription() {
+    getDescriptions() {
         return [
             'Получает на 1 урон меньше',
-            ...super.getDescription()
+            ...super.getDescriptions()
         ];
+    }
+}
+
+class Gatling extends Creature {
+    constructor(name='Гатлинг', maxPower=6) {
+        super(name, maxPower);
+    }
+
+    attack(gameContext, continuation) {
+        const cards = gameContext.oppositePlayer.table;
+        const taskQueue = new TaskQueue();
+
+        if (cards) {
+            for (const card of cards) {
+                taskQueue.push(onDone => this.view.showAttack(onDone));
+                taskQueue.push(onDone => {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                });
+            }
+        } else {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone =>
+                this.dealDamageToPlayer(this.currentPower, gameContext, onDone)
+            );
+        }
+        taskQueue.continueWith(continuation);
     }
 }
 
