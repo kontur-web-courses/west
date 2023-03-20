@@ -84,15 +84,23 @@ class Gatling extends Creature {
     }
   
     attack(gameContext, continuation) {
-      const oppositeCards = gameContext.oppositePlayer.table;
-      for (let i = 0; i < oppositeCards.length; i++) {
-        const oppositeCard = oppositeCards[i];
-        if (oppositeCard) {
-          oppositeCard.dealDamageToCreature(2, oppositeCard, gameContext, continuation);
+        const oppositeCards = gameContext.oppositePlayer.table;
+        let taskQueue = new TaskQueue();
+        for (let i = 0; i < oppositeCards.length; i++) {
+            const oppositeCard = oppositeCards[i];
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                if (oppositeCard) {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
         }
-      }
+        taskQueue.continueWith(continuation);
     }
-  }
+}
+  
   
   
 
