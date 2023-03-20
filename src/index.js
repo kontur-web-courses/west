@@ -78,6 +78,32 @@ class Trasher extends Dog {
     }
 }
 
+class Gatling extends Creature {
+    constructor(name='Гатлинг', maxPower=6) {
+        super(name, maxPower);
+    }
+
+    attack(gameContext, continuation) {
+        const cards = gameContext.oppositePlayer.table;
+        const taskQueue = new TaskQueue();
+
+        if (cards) {
+            for (const card of cards) {
+                taskQueue.push(onDone => this.view.showAttack(onDone));
+                taskQueue.push(onDone => {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                });
+            }
+        } else {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone =>
+                this.dealDamageToPlayer(this.currentPower, gameContext, onDone)
+            );
+        }
+        taskQueue.continueWith(continuation);
+    }
+}
+
 // // Колода Шерифа, нижнего игрока.
 // const seriffStartDeck = [
 //     new Card('Мирный житель', 2),
