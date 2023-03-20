@@ -27,8 +27,20 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+    }
 
-class Duck extends Card{
+    getDescription() {
+        return [
+            getCreatureDescription(self),
+            ...super.getDescription()
+        ];
+    }
+}
+
+class Duck extends Creature {
     constructor(name='Мирная утка', maxPower=2) {
         super(name, maxPower);
     }
@@ -42,14 +54,15 @@ class Duck extends Card{
     }
 }
 
-class Dog extends Card{
+class Dog extends Creature {
     constructor(name='Пес-бандит', maxPower=3) {
         super(name, maxPower);
     }
 }
 
-class Trasher extends Dog{
-    constructor(name='Громила', maxPower=5) {
+
+class Trasher extends Dog {
+    constructor(name = 'Громила', maxPower = 5) {
         super(name, maxPower);
     }
 
@@ -57,8 +70,11 @@ class Trasher extends Dog{
         this.view.signalAbility(() => continuation(value - 1));
     }
 
-    getDescriptions() {
-        return [getCreatureDescription(this), 'Получает на 1 урон меньше'];
+    getDescription() {
+        return [
+            'Получает на 1 урон меньше',
+            ...super.getDescription()
+        ];
     }
 }
 
