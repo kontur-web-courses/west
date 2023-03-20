@@ -68,8 +68,8 @@ class Gatling extends Creature {
 }
 
 class Dog extends Creature {
-    constructor() {
-        super("Пес-бандит", 3);
+    constructor(name = "Пес-бандит", maxPower = 3) {
+        super(name, maxPower);
     }
 }
 
@@ -77,18 +77,67 @@ class Dog extends Creature {
 class Trasher extends Dog {
     constructor() {
         super("Громила", 5);
-
-        // this.view.signalAbility(() => { // то, что надо сделать сразу после мигания. }
     }
 
-    // Изменяет урон, наносимый карте.
-    // Можно переопределить в наследниках.
-    // Позволяет определять способности, которые меняют наносимый карте урон.
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         this.view.signalAbility(() => { continuation(value - 1) });
     };
     getDescriptions() {
         return ["Броня 1", ...super.getDescriptions()];
+    }
+}
+
+class Lad extends Dog {
+    constructor() {
+        super("Браток", 2);
+    }
+    static getInGameCount() { return this.inGameCount || 0; }
+    static setInGameCount(value) { this.inGameCount = value; }
+
+    static getBonus() {
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+
+    // Вызывается при входе карты в игру, сразу после размещения карты в нужной позиции на столе.
+    // Можно переопределить в наследниках.
+    // Позволяет определять способности, которые должны активироваться при входе в игру.
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    };
+
+    // Вызывается при выходе карты из игры непосредственно перед удалением ее со стола.
+    // Можно переопределить в наследниках.
+    // Позволяет определять способности, которые должны активироваться или завершаться при выходе карты из игры.
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        super.doBeforeRemoving(continuation);
+    };
+
+
+    // Изменяет урон, наносимый картой при атаке карт противника.
+    // Можно переопределить в наследниках.
+    // Позволяет определять способности, которые меняют наносимый урон при атаке карт противника.
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+    };
+
+
+    // Изменяет урон, наносимый карте.
+    // Можно переопределить в наследниках.
+    // Позволяет определять способности, которые меняют наносимый карте урон.
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+    };
+
+    getDescriptions() {
+        let result = super.getDescriptions();
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') || Lad.prototype.hasOwnProperty('modifyTakenDamage'))
+        {
+            result.unshift("Чем их больше, тем они сильнее");
+        }
+        return result;
     }
 }
 
@@ -106,14 +155,11 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
 ];
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
