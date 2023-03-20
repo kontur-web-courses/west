@@ -96,14 +96,28 @@ class Gatling extends Creature {
 }
 
 
+class PseudoDuck extends Dog {
+    constructor() {
+        super("Псевдоутка", 3, "pseudoDuck.png");
+    }
+
+    quacks() {
+        console.log('quack')
+    }
+
+    swims() {
+        console.log('float: both;')
+    }
+}
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
-    new Gatling(),
+
 ];
 const banditStartDeck = [
-    new Trasher(),
     new Dog(),
+    new PseudoDuck(),
     new Dog(),
 ];
 
