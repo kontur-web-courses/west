@@ -30,17 +30,44 @@ class Duck extends Creature{
 
 class Dog extends Creature {
     constructor(name="Собакен", power=3) {
-        super(name, power=3);
+        super(name, power);
     }
 }
 
-class Gutling extends Creature {
-    constructor(name="Gutling", power=6) {
-        super(name, power, "");
+class Gatling extends Creature {
+    constructor(name = "Гатлинг", power = 6) {
+        super(name, power);
     }
 
     
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
 
+        const { currentPlayer, oppositePlayer, position, updateView } = gameContext;
+
+        taskQueue.push((onDone) => this.view.showAttack(onDone));
+        taskQueue.push((onDone) => {  
+            
+            while (position >= 0){
+                const oppositeCard = oppositePlayer.table[position];
+                if (oppositeCard) {
+                  console.log(position);
+                  this.dealDamageToCreature(
+                    this.currentPower,
+                    oppositeCard,
+                    gameContext,
+                    onDone
+                  );
+                } else {
+                  this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+                position--;
+            }
+            
+        });
+
+        taskQueue.continueWith(continuation);
+    }
 }
 
 
@@ -86,13 +113,11 @@ function getCreatureDescription(card) {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    
+    new Gatling()
 ];
 
 // Колода Бандита, верхнего игрока.
-const banditStartDeck = [new Dog()];
+const banditStartDeck = [new Dog(), new Dog(), new Dog(), new Dog()];
 
 
 // Создание игры.
