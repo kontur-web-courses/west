@@ -37,7 +37,10 @@ function Duck() {
 
 
 // Основа для собаки.
-function Dog() {
+class Dog extends Card{
+    constructor(name='Пес-бандит', power=3) {
+        super(name, power);
+    }
 }
 
 
