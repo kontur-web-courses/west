@@ -55,6 +55,20 @@ class Dog extends Creature{
     }
 }
 
+class Trasher extends Dog{
+    constructor() {
+        super();
+        this.name = "Громила";
+        this.maxPower = 5;
+        this.currentPower = 5;
+
+    }
+    modifyTakenDamage(value, gameContext, continuation){
+        super. modifyTakenDamage(value-1, gameContext, continuation);
+    }
+}
+
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -63,10 +77,8 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog()
+    new Trasher(),
 ];
 
 
@@ -80,5 +92,4 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
-
 
