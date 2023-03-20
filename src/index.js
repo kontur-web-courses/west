@@ -1,6 +1,7 @@
 import Card from './Card.js';
 import Game from './Game.js';
 import SpeedRate from './SpeedRate.js';
+import TaskQueue from "./TaskQueue.js";
 
 class Creature extends Card {
     constructor(name, power) {
@@ -91,10 +92,51 @@ class Trasher extends Dog {
     }
 }
 
+class Lad extends Dog {
+    constructor(name = 'Пес-бандит', power = 3) {
+        super(name, power);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount()+1)
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    };
+    doBeforeRemoving (continuation) {
+        Lad.setInGameCount(Lad.getInGameCount()-1)
+        super.doBeforeRemoving(continuation);
+    };
+
+    static getBonus() {
+        const currentInGameCount = this.getInGameCount();
+        return currentInGameCount * (currentInGameCount + 1) / 2;
+    }
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+    }
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')
+            || Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
+
+            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()];
+        }
+
+        return [...super.getDescriptions()];
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Gatling(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -102,9 +144,8 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
-    new Dog(),
-    new Trasher(),
+    new Lad(),
+    new Lad(),
 ];
 
 
