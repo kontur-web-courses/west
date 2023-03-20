@@ -37,8 +37,18 @@ class Duck extends Card {
 }
 
 class Dog extends Card {
+    constructor(name="Пес-бандит", maxPower=3) {
+        super(name, maxPower);
+    }
+}
+
+class Trasher extends Dog {
     constructor() {
-        super("Пес-бандит", 3);
+        super("Громила", 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value-1));
     }
 }
 
@@ -46,9 +56,10 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
