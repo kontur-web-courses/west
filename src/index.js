@@ -26,31 +26,44 @@ function getCreatureDescription(card) {
     }
     return 'Существо';
 }
+class Duck extends Card{
+    constructor(name = 'Мирная утка', power = 2) {
+        super(name, power);
+    }
+    quacks() { console.log('quack') };
+    swims() { console.log('float: both;') };
+}
 
+class Dog extends Card{
+    constructor(name = 'Пес-бандит', power = 3) {
+        super(name, power);
+    }
+}
 
 
 // Основа для утки.
-function Duck() {
-    this.quacks = function () { console.log('quack') };
-    this.swims = function () { console.log('float: both;') };
-}
-
-
-// Основа для собаки.
-function Dog() {
-}
+// function Duck() {
+//     this.quacks = function () { console.log('quack') };
+//     this.swims = function () { console.log('float: both;') };
+// }
+//
+//
+// // Основа для собаки.
+// function Dog() {
+// }
 
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
-    new Card('Мирный житель', 2),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Dog(),
 ];
 
 
@@ -64,3 +77,4 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
