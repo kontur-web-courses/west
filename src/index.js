@@ -31,6 +31,7 @@ class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image);
     }
+
     getDescriptions() {
         return [getCreatureDescription(this), ...super.getDescriptions()];
     }
@@ -52,20 +53,42 @@ class Duck extends Creature {
 
 class Dog extends Creature {
     constructor() {
-        super("Пес-бандит", 3, "angryDog.png");
+        super("Пес-бандит", 1, "angryDog.png");
+    }
+}
+
+class Gatling extends Creature {
+    constructor() {
+        super("Гатлинг", 2, "gatling.png");
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        for (const i in gameContext.oppositePlayer.table) {
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[i];
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
     }
 }
 
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Gatling(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Trasher(),
+    new Dog(),
     new Dog(),
 ];
 
