@@ -15,8 +15,8 @@ class Creature extends Card {
 
 
 class Duck extends Creature{
-    constructor(name, power){
-        super(name, power, "");
+    constructor(name="Мирная утка", power=2){
+        super(name, power);
     }
     
     quck() {
@@ -29,10 +29,20 @@ class Duck extends Creature{
 }
 
 class Dog extends Creature {
-    constructor(name, power) {
-        super(name, power, "");
+    constructor(name="Собакен", power=3) {
+        super(name, power=3);
     }
 }
+
+class Gutling extends Creature {
+    constructor(name="Gutling", power=6) {
+        super(name, power, "");
+    }
+
+    
+
+}
+
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -75,17 +85,20 @@ function getCreatureDescription(card) {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck("Mirnaya utka", 2),
-    new Duck("Mirnaya utka", 2),
-    new Duck("Mirnaya utka", 2),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    
 ];
 
 // Колода Бандита, верхнего игрока.
-const banditStartDeck = [new Dog('Sobaken', 3)];
+const banditStartDeck = [new Dog()];
 
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
+new Game(seriffStartDeck, banditStartDeck);
+new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
 SpeedRate.set(1);
