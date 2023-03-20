@@ -1,6 +1,18 @@
 import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
 
+function getInheritanceDescription (card) {
+    const names = [];
+    let obj = card;
+    while (true) {
+        obj = Object.getPrototypeOf(obj);
+        names.push(obj.constructor.name);
+        if (obj === Card.prototype)
+            break;
+    }
+    return names.join('➔ ');
+}
+
 class Card {
     constructor(name, maxPower, image) {
         this.name = name;
@@ -219,17 +231,7 @@ class Card {
     };
 
     // Строит описание цепочки прототипов с помощью имен конструкторов.
-    function getInheritanceDescription (card) {
-        const names = [];
-        let obj = card;
-        while (true) {
-            obj = Object.getPrototypeOf(obj);
-            names.push(obj.constructor.name);
-            if (obj === Card.prototype)
-                break;
-        }
-        return names.join('➔ ');
-    }
+
 
     // Обновляет вид карты.
     // Нельзя переопределять в наследниках.
@@ -247,3 +249,5 @@ class Card {
 }
 
 export default Card;
+
+
