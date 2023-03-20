@@ -31,6 +31,7 @@ class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image);
     }
+
     getDescriptions() {
         return [getCreatureDescription(this), ...super.getDescriptions()];
     }
@@ -51,14 +52,30 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor() {
-        super("Пес-бандит", 3, "angryDog.png");
+    constructor(name = "Пес-бандит", power = 3, image = "angryDog.png") {
+        super(name, power, image);
     }
 }
 
+class Trasher extends Dog {
+    constructor() {
+        super("Громила", 5, "Trasher.png");
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+    };
+
+    getDescriptions() {
+        const abilityDesc = "Уменшьает весь получаемый урон на 1";
+        const desc = super.getDescriptions();
+        return [abilityDesc, ...desc];
+    };
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -66,7 +83,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
@@ -74,7 +91,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(5);
 
 // Запуск игры.
 game.play(false, (winner) => {
