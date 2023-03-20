@@ -34,24 +34,6 @@ class Creature extends Card {
     getDescriptions() {
         return [getCreatureDescription(this), ...super.getDescriptions()];
     }
-
-    // doBeforeAttacking(gameContext, continuation) {
-    //     const taskQueue = new TaskQueue();
-    //
-    //     taskQueue.push(onDone => this.view.showAttack(onDone));
-    //     taskQueue.push(onDone => this.view.hideAttack(onDone));
-    //
-    //     taskQueue.continueWith(continuation);
-    // }
-    //
-    // doBeforeTakingDamage(damage, fromCard, gameContext, continuation) {
-    //     const taskQueue = new TaskQueue();
-    //
-    //     taskQueue.push(onDone => this.view.showDamage(onDone));
-    //     taskQueue.push(onDone => this.view.hideDamage(onDone));
-    //
-    //     taskQueue.continueWith(continuation);
-    // }
 }
 class Duck extends Creature {
     constructor(name = 'Мирная утка', maxPower = 2) {
@@ -174,18 +156,23 @@ class Rogue extends Dog {
         const oppositeCard = oppositePlayer.table[position];
 
         if (oppositeCard) {
+            let currProto = Object.getPrototypeOf(this);
             let proto = Object.getPrototypeOf(oppositeCard);
             if (proto.hasOwnProperty('modifyTakenDamage')) {
+                currProto.modifyTakenDamage = proto.modifyTakenDamage;
                 delete proto.modifyTakenDamage;
             }
             if (proto.hasOwnProperty('modifyDealedDamageToCreature')) {
+                currProto.modifyDealedDamageToCreature = proto.modifyDealedDamageToCreature;
                 delete proto.modifyDealedDamageToCreature;
             }
             if (proto.hasOwnProperty('modifyDealedDamageToPlayer')) {
+                currProto.modifyDealedDamageToPlayer = proto.modifyDealedDamageToPlayer;
                 delete proto.modifyDealedDamageToPlayer;
             }
         }
         gameContext.updateView();
+        continuation();
     }
 }
 
