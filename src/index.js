@@ -1,7 +1,6 @@
 import Card from './Card.js';
 import Game from './Game.js';
 import SpeedRate from './SpeedRate.js';
-//import Creature from "./Card.js";
 
 class Creature extends Card {
     constructor(name, power) {
@@ -37,8 +36,6 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-
-
 // Основа для утки.
 class Duck extends Creature {
     constructor(name, power) {
@@ -54,7 +51,6 @@ class Duck extends Creature {
     };
 }
 
-
 // Основа для собаки.
 class Dog extends Creature {
     constructor(name, power) {
@@ -62,9 +58,27 @@ class Dog extends Creature {
     }
 }
 
+class Trasher extends Dog {
+    constructor(name, power) {
+        super(name || 'Громила', power || 5);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(--value);
+        });
+    }
+
+    getDescriptions() {
+        const description = super.getDescriptions();
+        description.unshift("Получает на 1 ед. меньше урона");
+        return description;
+    }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -72,7 +86,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
