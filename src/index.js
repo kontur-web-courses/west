@@ -221,29 +221,75 @@ class Brewer extends Duck {
     }
 }
 
+class PseudoDuck extends Dog {
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Псевдо-утка";
+        const maxPowerCorrect = maxPower || 3;
+        const imageCorrect = image || null;
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
+    }
+
+    quacks() {
+        console.log('quack');
+    }
+
+    swims() {
+        console.log('float: both;');
+    }
+}
+
+
+class Rogue extends Creature {
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Изгой";
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || null;
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
+    }
+
+    attack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+        if (oppositeCard) {
+            const cardProto = Object.getPrototypeOf(oppositeCard);
+            if (cardProto.hasOwnProperty('modifyDealedDamageToCreature')) {
+                this.modifyDealedDamageToCreature = cardProto.modifyDealedDamageToCreature;
+                delete cardProto['modifyDealedDamageToCreature'];
+            }
+            if (cardProto.hasOwnProperty('modifyDealedDamageToPlayer')) {
+                this.modifyDealedDamageToPlayer = cardProto.modifyDealedDamageToPlayer;
+                delete cardProto['modifyDealedDamageToPlayer'];
+            }
+            if (cardProto.hasOwnProperty('modifyTakenDamage')) {
+                this.modifyTakenDamage = cardProto.modifyTakenDamage;
+                delete cardProto['modifyTakenDamage'];
+            }
+            gameContext.updateView();
+        }
+        continuation();
+        super.attack(gameContext, continuation);
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Brewer(),
-    new Brewer(),
-    new Duck(),
-    new Dog(),
-    new Brewer(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
-    new Trasher(),
-    new Trasher(),
-    new Trasher(),
-    new Lad(),
-    new Lad(),
-    new Duck(),
-    new Trasher(),
-    new Gatling(),
+    new Rogue(),
+    new Rogue(),
+    new Rogue(),
+    new Rogue(),
+    new Rogue(),
 ];
 
 // Создание игры.
