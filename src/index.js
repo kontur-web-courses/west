@@ -28,7 +28,7 @@ function getCreatureDescription(card) {
 
 class Creature extends Card{
     getDescriptions() {
-        return [getCreatureDescription(), ...super.getDescriptions()]
+        return [getCreatureDescription(this), ...super.getDescriptions()]
     }
 }
 
@@ -50,19 +50,42 @@ class Dog extends Creature {
     constructor(name = 'Пес-бандит', power = 3) {
         super(name, power);
     }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(value - 1);
+        });
+    }
 }
-  
+
+class Trasher extends Dog {
+    constructor(name = 'Громила', power = 5) {
+        super(name, power);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(value - 1);
+        });
+    }
+
+    getDescriptions() {
+        return [
+            "Если Громилу атакуют, он получает на 1 меньше урона.",
+            ...super.getDescriptions()
+        ];
+    }
+}
 
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-  ];
-  
-  // Колода Бандита, верхнего игрока.
-  const banditStartDeck = [
-    new Dog(),
-  ];
+    new Duck(),
+];
+const banditStartDeck = [
+    new Trasher(),
+];
 
 
 // Создание игры.
