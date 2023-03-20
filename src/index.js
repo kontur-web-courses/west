@@ -51,7 +51,6 @@ class Duck extends Creature {
     static swims() {
         console.log('float: both;');
     }
-
 }
 
 class Dog extends Creature {
@@ -112,7 +111,6 @@ class Lad extends Dog {
     static getBonus() {
         return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
     }
-
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
         super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
     }
@@ -122,18 +120,53 @@ class Lad extends Dog {
     }
 }
 
+class Gatling extends Creature {
+    constructor(name = 'Гатлинг', power = 6, image = '') {
+        super(name, power, image);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        for (let i of oppositePlayer.table) {
+            const oppositeCard = i;
+            if (oppositeCard) {
+                taskQueue.push(onDone => this.view.showAttack(onDone));
+                taskQueue.push(onDone => {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                });
+            }
+        }
+        taskQueue.continueWith(continuation);
+    }
+
+}
+
+// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Rogue(),
+    new Duck(),
+    new Duck(),
+    new Gatling(),
 ];
+
+// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
+
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(3);
 
 // Запуск игры.
 game.play(false, (winner) => {
