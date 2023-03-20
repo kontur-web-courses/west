@@ -31,6 +31,7 @@ class Creature extends Card {
     }
 }
 
+
 class Duck extends Creature {
     constructor() {
         super("Мирная утка", 2);
@@ -50,8 +51,28 @@ class Dog extends Creature {
         super("Пес-бандит", 3);
     }
 }
-// Отвечает является ли карта уткой.
 
+
+class Trasher extends Dog {
+    constructor() {
+        super("Громила", 5);
+
+        // this.view.signalAbility(() => { // то, что надо сделать сразу после мигания. }
+    }
+
+    // Изменяет урон, наносимый карте.
+    // Можно переопределить в наследниках.
+    // Позволяет определять способности, которые меняют наносимый карте урон.
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => { continuation(value - 1) });
+    };
+    getDescriptions() {
+        return ["Броня 1", ...super.getDescriptions()];
+    }
+}
+
+
+// Отвечает является ли карта уткой.
 function isDuck(card) {
     return card instanceof Duck;
 }
@@ -70,7 +91,7 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
