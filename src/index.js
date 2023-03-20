@@ -28,12 +28,6 @@ function getCreatureDescription(card) {
 }
 
 
-
-// Основа для утки.
-// function Duck() {
-//     this.quacks = function () { console.log('quack') };
-//     this.swims = function () { console.log('float: both;') };
-// }
 class Duck extends Card{
     constructor(name='Мирная утка', maxPower=2) {
         super(name, maxPower);
@@ -54,10 +48,19 @@ class Dog extends Card{
     }
 }
 
-// Основа для собаки.
-// function Dog() {
-// }
+class Trasher extends Dog{
+    constructor(name='Громила', maxPower=5) {
+        super(name, maxPower);
+    }
 
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => continuation(value - 1));
+    }
+
+    getDescriptions() {
+        return [getCreatureDescription(this), 'Получает на 1 урон меньше'];
+    }
+}
 
 // // Колода Шерифа, нижнего игрока.
 // const seriffStartDeck = [
@@ -75,9 +78,11 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
+
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
