@@ -246,3 +246,16 @@ const Card = function () {
 }();
 
 export default Card;
+
+export class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+    }
+
+    getDescriptions() {
+        return [
+            getCreatureDescription(this),
+            super.getDescriptions()
+        ];
+    };
+}
