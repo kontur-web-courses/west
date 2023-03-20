@@ -46,6 +46,27 @@ class Duck extends Creature {
     }
 }
 
+class Gatling extends Creature {
+    constructor() {
+        super("Гатлинг", 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        for (const card of oppositePlayer.table) {
+
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                this.dealDamageToCreature(this.currentPower, card, gameContext, onDone);
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
 class Dog extends Creature {
     constructor() {
         super("Пес-бандит", 3);
@@ -81,17 +102,16 @@ function isDuck(card) {
 function isDog(card) {
     return card instanceof Dog;
 }
-// Колода Шерифа, нижнего игрока.
-
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Gatling(),
 ];
-// Колода Бандита, верхнего игрока.
-
 const banditStartDeck = [
     new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 
