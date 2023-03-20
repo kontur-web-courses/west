@@ -1,4 +1,5 @@
 import Card from './Card.js';
+import {Creature} from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
@@ -14,7 +15,7 @@ function isDog(dog) {
 }
 
 // Дает описание существа по схожести с утками и собаками
-function getCreatureDescription(card) {
+export function getCreatureDescription(card) {
     if (isDuck(card) && isDog(card)) {
         return 'Утка-Собака';
     }
@@ -30,7 +31,7 @@ function getCreatureDescription(card) {
 
 
 // Основа для утки.
-class Duck extends Card {
+class Duck extends Creature {
     constructor(name="Мирная утка", power=2){
         super(name, power);
     }
@@ -40,7 +41,7 @@ class Duck extends Card {
 
 
 // Основа для собаки.
-class Dog extends Card {
+class Dog extends Creature {
     constructor(name="Пес-бандит", power=3){
         super(name, power);
     }

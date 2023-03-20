@@ -1,5 +1,6 @@
 import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
+import {getCreatureDescription} from './index.js';
 
 
 function getInheritanceDescription (card) {
@@ -247,13 +248,12 @@ export default class Card {
 }
 
 
-class Creature extends Card {
+export class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image);
     }
 
     getDescriptions() {
-        let res = [];
-        res.push();
+        return [getCreatureDescription(this), ...super.getDescriptions()];
     }
 }
