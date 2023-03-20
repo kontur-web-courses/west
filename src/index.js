@@ -58,9 +58,8 @@ class Gatling extends Creature {
         const taskQueue = new TaskQueue();
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
 
-        taskQueue.push(onDone => this.view.showAttack(onDone));
-
         for (let i = 0; i < oppositePlayer.table.length; i++){
+            taskQueue.push(onDone => this.view.showAttack(onDone));
             taskQueue.push(onDone => {
                 const oppositeCard = oppositePlayer.table[i];
 
@@ -84,8 +83,8 @@ class Trasher extends Dog{
         this.currentPower = 5;
 
     }
-    modifyTakenDamage(value, gameContext, continuation){
-        super. modifyTakenDamage(value-1, gameContext, continuation);
+    modifyTakenDamage(value, fromCard, gameContext, continuation){
+        super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
     }
 }
 
