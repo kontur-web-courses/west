@@ -249,7 +249,7 @@ class Rogue extends Creature {
         super(nameCorrect, maxPowerCorrect, imageCorrect);
     }
 
-    attack(gameContext, continuation) {
+    doBeforeAttack(gameContext, continuation) {
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
         const oppositeCard = oppositePlayer.table[position];
         if (oppositeCard) {
@@ -269,34 +269,27 @@ class Rogue extends Creature {
             gameContext.updateView();
         }
         continuation();
-        super.attack(gameContext, continuation);
     }
 }
+export default Rogue;
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Lad(),
-    new Lad(),
-    new Lad(),
-    new Lad(),
-    new Lad(),
-    new Lad(),
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Rogue(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Rogue(),
-    new Rogue(),
-    new Rogue(),
-    new Rogue(),
-    new Rogue(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
 ];
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(3);
+SpeedRate.set(1);
 
 // Запуск игры.
 game.play(false, (winner) => {
