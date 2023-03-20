@@ -27,36 +27,94 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-class Creature extends Card{
+class Creature extends Card {
     constructor(name, power) {
         super(name, power);
     }
-    getDescriptions(){
+
+    getDescriptions() {
         const first = getCreatureDescription(this);
         const second = super.getDescriptions();
         return [first, ...second];
     }
 }
-class Duck extends Creature{
+
+class Duck extends Creature {
     constructor(name = 'Мирная утка', power = 2) {
         super(name, power);
     }
-    quacks() { console.log('quack') };
-    swims() { console.log('float: both;') };
+
+    quacks() {
+        console.log('quack')
+    };
+
+    swims() {
+        console.log('float: both;')
+    };
 }
 
-class Dog extends Creature{
+class Dog extends Creature {
+    constructor(name = 'Браток', power = 2) {
+        super(name, power);
+    }
+}
+
+class Lad extends Dog {
     constructor(name = 'Пес-бандит', power = 3) {
         super(name, power);
     }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount+1)
+        continuation();
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    };
+    doBeforeRemoving (continuation) {
+        Lad.setInGameCount(Lad.getInGameCount-1)
+        super.doBeforeRemoving(continuation);
+    };
+
+
+    static getBonus() {
+        const currentInGameCount = this.getInGameCount();
+        return currentInGameCount * (currentInGameCount + 1) / 2;
+    }
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+    }
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty("modifyDealedDamageToCreature") || Lad.prototype.hasOwnProperty("modifyTakenDamage")) {
+            return [
+                "Чем их больше, тем они сильнее",
+                ...super.getDescriptions()
+            ];
+        }
+
+        return [
+            ...super.getDescriptions()
+        ];
+    }
 }
-class Gatling extends Creature{
+
+class Gatling extends Creature {
     constructor(name = 'Гатлинг', power = 6) {
         super(name, power);
     }
+
     attack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
-        const oppositeCards =gameContext.oppositePlayer.table;
+        const oppositeCards = gameContext.oppositePlayer.table;
         taskQueue.push(onDone => this.view.showAttack(onDone));
         for (let oppositeCard of oppositeCards)
             taskQueue.push(onDone => {
@@ -129,11 +187,10 @@ const seriffStartDeck = [
     new Duck(),
     new Rogue(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 
@@ -147,4 +204,12 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
+
+
+
+
+
+
+
 
