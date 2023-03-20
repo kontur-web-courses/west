@@ -7,9 +7,9 @@ class Creature extends Card {
     }
 
     getDescriptions() {
-        //let ar = super.getDescriptions(this);
-        //ar.unshift(getCreatureDescription(this))
-        return [getCreatureDescription(this)];
+        let ar = super.getDescriptions(this);
+        ar.unshift(getCreatureDescription(this))
+        return ar;
     };
 }
 

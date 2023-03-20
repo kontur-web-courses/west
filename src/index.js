@@ -29,24 +29,28 @@ export function getCreatureDescription(card) {
 }
 
 
-
 // Основа для утки.
 
 
-
 // Основа для собаки.
-class Duck extends Creature{
+class Duck extends Creature {
     constructor() {
         super();
         this.name = "Мирная утка";
         this.maxPower = 2;
         this.currentPower = 2;
     }
-    quacks() { console.log('quack') };
-    swims() { console.log('float: both;') };
+
+    quacks() {
+        console.log('quack')
+    };
+
+    swims() {
+        console.log('float: both;')
+    };
 }
 
-class Dog extends Creature{
+class Dog extends Creature {
     constructor() {
         super();
         this.name = "Пес-бандит";
@@ -69,6 +73,51 @@ class Trasher extends Dog{
 }
 
 
+class Lad extends Dog {
+    constructor() {
+        super();
+        this.name = "Браток";
+        this.maxPower = 2;
+        this.currentPower = 2;
+    }
+
+    static count;
+    static inGameCount = 0;
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.count++;
+        Lad.setInGameCount(Lad.count);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.count--;
+        Lad.setInGameCount(Lad.count);
+        super.doBeforeRemoving(continuation);
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+    };
+
+    static getBonus() {
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+}
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -79,6 +128,8 @@ const seriffStartDeck = [
 ];
 const banditStartDeck = [
     new Trasher(),
+    new Dog(),
+    new Lad()
 ];
 
 
