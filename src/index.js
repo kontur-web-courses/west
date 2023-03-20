@@ -40,8 +40,8 @@ class Creature extends Card {
 
 // Основа для утки.
 class Duck extends Creature {
-    constructor() {
-        super('Мирная утка', 2);
+    constructor(name = 'Мирная утка', power = 2) {
+        super(name, power);
     }
 
     quacks() { console.log('quack') };
@@ -51,14 +51,14 @@ class Duck extends Creature {
 
 // Основа для собаки.
 class Dog extends Creature{
-    constructor() {
-        super('Бандит', 3);
+    constructor(name = 'Пес-бандит', power = 3) {
+        super(name, power);
     }
 }
 
 class Trasher extends Dog{
-    constructor() {
-        super('Громила', 5);
+    constructor(name = 'Громила', power = 5) {
+        super(name, power);
     }
 
     modifyTakenDamage (value, fromCard, gameContext, continuation){
@@ -85,7 +85,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(3);
+SpeedRate.set(1);
 
 // Запуск игры.
 game.play(false, (winner) => {
