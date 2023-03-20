@@ -1,31 +1,10 @@
-const TaskQueue = function() {
-    function TaskQueue() {
+class TaskQueue {
+    constructor() {
         this.tasks = [];
         this.running = false;
     }
 
-    TaskQueue.prototype.push = function(run, dispose, duration) {
-        if (duration === undefined || duration === null) {
-            this.tasks.push({runAndContinue: run, dispose});
-        } else {
-            this.tasks.push({
-                runAndContinue: (continuation) => {
-                    run();
-                    setTimeout(() => {
-                        continuation();
-                    }, duration);
-                },
-                dispose
-            });
-        }
-        runNextTask(this);
-    };
-
-    TaskQueue.prototype.continueWith = function(action) {
-        this.push(action, null, 0);
-    };
-
-    function runNextTask(taskQueue) {
+    runNextTask(taskQueue) {
         if (taskQueue.running || taskQueue.tasks.length === 0) {
             return;
         }
@@ -49,7 +28,26 @@ const TaskQueue = function() {
         }
     }
 
-    return TaskQueue;
-}();
+    push(run, dispose, duration) {
+        if (duration === undefined || duration === null) {
+            this.tasks.push({runAndContinue: run, dispose});
+        } else {
+            this.tasks.push({
+                runAndContinue: (continuation) => {
+                    run();
+                    setTimeout(() => {
+                        continuation();
+                    }, duration);
+                },
+                dispose
+            });
+        }
+        runNextTask(this);
+    };
+
+    continueWith(action) {
+        this.push(action, null, 0);
+    };
+}
 
 export default TaskQueue;
