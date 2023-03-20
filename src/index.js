@@ -41,7 +41,11 @@ class Duck extends Card {
 
 
 // Основа для собаки.
-function Dog() {
+class Dog extends Card{
+    constructor() {
+        super('Бандит', 3);
+    }
+
 }
 
 
@@ -54,7 +58,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Card('Бандит', 3),
+    new Dog(),
 ];
 
 
