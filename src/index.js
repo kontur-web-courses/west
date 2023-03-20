@@ -1,6 +1,5 @@
 import Card from './Card.js';
 import Game from './Game.js';
-import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 class Creature extends Card {
@@ -9,7 +8,10 @@ class Creature extends Card {
     }
 
     getDescriptions() {
-        return [getCreatureDescription(this), ...super.getDescriptions()];
+        return [
+            getCreatureDescription(this),
+            ...super.getDescriptions()
+        ];
     }
 }
 
@@ -39,8 +41,8 @@ function getCreatureDescription(card) {
 
 
 class Duck extends Creature {
-    constructor(name, power) {
-        super(name || 'Мирная утка', power || 2);
+    constructor() {
+        super('Мирная утка', 2);
     }
 
     quacks() {
@@ -54,8 +56,8 @@ class Duck extends Creature {
 
 
 class Dog extends Creature {
-    constructor(name, power) {
-        super(name || 'Пес-бандит', power || 3);
+    constructor() {
+        super('Пес-бандит', 3);
     }
 }
 
@@ -71,7 +73,11 @@ class Trasher extends Dog {
     };
 
     getDescriptions() {
-        return [getCreatureDescription(this), 'Получает на 1 меньше урона', ...super.getDescriptions()];
+        return [
+            getCreatureDescription(this),
+            'Получает на 1 меньше урона',
+            ...super.getDescriptions()
+        ];
     }
 }
 
@@ -81,11 +87,12 @@ class Gatling extends Creature {
     }
 
     attack(gameContext, continuation) {
-        for (const entity of gameContext.oppositePlayer.table) {
-            if (entity !== gameContext.oppositePlayer) {
-                entity.takeDamage(2, this, gameContext, continuation)
-                continuation(2);
+        for (const item of gameContext.oppositePlayer.table) {
+            if (item === gameContext.oppositePlayer) {
+                continue;
             }
+            item.takeDamage(2, this, gameContext, continuation)
+            continuation(2);
         }
     }
 }
@@ -128,15 +135,25 @@ class Lad extends Dog {
 
     getDescriptions() {
         if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
-            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()];
+            return [
+                'Чем их больше, тем они сильнее',
+                ...super.getDescriptions()
+            ];
         }
         return super.getDescriptions();
     }
 }
 
 
-const seriffStartDeck = [new Duck(), new Duck(), new Duck(),];
-const banditStartDeck = [new Lad(), new Lad(),];
+const seriffStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
+];
+const banditStartDeck = [
+    new Lad(),
+    new Lad(),
+];
 
 
 // Создание игры.
