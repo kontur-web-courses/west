@@ -65,6 +65,13 @@ class Trasher extends Dog{
         this.view.signalAbility(() =>
         {super.modifyTakenDamage(value-1, fromCard, gameContext, continuation)});
     }
+
+    getDescriptions() {
+        let description = 'Получает на 1 меньше урона';
+        let arr = super.getDescriptions();
+        arr.push(description);
+        return arr;
+    }
 }
 
 
