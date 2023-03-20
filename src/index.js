@@ -28,10 +28,8 @@ function getCreatureDescription(card) {
 }
 
 class Duck extends Card {
-    constructor() {
-        super();
-        this.name = "Мирная утка";
-        this.power = 2;
+    constructor(name='Мирная утка', power=2) {
+        super(name, power);
     }
 
     quacks = function () {
@@ -44,10 +42,8 @@ class Duck extends Card {
 }
 
 class Dog extends Card {
-    constructor() {
-        super();
-        this.name = "Пес-бандит";
-        this.power = 3;
+    constructor(name="Пес-бандит", power=3) {
+        super(name, power);
     };
 
 }
