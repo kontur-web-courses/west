@@ -99,47 +99,78 @@ class Gatling extends Creature{
     };
 }
 
-class Lad extends Dog{
-    static inGameCount = 0;
-    constructor(name = 'Браток', power = 2) {
+class Lad extends Dog {
+    constructor(name = 'Браток', power = 2, image) {
         super(name, power);
-    };
-
-    static getInGameCount() {
-        return this.inGameCount || 0;
-    };
-
-    static setInGameCount(value) {
-        this.inGameCount = value;
-    };
+    }
 
     doAfterComingIntoPlay(gameContext, continuation) {
-        Lad.inGameCount++;
+        const ladsInGame = Lad.getInGameCount();
+        Lad.setInGameCount(ladsInGame + 1);
         super.doAfterComingIntoPlay(gameContext, continuation);
-    };
+    }
 
-    doBeforeRemoving(gameContext, continuation) {
-        Lad.inGameCount--;
-        super.doBeforeRemoving(gameContext, continuation);
-    };
-
-    static getBonus(){
-        const count = this.getInGameCount();
-        return count * (count + 1) / 2;
-    };
-
-    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
-        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
-    };
+    doBeforeRemoving(continuation) {
+        const ladsInGame = Lad.getInGameCount();
+        Lad.setInGameCount(ladsInGame - 1);
+        super.doBeforeRemoving(continuation);
+    }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
-    };
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
+    }
 
     getDescriptions() {
-        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
-            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()];
+        return ["Чем их больше, тем они сильнее", ...super.getDescriptions()];
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        const currentInGameCount = this.getInGameCount();
+        return currentInGameCount * (currentInGameCount + 1) / 2;
+    }
+}
+
+class Rogue extends Creature {
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Изгой";
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || null;
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+        if (oppositeCard) {
+            const cardProto = Object.getPrototypeOf(oppositeCard);
+            if (cardProto.hasOwnProperty('modifyDealedDamageToCreature')) {
+                this.modifyDealedDamageToCreature = cardProto.modifyDealedDamageToCreature;
+                delete cardProto['modifyDealedDamageToCreature'];
+            }
+            if (cardProto.hasOwnProperty('modifyDealedDamageToPlayer')) {
+                this.modifyDealedDamageToPlayer = cardProto.modifyDealedDamageToPlayer;
+                delete cardProto['modifyDealedDamageToPlayer'];
+            }
+            if (cardProto.hasOwnProperty('modifyTakenDamage')) {
+                this.modifyTakenDamage = cardProto.modifyTakenDamage;
+                delete cardProto['modifyTakenDamage'];
+            }
+            gameContext.updateView();
         }
+        continuation();
     }
 }
 
@@ -148,8 +179,10 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Rogue(),
 ];
 const banditStartDeck = [
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
@@ -158,7 +191,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(2);
+SpeedRate.set(4);
 
 // Запуск игры.
 game.play(false, (winner) => {
