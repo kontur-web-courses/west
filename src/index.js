@@ -65,7 +65,7 @@ class Trasher extends Dog {
 	constructor(name = 'Громила', power = 5) {
 		super(name, power)
 	}
-	getDescriptions(){
+	getDescriptions() {
         return ['Громила', 'Получает на 1 меньше урона', ...super.getDescriptions()]
     }
     modifyTakenDamage (value, fromCard, gameContext, continuation){
@@ -82,12 +82,13 @@ class Gatling extends Creature {
 		gameContext.oppositePlayer.table.forEach(oppositeCard => {
             if (oppositeCard){
                 taskQueue.push(onDone => this.view.showAttack(onDone))
-					taskQueue.push(onDone =>
-					this.dealDamageToCreature(
-						2,
-						oppositeCard,
-						gameContext,
-						onDone));
+				taskQueue.push(onDone =>
+				this.dealDamageToCreature(
+					2,
+					oppositeCard,
+					gameContext,
+					onDone)
+				);
             }		
 		});
         taskQueue.continueWith(continuation);
@@ -119,6 +120,7 @@ class Lad extends Dog {
 	}
 
 	doAfterComingIntoPlay() {
+		alert('1');
 		Lad.setInGameCount(Lad.getInGameCount() + 1);
 	}
 
@@ -137,15 +139,16 @@ class Lad extends Dog {
     }
 
 	modifyTakenDamage (value, fromCard, gameContext, continuation){
-        super.modifyTakenDamage(value - getBonus(), fromCard, gameContext, continuation);
+		alert('1')
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
     }
 
 	modifyDealedDamageToCreature (value, toCard, gameContext, continuation) {
-		super.modifyDealedDamageToCreature(value + getBonus(), toCard, gameContext, continuation);
+		super.modifyDealedDamageToCreature(value + Lad.getBonus(), toCard, gameContext, continuation);
 	}
 
 	static getBonus() {
-		count = this.inGameCount;
+		let count = this.inGameCount;
 		return count * (count + 1) / 2;
 	}
 
@@ -159,13 +162,13 @@ class Lad extends Dog {
 }
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+	new Duck(),
+	new Duck(),
+	new Duck(),
 ];
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
+	new Lad(),
+	new Lad(),
 ];
 
 
