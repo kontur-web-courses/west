@@ -1,7 +1,7 @@
 import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
 
-const Card = function () {
+export const Card = function () {
     function Card(name, maxPower, image) {
         this.name = name;
         this.image = image;
