@@ -70,6 +70,30 @@ class Trasher extends Dog {
     };
 }
 
+class Gatling extends Creature {
+
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        let table = gameContext.oppositePlayer.table;
+        for(let i = 0; i < table.length; i++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[i];
+                if (oppositeCard) {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    }
+}
+
+
 class Lad extends Dog {
     constructor(name='Браток', pow=2) {
         super(name, pow);
