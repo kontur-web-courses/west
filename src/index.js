@@ -41,9 +41,19 @@ game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
 
-class Duck extends Card {
-    constructor() {
-        super("Мирная утка", 2)
+class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image)
+    }
+    getDescriptions() {
+        return super.getDescriptions().unshift(getCreatureDescription(this));
+    }
+}
+
+
+class Duck extends Creature {
+    constructor(name="Мирная утка", maxPower=2) {
+        super(name, maxPower)
     }
 
     quacks() { 
@@ -53,13 +63,26 @@ class Duck extends Card {
     swims() { 
         console.log('float: both;'); 
     }
-
-
 }
 
-class Dog extends Card {
+class Dog extends Creature {
+    constructor(name="Пес-бандит", maxPower=3) {
+        super(name, maxPower)
+    }
+}
+
+class Trasher extends Dog {
     constructor() {
         super("Пес-бандит", 3)
+        super('Громила', 5)
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => { super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation) });
+    }
+
+    getDescriptions() {
+        return super.getDescriptions();
     }
 }
 
@@ -70,3 +93,4 @@ function isDuck(card) {
 function isDog(card) {
     return card instanceof Dog;
 }
+
