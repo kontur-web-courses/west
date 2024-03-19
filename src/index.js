@@ -141,12 +141,49 @@ class Lad extends Dog {
         return xx;
     }
 }
+class Rogue extends Creature{
+    constructor() {
+        super('Изгой', 2);
+    }
+}
+class Brewer extends Duck{
+    constructor() {
+        super('Пивовар', 2);
+    }
+    attack (gameContext, continuation){
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        taskQueue.push(onDone => {
+        const oppositeCard = oppositePlayer.table[position];
+            let allPlayerOnDesk = currentPlayer.table.concat(oppositePlayer.table)
+            for(const currCard of allPlayerOnDesk)
+            {
+                if (isDuck(currCard)) {
+                    this.view.signalHeal(() => {
+                        currCard.maxPower += 1;
+                        currCard.currentPower += 2;
+                        currCard.updateView();})
+                }
+            }
+        if (oppositeCard) {
+            this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+        } else {
+            this.dealDamageToPlayer(1, gameContext, onDone);
+        }});
+        taskQueue.continueWith(continuation);
+    }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Gatling(),
-    new Duck(),
+    new Brewer(),
+    new Gatling(),
+
     new Duck(),
     new Gatling(),
     new Gatling(),
@@ -155,11 +192,9 @@ const seriffStartDeck = [
 const banditStartDeck = [
     new Lad(),
     new Dog(),
-    new Lad(),
-    new Trasher(),
-    new Trasher(),
-    new Lad(),
-    new Lad(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
     new Dog(),
 ];
 
