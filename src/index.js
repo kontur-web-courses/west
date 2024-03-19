@@ -114,7 +114,7 @@ class Lad extends Dog{
     };
 
     static getBonus() {
-        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+        return Lad.getInGameCount() * (Lad.getInGameCount() + 1) / 2;
     }
 
     modifyDealedDamageToCreature (value, toCard, gameContext, continuation) {
@@ -124,8 +124,8 @@ class Lad extends Dog{
         super.modifyTakenDamage(value-Lad.getBonus(), fromCard, gameContext, continuation)
     }
 
-    static getInGameCount() { return this.inGameCount || 0; }
-    static setInGameCount(value) { this.inGameCount = value; }
+    static getInGameCount() { return Lad.inGameCount || 0; }
+    static setInGameCount(value) { Lad.inGameCount = value; }
 
 
     getDescriptions() {
@@ -143,12 +143,17 @@ class Lad extends Dog{
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Gatling()
+    new Duck(),
+    new Duck(),
+    new Gatling(),
+    new Duck(),
 ];
 const banditStartDeck = [
+    new Trasher(),
     new Lad(),
     new Lad(),
     new Lad(),
+    new Dog(),
 ];
 
 
