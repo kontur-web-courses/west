@@ -4,6 +4,19 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 
+class Creature extends Card {
+    constructor(name, maxPower, path) {
+        super(name, maxPower, path);
+    }
+
+    getDescriptions() {
+        return [
+            getCreatureDescription(this), 
+            ...super.getDescriptions()
+        ];
+    }
+}
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card instanceof Duck;
@@ -15,7 +28,7 @@ function isDog(card) {
 }
 
 // Дает описание существа по схожести с утками и собаками
-function getCreatureDescription(card) {
+export default function getCreatureDescription(card) {
     if (isDuck(card) && isDog(card)) {
         return 'Утка-Собака';
     }
@@ -30,7 +43,7 @@ function getCreatureDescription(card) {
 
 
 // Основа для утки.
-class Duck extends Card {
+class Duck extends Creature {
     constructor(name = 'Мирная утка', maxPower = 2) {
         super(name, maxPower, 'sheriff.png');
     }
@@ -46,9 +59,29 @@ class Duck extends Card {
 
 
 // Основа для собаки.
-class Dog extends Card {
+class Dog extends Creature {
     constructor(name = 'Бандит', maxPower = 3) {
         super(name, maxPower, 'bandit.png');
+    }
+}
+
+class Gatling extends Creature {
+    constructor(name = 'Гатлинг', power = 6, path = 'Gatling.jpg') {
+        super(name, power, path);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        for (const card of gameContext.oppositePlayer.table) {
+            if (card){
+                taskQueue.push(onDone => this.view.showAttack(onDone));
+                taskQueue.push(onDone => {
+                    this.dealDamageToCreature(this.currentPower, card, gameContext, onDone);
+                });
+            }
+        }
+
+        taskQueue.continueWith(continuation);
     }
 }
 
@@ -56,12 +89,10 @@ class Dog extends Card {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Dog(),
     new Dog(),
 ];
 
