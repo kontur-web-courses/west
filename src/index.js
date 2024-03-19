@@ -27,20 +27,33 @@ class Duck extends Creature {
 
     quacks () { console.log('quack'); }
     swims () { console.log('float: both;'); }    
+
+    getDescriptions() {
+        return ['Утка'].concat(super.getDescriptions());
+    }
 }
 
 class Dog extends Creature {
     constructor(name='Пес-бандит', power=3, image=null) {
         super(name, power, image);
     }
+
+    getDescriptions() {
+        return ['Собака'].concat(super.getDescriptions());
+    }
 }
 
 class Trasher extends Dog {
     constructor(name='Громила', power=5, image=null) {
         super(name, power, image);
-        this.modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
-            this.view.signalAbility(() => {continuation(value - 1);});
-        }
+    }
+
+    modifyTakenDamage (value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {continuation(value - 1);});
+    }
+
+    getDescriptions() {
+        return ['-1 dmg'].concat(super.getDescriptions());
     }
 }
 
