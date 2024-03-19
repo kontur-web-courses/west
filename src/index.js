@@ -51,8 +51,8 @@ class Duck extends Creature {
 
 // Основа для собаки.
 class Dog extends Creature {
-    constructor(name = 'Пес-багдит', maxPower = 3) {
-        super(name, maxPower);
+    constructor() {
+        super('Пес-бандит', 3);
     }
 }
 
@@ -61,7 +61,7 @@ class Trasher extends Dog{
         super(name, maxPower)
     }
     modifyTakenDamage = (value, fromCard, gameContext, continuation) => {
-        this.view.signalAbility(() => { 
+        this.view.signalAbility(() => {
             super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation)
         })
     }
@@ -74,13 +74,80 @@ class Trasher extends Dog{
     }
 }
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const oppositePlayer = gameContext.oppositePlayer;
+
+        for (let position = 0; position < oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => {
+                const card = oppositePlayer.table[position];
+                if (card) {
+                    this.dealDamageToCreature(2, card, gameContext, onDone);
+                } else {
+                    onDone();
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
+class Lad extends Dog {
+    constructor() {
+        super('Браток', 2);
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        this.constructor.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        this.constructor.setInGameCount(lad.getInGameCount() - 1);
+        super.doBeforeRemoving(continuation);
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        const bonus = this.constructor.getBonus();
+        super.modifyDealedDamageToCreature(value + bonus, toCard, gameContext, continuation);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        const bonus = this.constructor.getBonus();
+        super.modifyTakenDamage(value - bonus, fromCard, gameContext, continuation);
+    }
+
+    getDescriptions() {
+        return ["Чем их больше, тем они сильнее", ...super.getDescriptions()];
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static getBonus() {
+        const count = this.getInGameCount();
+        return count * (count + 1) / 2;
+    }
+}
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
-    new Trasher(),
     new Dog(),
 ];
 
