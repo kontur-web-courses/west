@@ -28,6 +28,10 @@ function getCreatureDescription(card) {
 }
 
 
+class Creature extends Card {
+    
+}
+
 
 // Основа для утки.
 /*function Duck() {
