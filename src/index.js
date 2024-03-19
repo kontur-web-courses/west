@@ -19,13 +19,11 @@ function getCreatureDescription(card) {
         return 'Утка-Собака';
     }
     if (isDuck(card)) {
-        console.log('!');
         return 'Утка';
     }
     if (isDog(card)) {
         return 'Собака';
     }
-    console.log('?')
     return 'Существо';
 }
 
@@ -36,7 +34,7 @@ class Creature extends Card {
 
     getDescriptions() {
         const firstStr = getCreatureDescription(this);
-        const secondStr = super.getDescriptions();
+        const secondStr = super.getDescriptions()[0];
         return [firstStr, secondStr];
     }
 }
@@ -56,6 +54,12 @@ class Duck extends Creature {
 class Dog extends Creature {
     constructor(name="Пес-бандит", maxPower=3, image) {
         super(name, maxPower, image);
+    }
+}
+
+class Trasher extends Dog {
+    constructor() {
+        super(name="Громила", maxPower = 5, image);
     }
 }
 
