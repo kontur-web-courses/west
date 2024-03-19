@@ -49,6 +49,16 @@ class Dog extends Card {
     }
 }
 
+class Trasher extends Dog{
+    constructor(name='Громила', maxPower=5){
+        super(name, maxPower);
+    }
+    modifyTakenDamage(v){
+        super.modifyTakenDamage(v-1);
+    }
+    
+    //this.view.signalAbility(() => { // то, что надо сделать сразу после мигания. }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -59,7 +69,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 //console.log(isDuck(seriffStartDeck[0]))
 
