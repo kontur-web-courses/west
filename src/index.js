@@ -59,8 +59,43 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor(name='Пес-бандит') {
-        super(name, 3);
+    constructor(name='Пес-бандит', power=3) {
+        super(name, power);
+    }
+}
+
+class Lad extends Dog {
+    static getInGameCount() { return this.inGameCount || 0; }
+    static setInGameCount(value) { this.inGameCount = value; }
+
+    static getBonus() {
+        const inGame = Lad.getInGameCount();
+        return inGame * (inGame + 1) / 2;
+    }
+
+    constructor() {
+        super('Браток', 2);
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        value += Lad.getBonus();
+        continuation(value);
+    }
+
+    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+        value -= Lad.getBonus();
+        continuation(value);
+    }
+
+    doAfterComingIntoPlay = function (gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        continuation();
+    }
+
+    doBeforeRemoving = function (continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
     }
 }
 
@@ -120,9 +155,12 @@ function getCreatureDescription(card) {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
+    new Duck(),
+    new Duck(),
 ];
 const banditStartDeck = [
-    new Trasher(),
+    new Lad(),
+    new Lad(),
 ];
 
 
