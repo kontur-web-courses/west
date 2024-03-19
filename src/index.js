@@ -9,12 +9,14 @@ class Creature extends Card {
         super(...args);
     }
 
-    getDescriptions = () => {
+    getDescriptions () {
         return [
             getCreatureDescription(this),
             ...super.getDescriptions()
         ]
+
     }
+
 }
 
 
@@ -59,8 +61,8 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor(name='Пес-бандит') {
-        super(name, 3);
+    constructor(name='Пес-бандит', power = 3) {
+        super(name, power);
     }
 }
 
@@ -78,16 +80,34 @@ class Trasher extends Dog {
 
     getDescriptions() {
         return [
-            getCreatureDescription(this),
-            ...super.getDescriptions()
+            ...super.getDescriptions(),'Получает на 1 урона меньше'
+
         ]
     }
 }
 
 
+class Rogue extends Creature{
+    constructor() {
+        super('Изгой', 2);
+    }
+
+
+}
+
+class PseudoDuck extends Dog {
+    constructor() {
+        super('Псевдоутка', 3);
+    }
+}
+
+Object.assign(PseudoDuck.prototype, Duck.prototype.swims)
+Object.assign(PseudoDuck.prototype, Duck.prototype.quacks)
+
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
-    return card instanceof Duck;
+    return card && card.quacks && card.swims;
 }
 
 // Отвечает является ли карта собакой.
@@ -119,6 +139,9 @@ function getCreatureDescription(card) {
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
