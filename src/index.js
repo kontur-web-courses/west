@@ -27,20 +27,27 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card {
+    getDescription() {
+        return [getCreatureDescription(this), super.getDescriptions(this)];
+    }
+}
 
-class Duck extends Card{
+class Duck extends Creature {
     constructor() {
         super('Мирная утка', 2);
     }
-    quacks(){
-        console.log('quack')
+
+    quacks() {
+        console.log('quack');
     };
-    swims(){
-        console.log('float: both;')
+
+    swims() {
+        console.log('float: both;');
     };
 }
 
-class Dog extends Card{
+class Dog extends Creature {
     constructor() {
         super('Пес-бандит', 3);
     }
