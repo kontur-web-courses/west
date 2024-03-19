@@ -54,7 +54,6 @@ class Dog extends Creature {
 
 class Trasher extends Dog {
     constructor() {
-        super("Пес-бандит", 3)
         super('Громила', 5)
     }
 
@@ -64,6 +63,27 @@ class Trasher extends Dog {
 
     getDescriptions() {
         return super.getDescriptions();
+    }
+}
+
+
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6)
+    }
+    
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const { currentPlayer, oppositePlayer, position, updateView } = gameContext;
+        const opponentCards = oppositePlayer.table;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        for (let oppositeCard of opponentCards)
+            taskQueue.push(onDone => {
+                this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+            });
+
+        taskQueue.continueWith(continuation);
     }
 }
 
@@ -80,12 +100,14 @@ function isDog(card) {
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
-
 const banditStartDeck = [
+    new Trasher(),
+    new Dog(),
     new Dog(),
 ];
+
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
 
