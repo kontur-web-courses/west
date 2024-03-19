@@ -101,7 +101,6 @@ const Card = function () {
                 onDone();
             });
         });
-
         taskQueue.push(onDone => {
             toCard.takeDamage(Math.max(actualValue, 0), this, gameContext, onDone);
         });
