@@ -70,8 +70,51 @@ class Trasher extends Dog {
     };
 }
 
+class Lad extends Dog {
+    constructor(name='Браток', pow=2) {
+        super(name, pow);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        Lad.inGameCount += 1;
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.inGameCount -= 1;
+        continuation();
+    }
+
+    static getBonus() {
+        return this.inGameCount * (this.inGameCount + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(value + (Lad.getBonus() || 0));
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(value - (Lad.getBonus() || 0));
+    }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature'))
+            return ['Чем их больше, тем они сильнее', ...super.getDescriptions()]
+        return super.getDescriptions()
+    }
+}
 
 const seriffStartDeck = [
+    new Duck(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -79,6 +122,9 @@ const seriffStartDeck = [
 ];
 const banditStartDeck = [
     new Trasher(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
 ];
 
 
