@@ -170,18 +170,23 @@ class Brewer extends Duck {
     }
 }
 
-// // Колода Шерифа, нижнего игрока.
-// const seriffStartDeck = [
-//     new Duck(),
-//     new Duck(),
-//     new Duck(),
-// ];
-//
-// // Колода Бандита, верхнего игрока.
-// const banditStartDeck = [
-//     new Lad(),
-//     new Lad(),
-// ];
+class PseudoDuck extends Dog {
+    constructor(name = 'Псевдоутка', maxPower = 3, image = null) {
+        super(name, maxPower, image);
+    }
+
+    quacks() {
+        console.log('quack');
+    }
+
+    swims() {
+        console.log('float: both;');
+    }
+
+    getDescriptions() {
+        return super.getDescriptions();
+    }
+}
 
 const seriffStartDeck = [
     new Duck(),
@@ -189,10 +194,13 @@ const seriffStartDeck = [
 ];
 const banditStartDeck = [
     new Dog(),
-    new Dog(),
-    new Dog(),
+    new PseudoDuck(),
     new Dog(),
 ];
+
+if (isDuck(new PseudoDuck())) {
+    console.log(true)
+}
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
