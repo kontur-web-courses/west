@@ -160,6 +160,23 @@ class Lad extends Dog {
     }
 }
 
+class PseudoDuck extends Dog {
+    constructor() {
+        super();
+        this.name = 'Псевдоутка';
+        this.maxPower = 3;
+        this.currentPower = 3;
+    }
+
+    quacks() {
+        console.log('I can quack!');
+    }
+
+    swims() {
+        console.log('I can swim!');
+    }
+}
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
