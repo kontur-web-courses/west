@@ -45,8 +45,8 @@ class Gatling extends Creature {
 
 
 class Duck extends Creature {
-    constructor() {
-        super('Мирная утка', 2);
+    constructor(name='Мирная утка', power=2) {
+        super(name, power);
     }
 
     quacks() {
@@ -59,7 +59,7 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor(name='Пес-бандит', power=3) {
+    constructor(name='Пес-бандит', power = 3) {
         super(name, power);
     }
 }
@@ -120,16 +120,58 @@ class Trasher extends Dog {
 
     getDescriptions() {
         return [
-            getCreatureDescription(this),
-            ...super.getDescriptions()
+            ...super.getDescriptions(),'Получает на 1 урона меньше'
         ]
     }
 }
 
 
+class Brewer extends Duck{
+    constructor() {
+        super('Пивовар', 2);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, updateView} = gameContext;
+        const allCards = currentPlayer.table.concat(oppositePlayer.table);
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        taskQueue.push(onDone => {
+            allCards.forEach(card => {
+                if (card instanceof Duck) {
+                    card.maxPower += 1;
+                    card.currentPower = Math.min(card.currentPower + 2, card.maxPower);
+                    card.view.signalHeal();
+                    card.updateView();
+                }
+            });
+
+            this.maxPower += 1;
+            this.currentPower = Math.min(this.currentPower + 2, this.maxPower);
+            this.view.signalHeal();
+            this.updateView();
+            onDone();
+        });
+
+        taskQueue.continueWith(continuation);
+    }
+
+}
+
+class PseudoDuck extends Dog {
+    constructor() {
+        super('Псевдоутка', 3);
+    }
+}
+
+Object.assign(PseudoDuck.prototype, Duck.prototype.swims)
+Object.assign(PseudoDuck.prototype, Duck.prototype.quacks)
+
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
-    return card instanceof Duck;
+    return card && card.quacks && card.swims;
 }
 
 // Отвечает является ли карта собакой.
@@ -166,10 +208,14 @@ function getCreatureDescription(card) {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
+    new Brewer(),
     new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
+    new Dog(),
+    new PseudoDuck(),
+    new Dog(),
     new Lad(),
     new Lad(),
 ];
