@@ -86,14 +86,37 @@ class Gatling extends Creature {
 }
 
 
+class Trasher extends Dog {
+    constructor(name = 'Громила', maxPower = 5) {
+        super(name, maxPower);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        if (value >= 2) {
+            continuation(value);
+            this.view.signalAbility(() => {
+                this.view.signalDamage(continuation);
+            });
+        } else {
+            this.view.signalAbility(() => {
+            });
+        }
+    }
+
+    getDescriptions() {
+        const description = super.getDescriptions();
+        description.push('Получает на один урон меньше');
+        return description;
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Gatling(),
 ];
 const banditStartDeck = [
-    new Dog(),
-    new Dog(),
+    new Trasher(),
 ];
 
 
