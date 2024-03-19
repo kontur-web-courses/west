@@ -58,8 +58,52 @@ class Duck extends Creature {
 
 // класс Собаки с именем Пес-собака и силой 3
 class Dog extends Creature {
-    constructor() {
-        super('Пес-собака', 3);
+    constructor(name = 'Пес-собака', maxPower = 3, image = null) {
+        super(name, maxPower, image);
+    }
+}
+
+class Lad extends Dog {
+    static getInGameCount() { 
+        return this.inGameCount || 0; 
+    } 
+    
+    static setInGameCount(value) { 
+        this.inGameCount = value; 
+    }
+
+    static getBonus() {
+        const count = this.getInGameCount();
+        return count * (count + 1) / 2;
+    }
+
+    constructor(name='Браток', maxPower=2, image=null) {
+        super(name, maxPower, image)
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(Lad.getBonus() + value);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(Lad.getBonus() + value);
+    }
+
+    getDescriptions() {
+        return [
+            Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') && 'Чем их больше, тем они сильнее',
+            ...super.getDescriptions()
+        ]
     }
 }
 
@@ -89,8 +133,8 @@ const seriffStartDeck = [
     new Gatling(),
 ];
 const banditStartDeck = [
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 
