@@ -5,8 +5,21 @@ import SpeedRate from './SpeedRate.js';
 
 
 
+class Creature extends Card {
+    constructor(...args) {
+        super(...args);
+    }
 
-class Duck extends Card {
+    getDescriptions = () => {
+        return [
+            getCreatureDescription(this),
+            ...super.getDescriptions()
+        ]
+    }
+}
+
+
+class Duck extends Creature {
     constructor() {
         super('Мирная утка', 2);
     }
@@ -20,7 +33,7 @@ class Duck extends Card {
     }
 }
 
-class Dog extends Card {
+class Dog extends Creature {
     constructor() {
         super('Пес-бандит', 3);
     }
@@ -51,14 +64,6 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-class Creature extends Card {
-    getDescriptions = function () {
-        return [
-            getCreatureDescription(this),
-            ...super.getDescriptions()
-        ]
-    }
-}
 
 
 
