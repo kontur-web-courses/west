@@ -11,7 +11,7 @@ class Creature extends Card {
 
     getDescriptions() {
         return [
-            getCreatureDescription(this), 
+            getCreatureDescription(this),
             ...super.getDescriptions()
         ];
     }
@@ -73,7 +73,7 @@ class Gatling extends Creature {
     attack(gameContext, continuation) {
         const taskQueue = new TaskQueue();
         for (const card of gameContext.oppositePlayer.table) {
-            if (card){
+            if (card) {
                 taskQueue.push(onDone => this.view.showAttack(onDone));
                 taskQueue.push(onDone => {
                     this.dealDamageToCreature(this.currentPower, card, gameContext, onDone);
@@ -93,7 +93,7 @@ class Trasher extends Dog {
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         if (value >= 2) {
-            continuation(value);
+            continuation(value - 1);
             this.view.signalAbility(() => {
                 this.view.signalDamage(continuation);
             });
@@ -110,15 +110,63 @@ class Trasher extends Dog {
     }
 }
 
+class Lad extends Dog {
+    constructor(name = 'Братишка', maxPower = 2) {
+        super(name, maxPower);
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        continuation();
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(value + Lad.getBonus());
+    };
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        continuation(Math.max(value - Lad.getBonus()), 0);
+    };
+
+    getDescriptions() {
+        const description = super.getDescriptions();
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') ||
+            Lad.prototype.hasOwnProperty('modifyTakenDamage'))
+            description.push('Чем их больше, тем они сильнее');
+        return description;
+    }
+
+    static inGameCount;
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Gatling(),
+    new Duck(),
+    new Duck(),
 ];
 const banditStartDeck = [
-    new Trasher(),
-    new Trasher(),
-    new Trasher(),
+    new Lad(),
+    new Lad(),
 ];
 
 
