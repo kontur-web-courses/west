@@ -31,13 +31,15 @@ function getCreatureDescription(card) {
 class Duck extends Card {
     constructor(name = 'Мирная утка', maxPower = 2) {
         super(name, maxPower);
-        this.quacks = function () {
-            console.log('quack');
-        };
-        this.swims = function () {
-            console.log('float: both;');
-        };
     }
+
+    quacks() {
+        console.log('quack');
+    };
+
+    swims() {
+        console.log('float: both;');
+    };
 }
 
 
