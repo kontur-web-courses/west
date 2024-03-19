@@ -30,7 +30,7 @@ function getCreatureDescription(card) {
 
 class Creature extends Card{
     getDescriptions() {
-        let a = getCreatureDescription();
+        let a = getCreatureDescription(this);
         let b = super.getDescriptions();
         return [a, b]
     }
