@@ -85,22 +85,31 @@ class Trasher extends Dog {
     constructor() {
         super("Громила", 5);
     }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value / 2, fromCard, gameContext, continuation);
+        this.view.signalAbility(() => { this.view.signalDamage() });
+    }
+
+    getDescriptions() {
+        const firstStr = "Уменьшает получаемый урон в два раза";
+        const secondStr = super.getDescriptions()[1];
+        return [firstStr, secondStr];
+    }
 }
 
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck('Мирный житель', 10),
     new Duck(),
-    new Duck('Мирный житель', 10),
+    new Duck(),
+    new Duck(),
+    new Duck(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog('Бандит', 1),
-    new Gatling(),
-    //new Dog('Бандит', 3),
-
+    new Trasher(),
 ];
 
 
