@@ -27,24 +27,39 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+    }
 
+    getDescriptions() {
+        const baseDescriptions = super.getDescriptions();
+        const creatureDescription = getCreatureDescription(this);
+
+        return [creatureDescription, ...baseDescriptions];
+    }
+}
 
 // Основа для утки.
-
-
-class Duck extends Card{
-    constructor(){
-        super('Мирная утка', 2)
+class Duck extends Creature {
+    constructor() {
+        super('Мирная утка', 2);
     }
     quacks = function () { console.log('quack') };
     swims = function () { console.log('float: both;') };
 }
 
 // Основа для собаки.
+<<<<<<< HEAD
 
 class Dog extends Card{
     constructor(name = 'Пес-бандит', maxPower = 3){
         super(name, maxPower)
+=======
+class Dog extends Creature {
+    constructor() {
+        super('Пес-бандит', 3);
+>>>>>>> f6777ce617909e2e5ef69a8a1edbddf9c9e4634a
     }
 }
 
