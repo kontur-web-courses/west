@@ -91,6 +91,52 @@ class Trasher extends Dog {
     };
 }
 
+class Lad extends Dog {
+    constructor() {
+        super();
+        this.name = 'Браток';
+        this.currentPower = 2;
+        this.maxPower = 2;
+    }
+
+    static getDamageBonus() {
+        const totalCount = Lad.getInGameCount();
+        return totalCount * (totalCount + 1) / 2;
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        const bonus = Lad.getDamageBonus();
+        this.view.signalAbility(() => {
+            continuation(value - bonus);
+        });
+    };
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        const bonus = Lad.getDamageBonus();
+        continuation(value + bonus);
+    };
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.inGameCount++;
+        continuation();
+    };
+
+    doBeforeRemoving(continuation) {
+        Lad.inGameCount--;
+        continuation();
+    };
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static inGameCount = 0;
+}
+
 class Gatling extends Creature {
     constructor() {
         super();
@@ -125,6 +171,7 @@ class Gatling extends Creature {
 }
 
 
+<<<<<<< HEAD
 class Rogue extends Creature {
     constructor() {
         super();
@@ -165,18 +212,25 @@ class Rogue extends Creature {
 }
 
 // Колода Шерифа, нижнего игрока.
+=======
+>>>>>>> stepa
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+<<<<<<< HEAD
     new Rogue(),
+=======
+>>>>>>> stepa
 ];
 const banditStartDeck = [
     new Lad(),
     new Lad(),
+<<<<<<< HEAD
     new Lad(),
+=======
+>>>>>>> stepa
 ];
-
 
 // Создание игры.
 const game = new Game(seriffStartDeck, banditStartDeck);
