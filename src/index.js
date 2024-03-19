@@ -30,6 +30,19 @@ function getCreatureDescription(card) {
 class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image);
+        this._currentPower = maxPower;
+    }
+
+    get currentPower() {
+        return this._currentPower;
+    }
+
+    set currentPower(value) {
+        if (value <= this.maxPower) {
+            this._currentPower = value;
+        } else {
+            this._currentPower = this.maxPower;
+        }
     }
 
     getDescriptions() {
@@ -42,8 +55,8 @@ class Creature extends Card {
 
 // Основа для утки.
 class Duck extends Creature {
-    constructor() {
-        super('Мирная утка', 2);
+    constructor(name = 'Мирная утка', maxPower = 2) {
+        super(name, maxPower);
     }
     quacks = function () { console.log('quack') };
     swims = function () { console.log('float: both;') };
@@ -99,7 +112,6 @@ class Gatling extends Creature {
     }
 }
 
-
 class Lad extends Dog {
     constructor() {
         super('Браток', 2);
@@ -152,6 +164,33 @@ class PseudoDuck extends Dog{
     swims = function () { console.log('float: both;') };
 }
 
+class Brewer extends Duck {
+    constructor() {
+        super('Пивовар', 2);
+    }
+
+    attack(gameContext, continuation) {
+        const allCards = gameContext.currentPlayer.table.concat(gameContext.oppositePlayer.table);
+
+        allCards.forEach(card => {
+            if (isDuck(card)) {
+                this.giveBeer(card);
+            }
+        });
+
+        super.attack(gameContext, continuation);
+    }
+
+    giveBeer(card) {
+        const maxPowerBefore = card.maxPower;
+        card.maxPower += 1;
+        card.currentPower += 2;
+
+        card.view.signalHeal();
+        card.updateView();
+    }
+}
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
@@ -159,7 +198,6 @@ const seriffStartDeck = [
 ];
 const banditStartDeck = [
     new Dog(),
-    new PseudoDuck(),
 ];
 
 
