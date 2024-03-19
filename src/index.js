@@ -57,16 +57,33 @@ class Dog extends Creature {
     };
 }
 
+class Trasher extends Dog {
+    constructor(name = 'Громила', power = 5) {
+        super(name, power);
+    };
+
+    getDescriptions() {
+        return ['Громила получает на 1 меньше урона', ...super.getDescriptions()];
+    };
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+        });
+    };
+}
+
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
 
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 // Создание игры.
