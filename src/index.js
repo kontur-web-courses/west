@@ -9,7 +9,7 @@ class Creature extends Card {
         super(...args);
     }
 
-    getDescriptions = () => {
+    getDescriptions() {
         return [
             getCreatureDescription(this),
             ...super.getDescriptions()
@@ -79,23 +79,30 @@ class Lad extends Dog {
 
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
         value += Lad.getBonus();
-        continuation(value);
+        super.modifyDealedDamageToCreature(value, toCard, gameContext, continuation);
     }
 
-    modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
         value -= Lad.getBonus();
-        continuation(value);
+        super.modifyTakenDamage(value, fromCard, gameContext, continuation);
     }
 
-    doAfterComingIntoPlay = function (gameContext, continuation) {
+    doAfterComingIntoPlay(gameContext, continuation) {
         Lad.setInGameCount(Lad.getInGameCount() + 1);
         const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
-        continuation();
+        super.doAfterComingIntoPlay(gameContext, continuation);
     }
 
-    doBeforeRemoving = function (continuation) {
+    doBeforeRemoving(continuation) {
         Lad.setInGameCount(Lad.getInGameCount() - 1);
-        continuation();
+        super.doBeforeRemoving(continuation);
+    }
+
+    getDescriptions() {
+        return [
+            (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') || Lad.prototype.hasOwnProperty('modifyTakenDamage')) ? 'Чем их больше, тем они сильнее' : 'Собака',
+            ...super.getDescriptions()
+        ]
     }
 }
 
@@ -132,6 +139,10 @@ function isDog(card) {
 
 function isTrasher(card) {
     return card instanceof Trasher;
+}
+
+function isLad(card) {
+    return card instanceof Lad;
 }
 
 // Дает описание существа по схожести с утками и собаками
