@@ -85,11 +85,59 @@ class Brewer extends Duck {
     }
 }
 
+class Brewer extends Duck {
+    constructor(name="Пивовар", maxPower=2, image=null) {
+        super(name, maxPower, image);
+    }
 
-// класс Собаки с именем Пес-собака и силой 3
+    doBeforeAttack(gameContext, continuation) {
+        const { currentPlayer, oppositePlayer } = gameContext;
+        for (const card of currentPlayer.table.concat(oppositePlayer.table)) {
+            if (isDuck(card)) {
+                card.maxPower++;
+                card.currentPower = card.currentPower + 2;
+                card.view.signalHeal(() => {});
+                card.updateView()
+            }
+        }
+        continuation();
+    }
+}
+
+
 class Dog extends Creature {
     constructor(name = 'Пес-собака', maxPower = 3, image = null) {
         super(name, maxPower, image);
+    }
+}
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        const modifiedValue = value - 1;
+        if (this.currentPower < 4) {
+            this.view.signalAbility(() => {
+                console.log('Громила активировал способность');
+
+                this.view.signalDamage(() => {
+                    console.log('Громила получил урон');
+                });
+            });
+        }
+        else {
+            this.view.signalDamage(() => {
+                console.log('Громила получил урон');
+            });
+        }
+        continuation(modifiedValue);
+    }
+
+    getDescriptions() {
+        const descriptions = super.getDescriptions();
+        descriptions.unshift('Уменьшает урон на 1');
+        return descriptions;
     }
 }
 
@@ -139,6 +187,7 @@ class Lad extends Dog {
 
 class Gatling extends Creature{
     constructor() {
+        super('Громила', 5);
         super('Гатлинг', 6, null);
     }
     attack(gameContext, continuation) {
@@ -155,9 +204,32 @@ class Gatling extends Creature{
         }
         taskQueue.continueWith(continuation);
     }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        const modifiedValue = value - 1;
+        if (this.currentPower < 4) {
+            this.view.signalAbility(() => {
+                console.log('Громила активировал способность');
+
+                this.view.signalDamage(() => {
+                    console.log('Громила получил урон');
+                });
+            });
+        }
+        else {
+            this.view.signalDamage(() => {
+                console.log('Громила получил урон');
+            });
+        }
+        continuation(modifiedValue);
+    }
+
+    getDescriptions() {
+        const descriptions = super.getDescriptions();
+        descriptions.unshift('Уменьшает урон на 1');
+        return descriptions;
+    }
 }
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
