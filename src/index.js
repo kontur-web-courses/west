@@ -40,6 +40,12 @@ function Duck() {
 function Dog() {
 }
 
+// класс Собаки с именем Пес-собака и силой 3
+class Dog extends Card {
+    constructor() {
+        super('Пес-собака', 3);
+    }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
