@@ -68,6 +68,10 @@ class Trasher extends Dog {
         super(name, maxPower, image);
     }
 
+    getDescriptions() {
+        return ["Получает на 1 меньше урона", ...super.getDescriptions()];
+    }
+
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         this.view.signalAbility(() => continuation(value - 1));
     }
