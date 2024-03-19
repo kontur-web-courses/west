@@ -1,5 +1,4 @@
-export default TaskQueue;
-class TaskQueue {
+export default class TaskQueue {
     constructor() {
         this.tasks = [];
         this.running = false;
