@@ -29,6 +29,19 @@ function getCreatureDescription(card) {
 
 // Задание 3
 class Creature extends Card {
+    constructor() {
+        super();
+        this._currentPower = this.maxPower;
+    }
+
+    get currentPower() {
+        return this._currentPower;
+    }
+
+    set currentPower(value) {
+        this._currentPower = Math.min(this.maxPower, value)
+    }
+
     getDescriptions() {
         return [getCreatureDescription(this), ...super.getDescriptions()];
     }
@@ -51,7 +64,6 @@ class Duck extends Creature {
         console.log('float: both;');
     }
 }
-
 
 class Dog extends Creature {
     constructor() {
@@ -133,7 +145,7 @@ class Lad extends Dog {
 
     doBeforeRemoving(context, continuation) {
         super.doBeforeRemoving(context, continuation);
-
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
     }
 
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
@@ -160,6 +172,28 @@ class Lad extends Dog {
     }
 }
 
+class Brewer extends Duck {
+    constructor() {
+        super();
+        this.name = 'Пивовар';
+        this.maxPower = 2;
+        this.currentPower = 2;
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const allCards = currentPlayer.table.concat(oppositePlayer.table);
+        for (const card of allCards) {
+            if (isDuck(card)) {
+                card.maxPower += 1;
+                card.currentPower += 2;
+                card.view.signalHeal(continuation);
+                card.updateView();
+            }
+        }
+    }
+}
+
 class PseudoDuck extends Dog {
     constructor() {
         super();
@@ -181,13 +215,12 @@ class PseudoDuck extends Dog {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Gatling(),
+    new Brewer(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new PseudoDuck(),
     new Lad(),
     new Lad(),
 ];
