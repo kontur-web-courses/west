@@ -103,15 +103,98 @@ class Gatling extends Creature {
 }
 
 
-// Колода Шерифа, нижнего игрока.
+class Lad extends Dog {
+    constructor(name = "Браток", maxPower = 2, image) {
+        super(name, maxPower, image);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        const count = this.getInGameCount();
+        return {
+            protectionBonus: count * (count + 1) / 2,
+            damageBonus: count * (count + 1) / 2
+        };
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount((Lad.getInGameCount() || 0) + 1);
+        continuation();
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        const bonus = Lad.getBonus();
+        continuation(value + bonus.damageBonus);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        const bonus = Lad.getBonus();
+        this.view.signalAbility(() => {
+            continuation(value - bonus.protectionBonus);
+        });
+    }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature') || Lad.prototype.hasOwnProperty('modifyTakenDamage')) {
+            return ['Чем их больше, тем они сильнее', super.getDescriptions()];
+        } else {
+            return super.getDescriptions();
+        }
+    }
+}
+
+class Brewer extends Duck {
+    constructor(name = "Пивовар", maxPower = 2, image) {
+        super(name, maxPower, image);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, updateView} = gameContext;
+        const allCards = currentPlayer.table.concat(oppositePlayer.table);
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        taskQueue.push(onDone => {
+            allCards.forEach(card => {
+                if (card instanceof Duck) {
+                    card.maxPower += 1;
+                    card.currentPower = Math.min(card.currentPower + 2, card.maxPower);
+                    card.view.signalHeal();
+                    card.updateView();
+                }
+            });
+
+            this.maxPower += 1;
+            this.currentPower = Math.min(this.currentPower + 2, this.maxPower);
+            this.view.signalHeal();
+            this.updateView();
+            onDone();
+        });
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
+
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Gatling(),
+    new Brewer(),
 ];
 const banditStartDeck = [
-    new Trasher(),
+    new Dog(),
+    new Dog(),
     new Dog(),
     new Dog(),
 ];
@@ -127,5 +210,3 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
-
-
