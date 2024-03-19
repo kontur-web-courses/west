@@ -93,7 +93,6 @@ class Gatling extends Creature {
 }
 
 class Lad extends Dog{
-    static inGameCount = 0;
     constructor(name = 'Браток', power = 2) {
         super(name, power);
     };
@@ -123,6 +122,8 @@ class Lad extends Dog{
 
         return super.getDescriptions();
     }
+
+    static inGameCount = 0;
 
     static getInGameCount() {
         return this.inGameCount || 0;
