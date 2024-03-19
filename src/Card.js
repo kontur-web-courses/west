@@ -1,7 +1,7 @@
 import {default as View} from './CardView.js';
 import TaskQueue from './TaskQueue.js';
 
-const Card = function () {
+export const Card = function () {
     function Card(name, maxPower, image) {
         this.name = name;
         this.image = image;
@@ -112,7 +112,7 @@ const Card = function () {
     // Изменяет урон, наносимый картой при атаке карт противника.
     // Можно переопределить в наследниках.
     // Позволяет определять способности, которые меняют наносимый урон при атаке карт противника.
-    Card.prototype.modifyDealedDamageToCreature = function (value, toCard, gameContext, continuation) {
+    Card.prototype.modifyDealedDamageToCreature = function (modifyTakenDamage) {
         continuation(value);
     };
 
