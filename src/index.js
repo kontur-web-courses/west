@@ -99,6 +99,7 @@ class Gatling extends Creature {
     }
 }
 
+
 class Lad extends Dog {
     constructor() {
         super('Браток', 2);
@@ -142,6 +143,15 @@ class Lad extends Dog {
     }
 }
 
+
+class PseudoDuck extends Dog{
+    constructor() {
+        super("Псевдоутка", 3)
+    }
+    quacks = function () { console.log('quack') };
+    swims = function () { console.log('float: both;') };
+}
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
@@ -149,6 +159,7 @@ const seriffStartDeck = [
 ];
 const banditStartDeck = [
     new Dog(),
+    new PseudoDuck(),
 ];
 
 
