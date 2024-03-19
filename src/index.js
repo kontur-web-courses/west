@@ -171,7 +171,6 @@ class Gatling extends Creature {
 }
 
 
-<<<<<<< HEAD
 class Rogue extends Creature {
     constructor() {
         super();
@@ -212,24 +211,18 @@ class Rogue extends Creature {
 }
 
 // Колода Шерифа, нижнего игрока.
-=======
->>>>>>> stepa
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-<<<<<<< HEAD
     new Rogue(),
-=======
->>>>>>> stepa
 ];
 const banditStartDeck = [
     new Lad(),
     new Lad(),
-<<<<<<< HEAD
+
     new Lad(),
-=======
->>>>>>> stepa
 ];
 
 // Создание игры.
