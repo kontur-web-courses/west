@@ -51,25 +51,34 @@ Duck.prototype.swims = function () { console.log('float: both;') };
 
 
 class Dog extends Creature {
-    constructor() {
-        super('Пес-бандит', 3);
+    constructor(name = 'Пес-бандит', pow = 3) {
+        super(name, pow);
     }
 }
 
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
 
-// Колода Шерифа, нижнего игрока.
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation); })
+    };
+
+    getDescriptions() {
+        return ["-1 к получаемому урону", ...super.getDescriptions()];
+    };
+}
+
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Card('sos', 1)
+    new Duck(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
-    new Dog(),
-    new Dog()
+    new Trasher(),
 ];
 
 
