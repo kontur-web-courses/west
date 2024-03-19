@@ -47,8 +47,8 @@ class Gatling extends Creature {
 
 
 class Duck extends Creature {
-    constructor() {
-        super('Мирная утка', 2);
+    constructor(name='Мирная утка', power=2) {
+        super(name, power);
     }
 
     quacks() {
@@ -81,17 +81,41 @@ class Trasher extends Dog {
     getDescriptions() {
         return [
             ...super.getDescriptions(),'Получает на 1 урона меньше'
-
         ]
     }
 }
 
 
-class Rogue extends Creature{
+class Brewer extends Duck{
     constructor() {
-        super('Изгой', 2);
+        super('Пивовар', 2);
     }
 
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, updateView} = gameContext;
+        const allCards = currentPlayer.table.concat(oppositePlayer.table);
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        taskQueue.push(onDone => {
+            allCards.forEach(card => {
+                if (card instanceof Duck) {
+                    card.maxPower += 1;
+                    card.currentPower = Math.min(card.currentPower + 2, card.maxPower);
+                    card.view.signalHeal();
+                    card.updateView();
+                }
+            });
+
+            this.maxPower += 1;
+            this.currentPower = Math.min(this.currentPower + 2, this.maxPower);
+            this.view.signalHeal();
+            this.updateView();
+            onDone();
+        });
+
+        taskQueue.continueWith(continuation);
+    }
 
 }
 
@@ -140,12 +164,12 @@ function getCreatureDescription(card) {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Brewer(),
 ];
 const banditStartDeck = [
-    new Trasher(),
+    new Dog(),
+    new PseudoDuck(),
+    new Dog(),
 ];
 
 
