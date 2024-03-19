@@ -43,9 +43,16 @@ class Duck extends Card{
 // Основа для собаки.
 
 class Dog extends Card{
-    constructor(){
-        super('Пес-бандит', 3)
+    constructor(name = 'Пес-бандит', maxPower = 3){
+        super(name, maxPower)
     }
+}
+
+class Trasher extends Dog{
+    constructor(){
+        super('Громила', 5)
+    }
+
 }
 
 const seriffStartDeck = [
