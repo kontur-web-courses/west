@@ -99,6 +99,10 @@ class Trasher extends Dog {
 }
 
 class Lad extends Dog{
+    constructor() {
+        super("Браток", 2);
+    }
+
     doAfterComingIntoPlay(gameContext, continuation) {
         Lad.setInGameCount(Lad.getInGameCount()+1);
         super.doAfterComingIntoPlay(gameContext, continuation);
@@ -122,13 +126,10 @@ class Lad extends Dog{
 
     static getInGameCount() { return this.inGameCount || 0; }
     static setInGameCount(value) { this.inGameCount = value; }
-    constructor() {
-        super("Браток", 2);
-    }
+
 
     getDescriptions() {
         if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')){
-
             const firstStr = "Чем их больше, тем они сильнее";
             const secondStr = super.getDescriptions()[1];
             return [firstStr, secondStr];
@@ -142,11 +143,10 @@ class Lad extends Dog{
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Gatling()
 ];
 const banditStartDeck = [
+    new Lad(),
     new Lad(),
     new Lad(),
 ];
