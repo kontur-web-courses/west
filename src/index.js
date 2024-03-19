@@ -30,16 +30,9 @@ function getCreatureDescription(card) {
 
 
 // Основа для утки.
-/*function Duck() {
+function Duck() {
     this.quacks = function () { console.log('quack') };
     this.swims = function () { console.log('float: both;') };
-}*/
-class Duck extends Card {
-    constructor() {
-        super('Мирная утка', 2);
-        this.quacks = function () { console.log('quack') };
-        this.swims = function () { console.log('float: both;') };
-    }
 }
 
 
