@@ -40,9 +40,6 @@ class Creature extends Card{
             super.getDescriptions(),
         ]
     }
-    dealDamageToCreature(value, toCard, gameContext, continuation){
-        super.dealDamageToCreature(value, toCard, gameContext, continuation);
-    }
 }
 
 class Duck extends Creature{
