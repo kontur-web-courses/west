@@ -38,13 +38,12 @@ class Creature extends Card{
     }
 }
 
-
-
 // Основа для утки.
 class Duck extends Creature{
     constructor(name = "Мирная утка", power = 2) {
         super(name, power);
     }
+
     quacks = function () { console.log('quack') };
     swims = function () { console.log('float: both;') };
 }
@@ -112,8 +111,28 @@ class Rogue extends Creature {
         const nameCorrect = name || "Изгой";
         const maxPowerCorrect = maxPower || 2;
         const imageCorrect = image || null;
-
         super(nameCorrect, maxPowerCorrect, imageCorrect);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {oppositePlayer, position} = gameContext;
+        const oppositeCard = oppositePlayer.table[position];
+
+        if (oppositeCard) {
+            const cardPrototype = Object.getPrototypeOf(oppositeCard);
+            const abilities = ['modifyDealedDamageToCreature', 'modifyDealedDamageToPlayer', 'modifyTakenDamage'];
+
+            abilities.forEach(ability => {
+                if (cardPrototype.hasOwnProperty(ability)) {
+                    this[ability] = cardPrototype[ability];
+                    delete cardPrototype[ability];
+                }
+            });
+
+            gameContext.updateView();
+        }
+
+        continuation();
     }
 }
 
@@ -125,6 +144,14 @@ class Lad extends Dog{
 
     static getBonus(){
         return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+    getDescriptions() {
+        if (Lad.getBonus() === 0){
+            return ['Чем их больше, тем они сильнее', super.getDescriptions()];
+        } else {
+            return [getCreatureDescription(this), super.getDescriptions()]
+        }
     }
 
     modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
@@ -160,10 +187,12 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Gatling(),
 ];
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
+    new Trasher(),
+    new Dog(),
+    new Dog(),
 ];
 
 // Создание игры.
