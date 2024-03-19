@@ -1,6 +1,7 @@
 import Card from './Card.js';
 import Game from './Game.js';
 import SpeedRate from './SpeedRate.js';
+import TaskQueue from './TaskQueue.js';
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -10,6 +11,10 @@ function isDuck(card) {
 // Отвечает является ли карта собакой.
 function isDog(card) {
     return card instanceof Dog;
+}
+
+function isGatling(card) {
+    return card instanceof Gatling;
 }
 
 // Дает описание существа по схожести с утками и собаками
@@ -23,10 +28,18 @@ function getCreatureDescription(card) {
     if (isDog(card)) {
         return 'Собака';
     }
+    if (isGatling(card)) {
+        return 'Гатлинг';
+    }
+
     return 'Существо';
 }
 
 class Creature extends Card {
+    constructor(name, maxPower, image) {
+        super(name, maxPower, image);
+    }
+
     getDescriptions() {
         return [getCreatureDescription(this), super.getDescriptions(this)];
     }
@@ -52,15 +65,43 @@ class Dog extends Creature {
     }
 }
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    modifyDealedDamageToPlayer(value, gameContext, continuation) {
+        continuation(0);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+        const oppositeTable = gameContext.oppositePlayer.table;
+
+        for (let position = 0; position < oppositeTable.length; position++) {
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositeTable[position];
+
+                if (oppositeCard) {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    // new Duck(),
+    new Gatling(),
 ];
 
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    // new Trasher(),
+    new Dog(),
+    new Dog(),
     new Dog(),
 ];
 
