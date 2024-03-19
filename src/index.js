@@ -93,6 +93,20 @@ class Gatling extends Creature {
     }
 }
 
+class PseudoDuck extends Dog {
+    constructor(name = 'Псевдо-утка', power = 3) {
+        super(name, power);
+    }
+
+    quacks() {
+        console.log('quack');
+    }
+
+    swims() {
+        console.log('float: both;');
+    }
+}
+
 
 const seriffStartDeck = [
     new Duck(),
