@@ -1,7 +1,6 @@
-import Card from './Card.js';
 import Game from './Game.js';
-import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+import Creature from "./Creature.js";
 
 // Отвечает, является ли карта уткой.
 function isDuck(card) {
@@ -14,7 +13,7 @@ function isDog(card) {
 }
 
 // Дает описание существа по схожести с утками и собаками
-function getCreatureDescription(card) {
+export function getCreatureDescription(card) {
     if (isDuck(card) && isDog(card)) {
         return 'Утка-Собака';
     }
@@ -28,13 +27,13 @@ function getCreatureDescription(card) {
 }
 
 
-class Dog extends Card {
+class Dog extends Creature {
     constructor(image = null) {
         super('Пес-бандит', 3, image);
     }
 }
 
-class Duck extends Card {
+class Duck extends Creature {
     constructor(image = null) {
         super('Мирная утка', 2, image);
     }
