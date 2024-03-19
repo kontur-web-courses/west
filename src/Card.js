@@ -216,6 +216,39 @@ const Card = function () {
         ];
     };
 
+    class Creature extends Card {
+        constructor(name, maxPower, image) {
+            super(name, maxPower, image)
+        }
+        
+        getDescriptions() {
+            alert(1);
+            return [Creature.getCreatureDescription(this), super.getDescriptions()];
+        }
+
+        static getCreatureDescription(card) {
+            if (isDuck(card) && isDog(card)) {
+                return 'Утка-Собака';
+            }
+            if (isDuck(card)) {
+                return 'Утка';
+            }
+            if (isDog(card)) {
+                return 'Собака';
+            }
+            return 'Существо';
+        }
+
+        static isDuck(card) {
+            return card && card.quacks && card.swims;
+        }
+        
+
+        static isDog(card) {
+            return card instanceof Dog;
+        }
+    }
+
     // Строит описание цепочки прототипов с помощью имен конструкторов.
     function getInheritanceDescription (card) {
         const names = [];
