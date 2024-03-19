@@ -4,6 +4,7 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 import card from "./Card.js";
 
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card && card.quacks && card.swims;
@@ -28,8 +29,20 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card{
+    constructor(name, power, image) {
+        super(name, power, image);
+    };
 
-class Duck extends Card{
+    getDescriptions(){
+        return [
+            getCreatureDescription(this),
+            super.getDescriptions(),
+        ]
+    }
+}
+
+class Duck extends Creature{
     constructor() {
         super('Мирная утка', 2, 'sheriff.png');
     };
@@ -42,7 +55,7 @@ class Duck extends Card{
     }
 }
 
-class Dog extends Card{
+class Dog extends Creature{
     constructor() {
         super('Бандит', 3, 'bandit.png');
     }
