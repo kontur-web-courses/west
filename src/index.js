@@ -32,7 +32,7 @@ class Creature extends Card{
     getDescriptions() {
         let a = getCreatureDescription(this);
         let b = super.getDescriptions();
-        return [a, b]
+        return [a, ...b]
     }
 }
 
