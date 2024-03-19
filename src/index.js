@@ -33,6 +33,48 @@ class Creature extends Card {
     }
 }
 
+
+class Lad extends Dog {
+    constructor(name, power) {
+        super(name, power);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(this.currentPower + Lad.getBonus(), toCard, gameContext, continuation);
+    }
+
+    getDescriptions() {
+        return ["Чем их больше, тем они сильнее", ...super.getDescriptions()];
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        return  this.getInGameCount() * ( this.getInGameCount() + 1) / 2;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        super.doBeforeRemoving(continuation);
+    }
+}
+
+
 // Основа для утки.
 class Duck extends Creature {
     constructor(name = 'Мирный житель', maxPower = 2) {
@@ -91,3 +133,4 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
