@@ -1,55 +1,51 @@
-const TaskQueue = function() {
-    function TaskQueue() {
-        this.tasks = [];
-        this.running = false;
-    }
+function runNextTask(taskQueue) {
+	if (taskQueue.running || taskQueue.tasks.length === 0) {
+		return
+	}
+	taskQueue.running = true
+	const task = taskQueue.tasks.shift()
 
-    TaskQueue.prototype.push = function(run, dispose, duration) {
-        if (duration === undefined || duration === null) {
-            this.tasks.push({runAndContinue: run, dispose});
-        } else {
-            this.tasks.push({
-                runAndContinue: (continuation) => {
-                    run();
-                    setTimeout(() => {
-                        continuation();
-                    }, duration);
-                },
-                dispose
-            });
-        }
-        runNextTask(this);
-    };
+	if (task.runAndContinue) {
+		setTimeout(() => {
+			task.runAndContinue(() => {
+				task.dispose && task.dispose()
+				taskQueue.running = false
 
-    TaskQueue.prototype.continueWith = function(action) {
-        this.push(action, null, 0);
-    };
+				setTimeout(() => {
+					runNextTask(taskQueue)
+				})
+			})
+		}, 0)
+	} else {
+		runNextTask(taskQueue)
+	}
+}
 
-    function runNextTask(taskQueue) {
-        if (taskQueue.running || taskQueue.tasks.length === 0) {
-            return;
-        }
-        taskQueue.running = true;
-        const task = taskQueue.tasks.shift();
+export default class TaskQueue {
+	constructor() {
+		this.tasks = []
+		this.running = false
+		return this
+	}
 
-        if (task.runAndContinue) {
-            setTimeout(() => {
-                task.runAndContinue(() => {
-                    task.dispose && task.dispose();
-                    taskQueue.running = false;
+	push = function (run, dispose, duration) {
+		if (duration === undefined || duration === null) {
+			this.tasks.push({ runAndContinue: run, dispose })
+		} else {
+			this.tasks.push({
+				runAndContinue: continuation => {
+					run()
+					setTimeout(() => {
+						continuation()
+					}, duration)
+				},
+				dispose,
+			})
+		}
+		runNextTask(this)
+	}
 
-                    setTimeout(() => {
-                        runNextTask(taskQueue);
-                    });
-                });
-            }, 0);
-        }
-        else {
-            runNextTask(taskQueue);
-        }
-    }
-
-    return TaskQueue;
-}();
-
-export default TaskQueue;
+	continueWith = function (action) {
+		this.push(action, null, 0)
+	}
+}
