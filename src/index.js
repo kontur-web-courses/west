@@ -41,6 +41,7 @@ class Duck extends Creature {
     constructor() {
         super();
         this.name = 'Мирная утка';
+        this.currentPower = 2;
         this.maxPower = 2;
     }
     quacks() { console.log('quack') };
@@ -53,8 +54,24 @@ class Dog extends Creature {
     constructor() {
         super();
         this.name = 'Пес-бандит';
+        this.currentPower = 3;
         this.maxPower = 3;
     }
+}
+
+class Trasher extends Dog {
+    constructor() {
+        super();
+        this.name = 'Громила';
+        this.currentPower = 5;
+        this.maxPower = 5;
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            continuation(value - 1);
+        });
+    };
 }
 
 
@@ -63,9 +80,10 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
+    new Duck(),
 ];
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
