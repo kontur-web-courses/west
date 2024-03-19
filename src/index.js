@@ -27,6 +27,14 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+class Creature extends Card {
+    getDescriptions = function () {
+        return [
+            getCreatureDescription(this),
+            ...super.getDescriptions()
+        ]
+    }
+}
 
 
 // Основа для утки.
