@@ -72,6 +72,47 @@ class Trasher extends Dog{
     }
 }
 
+class Lad extends Dog {
+    static inGameCount = 0;
+    constructor() {
+        super('Братки', 2);
+    }
+
+    static getInGameCount() {
+        return Lad.inGameCount;
+    }
+
+    static setInGameCount(value) {
+        Lad.inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation){
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(gameContext, continuation){
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        super.doBeforeRemoving(gameContext, continuation);
+    }
+
+    static getBonus() {
+        // количество * (количество + 1) / 2
+        return this.inGameCount * (this.inGameCount + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation){
+        value = value - Lad.getBonus();
+        super.modifyDealedDamageToCreature(value >= 0 ? value : 0, toCard, gameContext, continuation);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation){
+        value = value + Lad.getBonus();
+        super.modifyTakenDamage(value, fromCard, gameContext, continuation);
+    }
+
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
