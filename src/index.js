@@ -74,9 +74,9 @@ class Gatling extends Creature{
         super(name, maxPower);
     }
     attack(gameContext, continuation){
-        const taskQueue = new TaskQueue();
+        let taskQueue = new TaskQueue();
         taskQueue.push(onDone => this.view.showAttack(onDone));
-        for (const enemy of game.oppositePlayer.table) {
+        for (let enemy of game.oppositePlayer.table) {
             taskQueue.push(onDone => {this.dealDamageToCreature(this.currentPower, enemy, gameContext, onDone);});
         }
         taskQueue.continueWith(continuation);
