@@ -29,7 +29,7 @@ function getCreatureDescription(card) {
 
 class Creature extends Card {
     getDescriptions() {
-        return([getCreatureDescription(this), super.getDescriptions()]);
+        return ([getCreatureDescription(this), ...super.getDescriptions()]);
     }
 }
 
@@ -67,6 +67,26 @@ class Dog extends Creature {
 // ];
 //
 
+class Trasher extends Dog {
+    constructor(name = 'Громила', maxPower = 5) {
+        super(name, maxPower);
+    }
+
+    modifyTakenDamage(value, toCard, gameContext, continuation) {
+        let t = this;
+        value = Math.max(value - 1, 0);
+        if (value > 0) {
+            this.view.signalAbility(c => t.view.signalDamage(c => {
+            }));
+        }
+        super.modifyTakenDamage(value, toCard, gameContext, continuation);
+    };
+
+    getDescriptions() {
+        return ([...super.getDescriptions(), "Получает на 1 урона меньше"]);
+    }
+}
+
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
@@ -74,8 +94,7 @@ const seriffStartDeck = [
 ];
 
 const banditStartDeck = [
-    new Dog(),
-    new Dog(),
+    new Trasher(),
 ];
 
 // Создание игры.
