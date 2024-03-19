@@ -98,10 +98,38 @@ class Trasher extends Dog {
     }
 }
 
+class Lad extends Dog{
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount()+1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    };
+
+    doBeforeRemoving (continuation) {
+        Lad.setInGameCount(Lad.getInGameCount()-1);
+        super.doBeforeRemoving(continuation)
+    };
+
+    static getBonus() {
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature (value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value+Lad.getBonus(), toCard, gameContext, continuation);
+    }
+    modifyTakenDamage (value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value+Lad.getBonus(), fromCard, gameContext, continuation)
+    }
+
+    static getInGameCount() { return this.inGameCount || 0; }
+    static setInGameCount(value) { this.inGameCount = value; }
+    constructor() {
+        super("Браток", 2);
+    }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Duck(),
+    new Gatling(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -110,6 +138,7 @@ const seriffStartDeck = [
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Trasher(),
+    new Lad(),
 ];
 
 
