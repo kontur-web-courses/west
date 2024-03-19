@@ -31,7 +31,7 @@ function getCreatureDescription(card) {
 
 // Основа для утки.
 class Duck extends Card {
-    constructor(name, maxPower, image) {
+    constructor(name="Мирная утка", maxPower=2, image) {
         super(name, maxPower, image);
     }
 
@@ -42,7 +42,7 @@ class Duck extends Card {
 
 // Основа для собаки.
 class Dog extends Card {
-    constructor(name, maxPower, image) {
+    constructor(name="Пес-бандит", maxPower=3, image) {
         super(name, maxPower, image);
     }
 }
@@ -51,7 +51,7 @@ class Dog extends Card {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck('Мирный житель', 2),
-    new Duck('Мирный житель', 2),
+    new Duck(),
     new Duck('Мирный житель', 2),
 ];
 
