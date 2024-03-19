@@ -50,16 +50,9 @@ class Duck extends Creature {
 }
 
 // Основа для собаки.
-<<<<<<< HEAD
-
-class Dog extends Card{
-    constructor(name = 'Пес-бандит', maxPower = 3){
-        super(name, maxPower)
-=======
 class Dog extends Creature {
     constructor() {
         super('Пес-бандит', 3);
->>>>>>> f6777ce617909e2e5ef69a8a1edbddf9c9e4634a
     }
 }
 
