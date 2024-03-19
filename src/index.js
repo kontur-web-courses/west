@@ -166,19 +166,33 @@ class Rogue extends Creature {
     }
 }
 
+class PseudoDuck extends Dog {
+    constructor() {
+        super('Псевдо-утка', 3);
+    }
+
+    quacks() {
+        console.log('quack');
+    }
+
+    swims() {
+        console.log('float: both;');
+    }
+}
 
 
-        const seriffStartDeck = [
-            new Duck(),
-            new Duck(),
-            new Rogue()
-        ];
 
-        const banditStartDeck = [
-            //new Dog(),
-            new Lad(),
-            new Lad()
-        ];
+const seriffStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
+    new Gatling(),
+];
+const banditStartDeck = [
+    new Trasher(),
+    new Dog(),
+    new Dog(),
+];
 
 
 // Создание игры.
