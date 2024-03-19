@@ -2,6 +2,7 @@ import Card from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+import card from "./Card.js";
 
 class Creature extends Card {
     constructor(name, maxPower, image) {
@@ -171,6 +172,50 @@ class Brewer extends Duck{
         queue.continueWith(continuation());
     }
 }
+
+class Rogue extends Creature{
+    constructor(name = 'Изгой', power  = 2, image) {
+        super(name, power, image);
+    }
+    doBeforeAttack(gameContext, continuation) {
+        const queue = new TaskQueue();
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        const enemyCard = oppositePlayer.table[position];
+        const allCards = currentPlayer.table.concat(oppositePlayer.table);
+        const proto = Object.getPrototypeOf(enemyCard);
+        let property;
+        queue.push(onDone => {
+            if (proto.hasOwnProperty('modifyDealedDamageToCreature')){
+                    property = proto['modifyDealedDamageToCreature'];
+                    delete proto['modifyDealedDamageToCreature'];
+                    this['modifyDealedDamageToCreature'] = property;
+                    //enemyCard.updateView();
+                }
+            if (proto.hasOwnProperty('modifyDealedDamageToPlayer')){
+                    property = proto['modifyDealedDamageToPlayer'];
+                    delete proto['modifyDealedDamageToPlayer'];
+                    this['modifyDealedDamageToPlayer'] = property;
+                    //enemyCard.updateView();
+                }
+            if (proto.hasOwnProperty('modifyTakenDamage')){
+                    property = proto['modifyTakenDamage'];
+                    delete proto['modifyTakenDamage'];
+                    this['modifyTakenDamage'] = property;
+                    //enemyCard.updateView();
+                }
+            allCards.forEach(card=> card.updateView())
+        });
+        queue.push(onDone => updateView())
+        queue.continueWith(continuation());
+    }
+}
+
+class Nemo extends Creature{
+    constructor(name = 'Немо', power = 4, image) {
+        super(name, power, image);
+    }
+}
+
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card && card.quacks && card.swims;
@@ -195,19 +240,15 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
-// Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
-    new Duck(),
-    new Gatling(),
+    new Rogue(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
+    new Lad(),
 ];
 
 
