@@ -29,8 +29,8 @@ function getCreatureDescription(card) {
 
 // Задание 3
 class Creature extends Card {
-    constructor() {
-        super();
+    constructor(...props) {
+        super(...props);
         this._currentPower = this.maxPower;
     }
 
@@ -49,11 +49,8 @@ class Creature extends Card {
 
 // Задание 2
 class Duck extends Creature {
-    constructor() {
-        super();
-        this.name = 'Мирная утка';
-        this.maxPower = 2;
-        this.currentPower = 2;
+    constructor(name = 'Мирная утка', maxPower = 2) {
+        super(name, maxPower);
     }
 
     quacks() {
@@ -66,21 +63,15 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
-    constructor() {
-        super();
-        this.name = 'Пес-бандит';
-        this.maxPower = 3;
-        this.currentPower = 3;
+    constructor(name = 'Пес-бандит', maxPower = 3) {
+        super(name, maxPower);
     }
 }
 
 // Задание 4
 class Trasher extends Dog {
-    constructor() {
-        super();
-        this.name = 'Громила';
-        this.maxPower = 5;
-        this.currentPower = 5;
+    constructor(name = 'Громила', maxPower = 5) {
+        super(name, maxPower);
     }
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
@@ -98,11 +89,8 @@ class Trasher extends Dog {
 }
 
 class Gatling extends Creature {
-    constructor() {
-        super();
-        this.name = 'Гатлинг';
-        this.maxPower = 6;
-        this.currentPower = 6;
+    constructor(name = 'Гатлинг', maxPower = 6) {
+        super(name, maxPower);
     }
 
     attack(gameContext, continuation) {
@@ -122,11 +110,8 @@ class Gatling extends Creature {
 }
 
 class Lad extends Dog {
-    constructor() {
-        super();
-        this.name = 'Браток';
-        this.maxPower = 2;
-        this.currentPower = 2;
+    constructor(name = 'Браток', maxPower = 2) {
+        super(name, maxPower);
     }
 
     static getInGameCount() { return this.inGameCount || 0; }
@@ -173,11 +158,8 @@ class Lad extends Dog {
 }
 
 class Brewer extends Duck {
-    constructor() {
-        super();
-        this.name = 'Пивовар';
-        this.maxPower = 2;
-        this.currentPower = 2;
+    constructor(name = 'Пивовар', maxPower = 2) {
+        super(name, maxPower);
     }
 
     doBeforeAttack(gameContext, continuation) {
@@ -195,11 +177,8 @@ class Brewer extends Duck {
 }
 
 class PseudoDuck extends Dog {
-    constructor() {
-        super();
-        this.name = 'Псевдоутка';
-        this.maxPower = 3;
-        this.currentPower = 3;
+    constructor(name = 'Псевдоутка', maxPower = 3) {
+        super(name, maxPower);
     }
 
     quacks() {
@@ -215,12 +194,17 @@ class PseudoDuck extends Dog {
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
+    new Duck(),
+    new Duck(),
+    new Gatling(),
     new Brewer(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Dog(),
     new PseudoDuck(),
+    new Trasher(),
     new Lad(),
     new Lad(),
 ];
@@ -230,7 +214,7 @@ const banditStartDeck = [
 const game = new Game(seriffStartDeck, banditStartDeck);
 
 // Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
+SpeedRate.set(2);
 
 // Запуск игры.
 game.play(false, (winner) => {
