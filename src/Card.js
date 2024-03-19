@@ -220,6 +220,7 @@ const Card = function () {
     function getInheritanceDescription (card) {
         const names = [];
         let obj = card;
+        // console.log(obj.prototype.hasOwnProperty('modifyDealedDamageToCreature'))
         while (true) {
             obj = Object.getPrototypeOf(obj);
             names.push(obj.constructor.name);
