@@ -43,6 +43,7 @@ class Gatling extends Creature {
 }
 
 
+
 class Duck extends Creature {
     constructor() {
         super('Мирная утка', 2);
@@ -58,8 +59,28 @@ class Duck extends Creature {
 }
 
 class Dog extends Creature {
+    constructor(name='Пес-бандит') {
+        super(name, 3);
+    }
+}
+
+class Trasher extends Dog {
     constructor() {
-        super('Пес-бандит', 3);
+        super('Громила');
+    }
+
+    modifyTakenDamage (value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(Math.max(0, value - 1), fromCard, gameContext, continuation);
+        })
+
+    };
+
+    getDescriptions() {
+        return [
+            getCreatureDescription(this),
+            ...super.getDescriptions()
+        ]
     }
 }
 
@@ -74,6 +95,10 @@ function isDog(card) {
     return card instanceof Dog;
 }
 
+function isTrasher(card) {
+    return card instanceof Trasher;
+}
+
 // Дает описание существа по схожести с утками и собаками
 function getCreatureDescription(card) {
     if (isDuck(card) && isDog(card)) {
@@ -85,6 +110,9 @@ function getCreatureDescription(card) {
     if (isDog(card)) {
         return 'Собака';
     }
+    if (isTrasher()) {
+        return 'Громила'
+    }
     return 'Существо';
 }
 
@@ -94,7 +122,7 @@ const seriffStartDeck = [
     new Duck(),
 ];
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
