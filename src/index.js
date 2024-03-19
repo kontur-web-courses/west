@@ -61,16 +61,39 @@ class Duck extends Creature {
 }
 
 
-// класс Собаки с именем Пес-собака и силой 3
-class Dog extends Card {
-    constructor(name='Пес-собака', MaxPower=3, image=null) {
-        super(name, MaxPower);
-    }
-}
-class Trasher extends Dog {
 class Dog extends Creature {
     constructor(name = 'Пес-собака', maxPower = 3, image = null) {
         super(name, maxPower, image);
+    }
+}
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5);
+    }
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        const modifiedValue = value - 1;
+        if (this.currentPower < 4) {
+            this.view.signalAbility(() => {
+                console.log('Громила активировал способность');
+
+                this.view.signalDamage(() => {
+                    console.log('Громила получил урон');
+                });
+            });
+        }
+        else {
+            this.view.signalDamage(() => {
+                console.log('Громила получил урон');
+            });
+        }
+        continuation(modifiedValue);
+    }
+
+    getDescriptions() {
+        const descriptions = super.getDescriptions();
+        descriptions.unshift('Уменьшает урон на 1');
+        return descriptions;
     }
 }
 
