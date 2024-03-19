@@ -117,6 +117,44 @@ class Rogue extends Creature {
     }
 }
 
+class Lad extends Dog{
+    static _inGameCount;
+    constructor(name = 'Браток', power = 2) {
+        super(name, power);
+    }
+
+    static getBonus(){
+        return this.getInGameCount() * (this.getInGameCount() + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        const newDamage = value + Lad.getBonus();
+        super.modifyDealedDamageToCreature(newDamage, toCard, gameContext, continuation);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        const newDamage = value - Lad.getBonus();
+        super.modifyTakenDamage(newDamage, fromCard, gameContext, continuation);
+    }
+
+    static getInGameCount() {
+        return this._inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this._inGameCount = value;
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1)
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1)
+        super.doBeforeRemoving(continuation);
+    }
+}
 
 const seriffStartDeck = [
     new Duck(),
@@ -124,7 +162,8 @@ const seriffStartDeck = [
     new Duck(),
 ];
 const banditStartDeck = [
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 // Создание игры.
