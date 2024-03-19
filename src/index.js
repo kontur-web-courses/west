@@ -61,7 +61,8 @@ class Trasher extends Dog {
 
     getDescriptions() {
         return [
-            'если Громилу атакуют, то он получает на 1 меньше урона',
+            '«Громила»',
+            'Для уток все становится плохо, когда в рядах бандитов появляется Громила',
             ...super.getDescriptions()
         ];
     }
@@ -78,10 +79,63 @@ class Gatling extends Creature {
 
         taskQueue.push(onDone => this.view.showAttack(onDone));
         for (const oppositeCard of gameContext.oppositePlayer.table.filter(card => card)) {
-            taskQueue.push(onDone => this.dealDamageToCreature(this.damage, oppositeCard, gameContext, onDone));
+            taskQueue.push(onDone =>
+                this.dealDamageToCreature(this.damage, oppositeCard, gameContext, onDone));
         }
 
         taskQueue.continueWith(continuation);
+    }
+}
+
+class Lad extends Dog {
+    constructor(name = 'Браток', maxPower = 2, image = null) {
+        super(name, maxPower, image);
+    }
+
+    getDescriptions() {
+        if (!Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')) {
+            return super.getDescriptions();
+        }
+
+        return [
+            '«Братки»',
+            'Чем их больше, тем они сильнее',
+            ...super.getDescriptions()
+        ];
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        if (value < 0)
+            throw Error("Lad count can't be negative");
+
+        this.inGameCount = value;
+    }
+
+    static getBonus() {
+        const inGameCount = this.getInGameCount();
+        return inGameCount * (inGameCount + 1) / 2;
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        super.modifyDealedDamageToCreature(value * Lad.getBonus(), toCard, gameContext, continuation);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        super.modifyTakenDamage(value * Lad.getBonus(), fromCard, gameContext, continuation);
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        super.doAfterComingIntoPlay(gameContext, continuation);
+    }
+
+    doBeforeRemoving(continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        super.doBeforeRemoving(continuation);
     }
 }
 
@@ -90,14 +144,12 @@ const seriffStartDeck = [
     new Duck(),
     new Duck(),
     new Duck(),
-    new Gatling(),
 ];
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 // Создание игры.
