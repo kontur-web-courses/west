@@ -95,37 +95,20 @@ class Gatling extends Creature {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Lad extends Dog {
 
 	constructor() {
 		super('Браток', 2);		
 	}
 
-	doAfterComingIntoPlay() {
-		alert('1');
+	doAfterComingIntoPlay(gameContext, continuation) {
 		Lad.setInGameCount(Lad.getInGameCount() + 1);
+		continuation();
 	}
 
-    doBeforeRemoving() {
+    doBeforeRemoving(gameContext, continuation) {
 		Lad.setInGameCount(Lad.getInGameCount() - 1);
+		continuation();
 	}
 
 	getDescriptions() {
@@ -139,7 +122,6 @@ class Lad extends Dog {
     }
 
 	modifyTakenDamage (value, fromCard, gameContext, continuation){
-		alert('1')
         super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
     }
 
