@@ -26,12 +26,37 @@ function getCreatureDescription(card) {
     return 'Существо';
 }
 
+
 class Creature extends Card {
     getDescriptions() {
         let result = [getCreatureDescription(this)]
         return [getCreatureDescription(this), ...super.getDescriptions()];
     }
 }
+
+// Основа для утки.
+class Duck extends Creature {
+    constructor(name = 'Мирный житель', maxPower = 2) {
+        super(name, maxPower);
+    }
+    
+    quacks() {
+        console.log('quack')
+    }
+    
+    swims() {
+        console.log('float: both;')
+    }
+}
+
+
+// Основа для собаки.
+class Dog extends Creature {
+    constructor(name = 'Бандит', maxPower = 3) {
+        super(name, maxPower);
+    }
+}
+
 
 
 class Lad extends Dog {
@@ -71,30 +96,6 @@ class Lad extends Dog {
     doBeforeRemoving(continuation) {
         Lad.setInGameCount(Lad.getInGameCount() - 1);
         super.doBeforeRemoving(continuation);
-    }
-}
-
-
-// Основа для утки.
-class Duck extends Creature {
-    constructor(name = 'Мирный житель', maxPower = 2) {
-        super(name, maxPower);
-    }
-
-    quacks() {
-        console.log('quack')
-    }
-
-    swims() {
-        console.log('float: both;')
-    }
-}
-
-
-// Основа для собаки.
-class Dog extends Creature {
-    constructor(name = 'Бандит', maxPower = 3) {
-        super(name, maxPower);
     }
 }
 
