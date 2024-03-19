@@ -4,7 +4,6 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 
-
 class Creature extends Card {
     constructor(...args) {
         super(...args);
@@ -19,12 +18,37 @@ class Creature extends Card {
 }
 
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 2);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        taskQueue.push(onDone => this.view.showAttack(onDone));
+        taskQueue.push(onDone => {
+            const oppositeCards = oppositePlayer.table;
+            for (let oppositeCard of oppositeCards) {
+                if (oppositeCard) {
+                    this.dealDamageToCreature(this.currentPower, oppositeCard, gameContext, onDone);
+                }
+            }
+        });
+
+        taskQueue.continueWith(continuation);
+    };
+}
+
+
 class Duck extends Creature {
     constructor() {
         super('Мирная утка', 2);
     }
 
-    quacks(){
+    quacks() {
         console.log('quack')
     }
 
@@ -65,17 +89,10 @@ function getCreatureDescription(card) {
 }
 
 
-
-
-
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
     new Dog(),
 ];
