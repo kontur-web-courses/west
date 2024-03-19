@@ -37,23 +37,19 @@ class Duck extends Card {
 }
 
 class Dog extends Card {
-    constructor(image=null) {
-        super('Пес-бандит', 3, image);
+    constructor(name='Пес-бандит', power=3, image=null) {
+        super(name, power, image);
     }
 }
 
-
-// // Основа для утки.
-// function Duck() {
-//     this. = function () { console.log('quack') };
-//     this.swims = function () { console.log('float: both;') };
-// }
-
-
-// // Основа для собаки.
-// function Dog() {
-// }
-
+class Trasher extends Dog {
+    constructor(name='Громила', power=5, image=null) {
+        super(name, power, image);
+        this.modifyTakenDamage = function (value, fromCard, gameContext, continuation) {
+            this.view.signalAbility(() => {continuation(value - 1);});
+        }
+    }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
@@ -64,7 +60,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
