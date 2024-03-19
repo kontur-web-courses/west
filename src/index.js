@@ -2,6 +2,7 @@ import Card from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+import CardView from './CardView.js';
 
 
 class Creature extends Card {
@@ -55,6 +56,11 @@ class Duck extends Creature {
     swims() {
         console.log('float: both;');
     };
+
+    
+    static [Symbol.hasInstance](instance) {
+        return instance.quacks && instance.swims;
+    }
 }
 
 
@@ -67,7 +73,7 @@ class Dog extends Creature {
 
 class Gatling extends Creature {
     constructor(name = 'Гатлинг', power = 6) {
-        super(name, power, 'Gatling.jpg');
+        super(name, power, 'gosling.jpg');
     }
 
     attack(gameContext, continuation) {
@@ -93,7 +99,7 @@ class Trasher extends Dog {
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         if (value >= 2) {
-            continuation(value);
+            continuation(value - 1);
             this.view.signalAbility(() => {
                 this.view.signalDamage(continuation);
             });
@@ -110,14 +116,28 @@ class Trasher extends Dog {
     }
 }
 
+class PseudoDuck extends Dog {
+    constructor(name = 'Пвсевдоутка', power = 3) {
+        super(name, power);
+    }
+
+    quacks() {
+        console.log('Gaw');
+    }
+
+    swims() {
+        console.log('float: both;');
+    }
+}
+
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
-    new Gatling(),
+    new Gatling()
 ];
 const banditStartDeck = [
-    new Trasher(),
-    new Trasher(),
+    new Dog(),
+    new PseudoDuck(),
     new Trasher(),
 ];
 
