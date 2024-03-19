@@ -1,10 +1,11 @@
-const TaskQueue = function() {
-    function TaskQueue() {
+
+class TaskQueue {
+    constructor() {
         this.tasks = [];
         this.running = false;
     }
 
-    TaskQueue.prototype.push = function(run, dispose, duration) {
+    push(run, dispose, duration) {
         if (duration === undefined || duration === null) {
             this.tasks.push({runAndContinue: run, dispose});
         } else {
@@ -18,38 +19,35 @@ const TaskQueue = function() {
                 dispose
             });
         }
-        runNextTask(this);
-    };
+        this._runNextTask();
+    }
 
-    TaskQueue.prototype.continueWith = function(action) {
+    continueWith(action) {
         this.push(action, null, 0);
     };
 
-    function runNextTask(taskQueue) {
-        if (taskQueue.running || taskQueue.tasks.length === 0) {
+    _runNextTask() {
+        if (this.running || this.tasks.length === 0) {
             return;
         }
-        taskQueue.running = true;
-        const task = taskQueue.tasks.shift();
+        this.running = true;
+        const task = this.tasks.shift();
 
         if (task.runAndContinue) {
             setTimeout(() => {
                 task.runAndContinue(() => {
                     task.dispose && task.dispose();
-                    taskQueue.running = false;
+                    this.running = false;
 
                     setTimeout(() => {
-                        runNextTask(taskQueue);
+                        this._runNextTask();
                     });
                 });
             }, 0);
-        }
-        else {
-            runNextTask(taskQueue);
+        } else {
+            this._runNextTask();
         }
     }
-
-    return TaskQueue;
-}();
+}
 
 export default TaskQueue;
