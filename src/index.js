@@ -73,13 +73,29 @@ class Gatling extends Creature {
                 taskQueue.push(onDone => this.view.showAttack(onDone));
                 taskQueue.push(onDone => {
                     this.dealDamageToCreature(this.currentPower, op, gameContext, onDone);
-                })
+                });
             }
 
             taskQueue.continueWith(continuation);
         }
     }
 }
+
+class PseudoDuck extends Dog {
+    constructor(name = 'Псевдоутка', maxPower = 3) {
+        super(name, maxPower);
+    }
+
+    quacks() {
+        console.log('bark');
+    };
+
+    swims() {
+        console.log('float: both;');
+    };
+}
+
+console.assert(isDuck(new PseudoDuck()));
 
 // // Колода Шерифа, нижнего игрока.
 // const seriffStartDeck = [
@@ -110,7 +126,7 @@ class Trasher extends Dog {
     };
 
     getDescriptions() {
-        return ([...super.getDescriptions(), "Получает на 1 урона меньше"]);
+        return ([...super.getDescriptions(), 'Получает на 1 урона меньше']);
     }
 }
 
@@ -120,8 +136,9 @@ const seriffStartDeck = [
 ];
 
 const banditStartDeck = [
+    new PseudoDuck(),
     new Trasher(),
-    new Dog()
+    new Dog(),
 ];
 
 // Создание игры.
