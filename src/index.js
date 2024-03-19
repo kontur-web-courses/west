@@ -57,6 +57,18 @@ class Dog extends Creature {
     }
 }
 
+class Trasher extends Dog{
+    constructor(name = 'Громила', power = 5) {
+        super(name, power);
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - 1, fromCard, gameContext, continuation);
+        });
+    }
+}
+
 
 const seriffStartDeck = [
     new Duck(),
