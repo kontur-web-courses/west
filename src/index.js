@@ -56,9 +56,36 @@ class Duck extends Creature{
 }
 
 class Dog extends Creature{
-    constructor() {
-        super('Бандит', 3, 'bandit.png');
+    constructor(name = 'Бандит', power = 3, image = 'bandit.png') {
+        super(name, power, image);
     }
+}
+
+class Trasher extends Dog {
+    constructor() {
+        super('Громила', 5, 'bandit.png');
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+
+        if (value >= 2){
+            continuation(value - 1);
+            this.view.signalAbility(() => {
+                this.view.signalDamage(continuation);
+            });
+        } else{
+            this.view.signalAbility(() => {
+            });
+        }
+    }
+
+    getDescriptions() {
+        let descriptions = super.getDescriptions();
+        descriptions.push('Если Громилу атакуют, то он получает на 1 меньше урона.');
+        return descriptions;
+    }
+
+
 }
 
 // Колода Шерифа, нижнего игрока.
@@ -70,7 +97,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Dog(),
+    new Trasher(),
 ];
 
 
