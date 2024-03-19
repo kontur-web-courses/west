@@ -4,7 +4,6 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 
-
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card instanceof Duck;
@@ -57,6 +56,43 @@ class Dog extends Creature {
     }
 }
 
+class Lad extends Dog {
+    constructor(name = 'Браток', power = 2) {
+        super(name, power);
+    }
+
+    static getInGameCount() {
+        return this.inGameCount || 0;
+    }
+
+    static setInGameCount(value) {
+        this.inGameCount = value;
+    }
+    doAfterComingIntoPlay (gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+        continuation();
+    }
+    doBeforeRemoving  (continuation) {
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+        continuation();
+    }
+
+    static getBonus() {
+        return Lad.getInGameCount() * (Lad.getInGameCount() + 1) / 2;
+    }
+
+    modifyTakenDamage(value, fromCard, gameContext, continuation) {
+        this.view.signalAbility(() => {
+            super.modifyTakenDamage(value - Lad.getBonus(), fromCard, gameContext, continuation);
+        })
+    }
+
+    modifyDealedDamageToCreature (value, toCard, gameContext, continuation) {
+        continuation(value + Lad.getBonus());
+    }
+}
+
 class Trasher extends Dog {
     constructor(name = 'Громила', power = 5) {
         super(name, power);
@@ -101,13 +137,11 @@ class Gatling extends Creature {
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
-    new Duck(),
-    new Gatling(),
+    new Duck()
 ];
 const banditStartDeck = [
-    new Trasher(),
-    new Dog(),
-    new Dog(),
+    new Lad(),
+    new Lad(),
 ];
 
 // Создание игры.
