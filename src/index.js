@@ -117,7 +117,7 @@ class Lad extends Dog{
         super.modifyDealedDamageToCreature(value+Lad.getBonus(), toCard, gameContext, continuation);
     }
     modifyTakenDamage (value, fromCard, gameContext, continuation) {
-        super.modifyTakenDamage(value+Lad.getBonus(), fromCard, gameContext, continuation)
+        super.modifyTakenDamage(value-Lad.getBonus(), fromCard, gameContext, continuation)
     }
 
     static getInGameCount() { return this.inGameCount || 0; }
@@ -125,19 +125,29 @@ class Lad extends Dog{
     constructor() {
         super("Браток", 2);
     }
+
+    getDescriptions() {
+        if (Lad.prototype.hasOwnProperty('modifyDealedDamageToCreature')){
+
+            const firstStr = "Чем их больше, тем они сильнее";
+            const secondStr = super.getDescriptions()[1];
+            return [firstStr, secondStr];
+        }
+        else
+        {
+            return super.getDescriptions();
+        }
+    }
 }
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
-    new Gatling(),
     new Duck(),
     new Duck(),
     new Duck(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
+    new Lad(),
     new Lad(),
 ];
 
