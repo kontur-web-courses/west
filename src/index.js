@@ -90,9 +90,8 @@ class Gatling extends Creature {
     
                 if (oppositeCard) {
                     this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
-                } else {
-                    this.dealDamageToPlayer(1, gameContext, onDone);
                 }
+                onDone();
             });
         }
 
@@ -154,7 +153,6 @@ const seriffStartDeck = [
     // new Card('Мирный житель', 2),
     // new Card('Мирный житель', 2),
     // new Card('Мирный житель', 2),
-    new Duck(),
     new Gatling(),
 ];
 
