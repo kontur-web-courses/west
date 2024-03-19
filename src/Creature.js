@@ -9,7 +9,6 @@ export default class Creature extends Card {
     getDescriptions() {
         let gd = super.getDescriptions();
         gd.unshift(getCreatureDescription(this));
-        console.log(gd);
         return gd;
     }
 }
