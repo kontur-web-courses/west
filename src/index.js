@@ -4,7 +4,6 @@ import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 import Creature from './Creature.js'
 
-
 // Отвечает является ли карта уткой.
 function isDuck(card) {
     return card && card.quacks && card.swims;
@@ -65,16 +64,54 @@ class Trasher extends Dog{
     }
 }
 
+class Gatling extends Creature {
+    constructor() {
+        super('Гатлинг', 6);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        for (const oppositeCard of oppositePlayer.table) {
+            if (oppositeCard)
+            {
+                taskQueue.push(onDone => this.view.showAttack(onDone));
+                taskQueue.push(onDone => {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                });
+            }
+        }
+
+        taskQueue.continueWith(continuation);
+    };
+
+    getDescriptions() {
+        let xx = super.getDescriptions();
+        xx.unshift("Способность: Наносит 2 единицы урона всем картам противника на доске.")
+        return xx;
+
+    }
+}
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
     new Duck(),
+    new Gatling(),
+    new Gatling(),
+    new Gatling(),
     new Duck(),
     new Duck(),
 ];
 const banditStartDeck = [
     new Dog(),
     new Trasher(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 
