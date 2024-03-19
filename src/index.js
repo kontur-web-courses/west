@@ -29,7 +29,7 @@ class Duck extends Creature {
     swims () { console.log('float: both;'); }    
 }
 
-class Dog extends Card {
+class Dog extends Creature {
     constructor(name='Пес-бандит', power=3, image=null) {
         super(name, power, image);
     }
