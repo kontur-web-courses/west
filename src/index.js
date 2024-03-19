@@ -64,3 +64,15 @@ SpeedRate.set(1);
 game.play(false, (winner) => {
     alert('Победил ' + winner.name);
 });
+
+class Duck extends Card {
+    constructor() {
+        super("Мирная утка", 2)
+    }
+}
+
+class Dog extends Card {
+    constructor() {
+        super("Пес-бандит", 3)
+    }
+}
