@@ -19,34 +19,15 @@ function getCreatureDescription(card) {
 }
 
 
-const seriffStartDeck = [
-    new Duck(),
-    new Duck(),
-    new Duck(),
-];
-
-const banditStartDeck = [
-    new Dog(),
-];
 
 
-// Создание игры.
-const game = new Game(seriffStartDeck, banditStartDeck);
-
-// Глобальный объект, позволяющий управлять скоростью всех анимаций.
-SpeedRate.set(1);
-
-// Запуск игры.
-game.play(false, (winner) => {
-    alert('Победил ' + winner.name);
-});
 
 class Creature extends Card {
     constructor(name, maxPower, image) {
         super(name, maxPower, image)
     }
     getDescriptions() {
-        return super.getDescriptions().unshift(getCreatureDescription(this));
+        return [super.getDescriptions(),getCreatureDescription(this)];
     }
 }
 
@@ -94,3 +75,26 @@ function isDog(card) {
     return card instanceof Dog;
 }
 
+
+
+const seriffStartDeck = [
+    new Duck(),
+    new Duck(),
+    new Duck(),
+];
+
+const banditStartDeck = [
+    new Dog(),
+];
+// Создание игры.
+const game = new Game(seriffStartDeck, banditStartDeck);
+
+
+
+// Глобальный объект, позволяющий управлять скоростью всех анимаций.
+SpeedRate.set(1);
+
+// Запуск игры.
+game.play(false, (winner) => {
+    alert('Победил ' + winner.name);
+});
