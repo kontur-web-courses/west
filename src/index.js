@@ -123,7 +123,7 @@ class Lad extends Dog {
     }
 
     doBeforeRemoving(continuation) {
-        this.constructor.setInGameCount(lad.getInGameCount() - 1);
+        this.constructor.setInGameCount(Lad.getInGameCount() - 1);
         super.doBeforeRemoving(continuation);
     }
 
@@ -193,11 +193,21 @@ class Brewer extends Duck {
 
 const seriffStartDeck = [
     new Duck(),
+    new Gatling(),
     new Duck(),
     new Duck(),
+    
+    new Brewer(),
+    new Brewer(),
+    new Brewer(),
 ];
 const banditStartDeck = [
     new Dog(),
+    new Trasher(),
+    new PseudoDuck(),
+    new PseudoDuck(),
+    new Lad(),
+    new Lad(),
 ];
 
 
