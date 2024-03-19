@@ -107,6 +107,16 @@ class PseudoDuck extends Dog {
     }
 }
 
+class Rogue extends Creature {
+    constructor(name, maxPower, image) {
+        const nameCorrect = name || "Изгой";
+        const maxPowerCorrect = maxPower || 2;
+        const imageCorrect = image || null;
+
+        super(nameCorrect, maxPowerCorrect, imageCorrect);
+    }
+}
+
 
 const seriffStartDeck = [
     new Duck(),
