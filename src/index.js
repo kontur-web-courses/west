@@ -2,6 +2,7 @@ import Card from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+import card from './Card.js';
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -73,13 +74,29 @@ class Gatling extends Creature {
                 taskQueue.push(onDone => this.view.showAttack(onDone));
                 taskQueue.push(onDone => {
                     this.dealDamageToCreature(this.currentPower, op, gameContext, onDone);
-                })
+                });
             }
 
             taskQueue.continueWith(continuation);
         }
     }
 }
+
+class PseudoDuck extends Dog {
+    constructor(name = 'Псевдоутка', maxPower = 3) {
+        super(name, maxPower);
+    }
+
+    quacks() {
+        console.log('bark');
+    };
+
+    swims() {
+        console.log('float: both;');
+    };
+}
+
+console.assert(isDuck(new PseudoDuck()));
 
 // // Колода Шерифа, нижнего игрока.
 // const seriffStartDeck = [
@@ -110,7 +127,32 @@ class Trasher extends Dog {
     };
 
     getDescriptions() {
-        return ([...super.getDescriptions(), "Получает на 1 урона меньше"]);
+        return ([...super.getDescriptions(), 'Получает на 1 урона меньше']);
+    }
+}
+
+class Brewer extends Duck {
+    constructor(name = 'Пивовар', maxPower = 2) {
+        super(name, maxPower);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        for (card of currentPlayer.table + oppositePlayer.table) {
+            if (isDuck(card)) {
+                card.maxPower += 1;
+                card.view.signalHeal(c => {
+                    card.currentPower = Math.min(card.maxPower, card.currentPower + 2);
+                    card.updateView();
+                });
+            }
+        }
+
+        continuation();
+    };
+
+    getDescriptions() {
+        return ([...super.getDescriptions(), 'Угощает П И В О М всех уток.']);
     }
 }
 
@@ -156,6 +198,7 @@ class Lad extends Dog {
 }
 
 const seriffStartDeck = [
+    new Brewer(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -163,6 +206,9 @@ const seriffStartDeck = [
 const banditStartDeck = [
     new Lad(),
     new Lad(),
+    new PseudoDuck(),
+    new Trasher(),
+    new Dog(),
 ];
 
 // Создание игры.
