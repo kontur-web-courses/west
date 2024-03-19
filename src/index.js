@@ -1,6 +1,5 @@
 import Card from './Card.js';
 import Game from './Game.js';
-import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
 
 // Отвечает является ли карта уткой.
@@ -28,7 +27,7 @@ function getCreatureDescription(card) {
 }
 
 class Creature extends Card {
-    getDescription() {
+    getDescriptions() {
         return [getCreatureDescription(this), super.getDescriptions(this)];
     }
 }
