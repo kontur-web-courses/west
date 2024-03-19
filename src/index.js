@@ -147,6 +147,8 @@ const seriffStartDeck = [
     new Gatling(),
 ];
 const banditStartDeck = [
+    new Trasher(),
+    new Dog(),
     new Dog(),
 ];
 
