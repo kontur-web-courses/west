@@ -80,12 +80,71 @@ class Gatling extends Creature {
         }
         taskQueue.continueWith(continuation);
     }
+}
 
 
+class Rogue extends Creature {
+    constructor(name='Изгой', power=2){
+        super(name, power, null);
+    }
+    doBeforeAttack (gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        let card = oppositePlayer.table[position];
+        if (!card) {
+            continuation();
+            return;
+        }
+        let prototype = Object.getPrototypeOf(card);
+        //`modifyDealedDamageToCreature`, `modifyDealedDamageToPlayer`, `modifyTakenDamage`
+        let feature = prototype.modifyDealedDamageToCreature.bind(this);
+        let curFeature = this.modifyDealedDamageToCreature.bind(this);
+        this.modifyDealedDamageToCreature = function(value, toCard, gameContext, continuation) {
+            curFeature(
+                value,
+                toCard,
+                gameContext,
+                function() {
+                    feature(value, toCard, gameContext, continuation);
+                } )
+        };
+        feature = prototype.modifyDealedDamageToPlayer.bind(this);
+        curFeature = prototype.modifyDealedDamageToPlayer.bind(this);
+        this.modifyDealedDamageToPlayer = function(value, gameContext, continuation) {
+            curFeature(
+                value,
+                gameContext,
+                function() {
+                    feature(value, gameContext, continuation);
+                } )
+        };
+        feature = prototype.modifyTakenDamage.bind(this);
+        curFeature = prototype.modifyTakenDamage.bind(this);
+        this.modifyTakenDamage = function(value, fromCard, gameContext, continuation) {
+            curFeature(
+                value,
+                fromCard,
+                gameContext,
+                function() {
+                    feature(value, fromCard, gameContext, continuation);
+                } )
+        };
+        
+        let newDesc = prototype.getDescriptions.bind(this);
+        this.getDescriptions = function() {
+            return newDesc();
+        }
+        delete prototype['getDescriptions'];
+        delete prototype[`modifyDealedDamageToCreature`];
+        delete prototype[`modifyDealedDamageToPlayer`];
+        delete prototype[`modifyTakenDamage`];
+        updateView();
+        continuation();
+    };
 }
 
 // Колода Шерифа, нижнего игрока.
 const seriffStartDeck = [
+    new Trasher(),
     new Duck(),
     new Duck(),
     new Duck(),
@@ -95,7 +154,9 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Trasher(),
+    new Rogue(),
+    new Rogue(),
+    new Rogue(),
     new Dog(),
     new Dog(),
 ];
