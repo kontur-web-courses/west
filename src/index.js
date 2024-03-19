@@ -114,14 +114,55 @@ class Trasher extends Dog {
     }
 }
 
+class Lad extends Dog {
+    constructor(name = 'Браток', maxPower = 2) {
+        super(name, maxPower);
+    }
+
+    static getInGameCount() { return this.inGameCount || 0; }
+    static setInGameCount(value) { this.inGameCount = value; }
+    static getBonus() {
+        return this.inGameCount * (this.inGameCount + 1) / 2
+    }
+
+    getDescriptions() {
+        return ([...super.getDescriptions(), "Чем их больше, тем они сильнее"]);
+    }
+
+    doAfterComingIntoPlay(gameContext, continuation) {
+        super.doAfterComingIntoPlay(gameContext, continuation);
+        Lad.setInGameCount(Lad.getInGameCount() + 1);
+    }
+
+    doBeforeRemoving(gameContext, continuation) {
+        super.doBeforeRemoving(gameContext, continuation);
+        Lad.setInGameCount(Lad.getInGameCount() - 1);
+    }
+
+    modifyDealedDamageToCreature(value, toCard, gameContext, continuation) {
+        continuation(Lad.getBonus());
+    };
+
+    modifyTakenDamage(value, toCard, gameContext, continuation) {
+        let t = this;
+        value = Math.max(Lad.getBonus(), 0);
+        if (value > 0) {
+            this.view.signalAbility(c => t.view.signalDamage(c => {
+            }));
+        }
+        super.modifyTakenDamage(value, toCard, gameContext, continuation);
+    };
+
+}
+
 const seriffStartDeck = [
     new Duck(),
-    new Gatling()
+    new Duck(),
+    new Duck(),
 ];
-
 const banditStartDeck = [
-    new Trasher(),
-    new Dog()
+    new Lad(),
+    new Lad(),
 ];
 
 // Создание игры.
