@@ -66,8 +66,8 @@ class Dog extends Creature {
 }
 
 class Gatling extends Creature {
-    constructor(name = 'Гатлинг', power = 6, path = 'Gatling.jpg') {
-        super(name, power, path);
+    constructor(name = 'Гатлинг', power = 6) {
+        super(name, power, 'Gatling.jpg');
     }
 
     attack(gameContext, continuation) {
@@ -116,6 +116,8 @@ const seriffStartDeck = [
     new Gatling(),
 ];
 const banditStartDeck = [
+    new Trasher(),
+    new Trasher(),
     new Trasher(),
 ];
 
