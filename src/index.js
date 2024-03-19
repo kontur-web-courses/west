@@ -28,10 +28,6 @@ function getCreatureDescription(card) {
 }
 
 class Creature extends Card {
-    constructor(name, maxPower){
-        super(name, maxPower);
-    }
-
     getDescriptions() {
         return [getCreatureDescription(this), ...super.getDescriptions()];
     }
@@ -74,6 +70,37 @@ class Trasher extends Dog {
 
     modifyTakenDamage(value, fromCard, gameContext, continuation) {
         this.view.signalAbility(() => continuation(value - 1));
+    }
+}
+
+class Gatling extends Creature {
+    constructor(name = 'Гатлинг', maxPower = 6, image){
+        super(name, maxPower, image);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+
+        for(let position = 0; position < oppositePlayer.table.length; position++) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                const oppositeCard = oppositePlayer.table[position];
+    
+                if (oppositeCard) {
+                    this.dealDamageToCreature(2, oppositeCard, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+
+        taskQueue.continueWith(continuation);
+    }
+
+    getDescriptions() {
+        return ['При атаке наносит 2 урона по очереди всем картам противника', ...super.getDescriptions()];
     }
 }
 
@@ -128,9 +155,7 @@ const seriffStartDeck = [
     // new Card('Мирный житель', 2),
     // new Card('Мирный житель', 2),
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Duck(),
+    new Gatling(),
 ];
 
 // Колода Бандита, верхнего игрока.
@@ -142,6 +167,8 @@ const banditStartDeck = [
     new Lad(),
     new Lad(),
     new Lad(),
+    new Dog(),
+    new Dog(),
 ];
 
 
