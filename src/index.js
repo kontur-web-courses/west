@@ -98,6 +98,10 @@ class Gatling extends Creature {
 
         taskQueue.continueWith(continuation);
     }
+
+    getDescriptions() {
+        return ['При атаке наносит 2 урона по очереди всем картам противника', ...super.getDescriptions()];
+    }
 }
 
 
