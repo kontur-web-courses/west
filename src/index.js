@@ -29,23 +29,6 @@ class Duck extends Creature {
     swims () { console.log('float: both;'); }    
 }
 
-<<<<<<< HEAD
-class Dog extends Creature {
-    constructor(image=null) {
-        super('Пес-бандит', 3, image);
-    }
-}
-    // // Основа для утки.
-// function Duck() {
-//     this. = function () { console.log('quack') };
-//     this.swims = function () { console.log('float: both;') };
-// }
-
-
-// // Основа для собаки.
-// function Dog() {
-// }
-=======
 class Dog extends Card {
     constructor(name='Пес-бандит', power=3, image=null) {
         super(name, power, image);
@@ -62,7 +45,6 @@ class Trasher extends Dog {
 }
 
 // Колода Шерифа, нижнего игрока.
->>>>>>> c4c4abb0f1add763b4b7555f93f6a6e94d69b049
 const seriffStartDeck = [
     new Duck(),
     new Duck(),
@@ -71,6 +53,7 @@ const seriffStartDeck = [
 
 // Колода Бандита, верхнего игрока.
 const banditStartDeck = [
+    new Trasher(),
 ];
 
 // Создание игры.
