@@ -2,6 +2,7 @@ import Card from './Card.js';
 import Game from './Game.js';
 import TaskQueue from './TaskQueue.js';
 import SpeedRate from './SpeedRate.js';
+import card from './Card.js';
 
 // Отвечает является ли карта уткой.
 function isDuck(card) {
@@ -130,7 +131,33 @@ class Trasher extends Dog {
     }
 }
 
+class Brewer extends Duck {
+    constructor(name = 'Пивовар', maxPower = 2) {
+        super(name, maxPower);
+    }
+
+    doBeforeAttack(gameContext, continuation) {
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        for (card of currentPlayer.table + oppositePlayer.table) {
+            if (isDuck(card)) {
+                card.maxPower += 1;
+                card.view.signalHeal(c => {
+                    card.currentPower = Math.min(card.maxPower, card.currentPower + 2);
+                    card.updateView();
+                });
+            }
+        }
+
+        continuation();
+    };
+
+    getDescriptions() {
+        return ([...super.getDescriptions(), 'Угощает П И В О М всех уток.']);
+    }
+}
+
 const seriffStartDeck = [
+    new Brewer(),
     new Duck(),
     new Gatling()
 ];
