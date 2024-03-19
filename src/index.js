@@ -210,19 +210,56 @@ class Rogue extends Creature {
     };
 }
 
+class Brewer extends Duck {
+    constructor() {
+        super();
+        this.name = 'Пивовар';
+        this.currentPower = 2;
+        this.maxPower = 2;
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        const {currentPlayer, oppositePlayer, position, updateView} = gameContext;
+        for (let card of gameContext.currentPlayer.table) {
+            if (card instanceof Duck) {
+                card.currentPower += 1;
+                this.view.signalHeal();
+                card.updateView();
+            }
+        }
+
+        for (let card of gameContext.oppositePlayer.table) {
+            taskQueue.push(onDone => this.view.showAttack(onDone));
+            taskQueue.push(onDone => {
+                if (card instanceof Duck) {
+                    card.currentPower += 1;
+                    this.view.signalHeal();
+                    card.updateView();
+                }
+                if (card) {
+                    this.dealDamageToCreature(this.currentPower, card, gameContext, onDone);
+                } else {
+                    this.dealDamageToPlayer(1, gameContext, onDone);
+                }
+            });
+        }
+        taskQueue.continueWith(continuation);
+    };
+}
+
 // Колода Шерифа, нижнего игрока.
 
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
-    new Rogue(),
+    new Brewer(),
 ];
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
-
-    new Lad(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 // Создание игры.
