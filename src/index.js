@@ -35,8 +35,8 @@ class Dog extends Creature {
 }
 
 class Duck extends Creature {
-    constructor(image = null) {
-        super('Мирная утка', 2, image);
+    constructor(name = 'Мирная утка', maxPower = 2, image = null) {
+        super(name, maxPower, image);
     }
 
     quacks() {
@@ -139,17 +139,59 @@ class Lad extends Dog {
     }
 }
 
-// Колода Шерифа, нижнего игрока.
+class Brewer extends Duck {
+    constructor(name = 'Пивовар', maxPower = 2, image = null) {
+        super(name, maxPower, image);
+    }
+
+    attack(gameContext, continuation) {
+        const taskQueue = new TaskQueue();
+
+        taskQueue.push(onDone => {
+            this.view.signalHeal(onDone);
+            this.updateView();
+        });
+
+        const allCards = gameContext.currentPlayer.table
+            .concat(gameContext.oppositePlayer.table);
+
+        for (const card of allCards) {
+            if (isDuck(card)) {
+                card.maxPower += 1;
+                card.currentPower += 2;
+                taskQueue.push(onDone => {
+                    card.view.signalHeal(onDone);
+                    card.updateView();
+                });
+            }
+        }
+
+        super.attack(gameContext, continuation);
+    }
+}
+
+// // Колода Шерифа, нижнего игрока.
+// const seriffStartDeck = [
+//     new Duck(),
+//     new Duck(),
+//     new Duck(),
+// ];
+//
+// // Колода Бандита, верхнего игрока.
+// const banditStartDeck = [
+//     new Lad(),
+//     new Lad(),
+// ];
+
 const seriffStartDeck = [
     new Duck(),
-    new Duck(),
-    new Duck(),
+    new Brewer(),
 ];
-
-// Колода Бандита, верхнего игрока.
 const banditStartDeck = [
-    new Lad(),
-    new Lad(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
+    new Dog(),
 ];
 
 // Создание игры.

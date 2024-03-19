@@ -12,5 +12,17 @@ export default class Creature extends Card {
             ...super.getDescriptions()
         ]
     }
+
+    set currentPower(value) {
+        if (value > this.maxPower) {
+            this._currentPower = this.maxPower;
+        } else {
+            this._currentPower = value;
+        }
+    }
+
+    get currentPower() {
+        return this._currentPower;
+    }
 }
 
